@@ -13,13 +13,21 @@ widthImg = 480
 
 utlis.initializeTrackbars()
 count = 0
+printed = False
 
 while True:
 
     if webCamFeed:
         success, img = cap.read()
+        if success:
+            if not printed:
+                printed = True
+                print("document scanner running\nTh1:40\nTh2:40\nAcc:20\nArea:4000")
+        else:
+            print("scanner failed")
     else:
         img = cv2.imread(pathImage)
+        print("scanner failed")
     img = cv2.resize(img, (widthImg, heightImg))  # RESIZE IMAGE
     # CREATE A BLANK IMAGE FOR TESTING DEBUGING IF REQUIRED
     imgBlank = np.zeros((heightImg, widthImg, 3), np.uint8)
@@ -27,7 +35,12 @@ while True:
     imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     imgBlur = cv2.GaussianBlur(imgGray, (5, 5), 1)  # ADD GAUSSIAN BLUR
     thres = utlis.valTrackbars()  # GET TRACK BAR VALUES FOR THRESHOLDS
-    imgThreshold = cv2.Canny(imgBlur, thres[0], thres[1])  # APPLY CANNY BLUR
+    threshold1 = thres[0]
+    threshold2 = thres[1]
+    # threshold1 = 40
+    # threshold2 = 40
+    imgThreshold = cv2.Canny(
+        imgBlur, threshold1, threshold2)  # APPLY CANNY BLUR
     kernel = np.ones((5, 5))
     imgDial = cv2.dilate(imgThreshold, kernel, iterations=2)  # APPLY DILATION
     imgThreshold = cv2.erode(imgDial, kernel, iterations=1)  # APPLY EROSION
@@ -41,8 +54,10 @@ while True:
                      10)  # DRAW ALL DETECTED CONTOURS
 
     # FIND THE BIGGEST COUNTOUR
+    accuracy = thres[2]/1000
+    # accuracy = 0.02
     biggest, maxArea = utlis.biggestContour(
-        contours)  # FIND THE BIGGEST CONTOUR
+        contours, accuracy, thres[3])  # FIND THE BIGGEST CONTOUR
     if biggest.size != 0:
         biggest = utlis.reorder(biggest)
         # DRAW THE BIGGEST CONTOUR
@@ -91,3 +106,4 @@ while True:
         cv2.imshow('Result', stackedImage)
         cv2.waitKey(300)
         count += 1
+        print("image saved")
