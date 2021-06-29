@@ -7,8 +7,8 @@ webCamFeed = True
 pathImage = "1.jpg"
 cap = cv2.VideoCapture(1)
 cap.set(10, 160)
-heightImg = 640
-widthImg = 480
+heightImg = 480
+widthImg = 640
 ########################################################################
 
 utlis.initializeTrackbars()
@@ -20,7 +20,7 @@ while True:
     if webCamFeed:
         success, img = cap.read()
         if success:
-            if not printed:
+            if not printed:  # BOOLEAN WHICH DESCRIBES IF STARTING MESSAGE IS PRINTED OR NOT
                 printed = True
                 print("document scanner running\nTh1:40\nTh2:40\nAcc:20\nArea:4000")
         else:
@@ -49,7 +49,7 @@ while True:
     imgContours = img.copy()  # COPY IMAGE FOR DISPLAY PURPOSES
     imgBigContour = img.copy()  # COPY IMAGE FOR DISPLAY PURPOSES
     contours, hierarchy = cv2.findContours(
-        imgThreshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # FIND ALL CONTOURS
+        imgThreshold, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)  # FIND ALL CONTOURS
     cv2.drawContours(imgContours, contours, -1, (0, 255, 0),
                      10)  # DRAW ALL DETECTED CONTOURS
 
@@ -61,7 +61,7 @@ while True:
     if biggest.size != 0:
         biggest = utlis.reorder(biggest)
         # DRAW THE BIGGEST CONTOUR
-        cv2.drawContours(imgBigContour, biggest, -1, (0, 255, 0), 20)
+        # cv2.drawContours(imgBigContour, biggest, -1, (0, 255, 0), 20) # DRAW CIRCLES
         imgBigContour = utlis.drawRectangle(imgBigContour, biggest, 2)
         pts1 = np.float32(biggest)  # PREPARE POINTS FOR WARP
         pts2 = np.float32([[0, 0], [widthImg, 0], [0, heightImg], [
@@ -82,16 +82,30 @@ while True:
         imgAdaptiveThre = cv2.medianBlur(imgAdaptiveThre, 3)
 
         # Image Array for Display
-        imageArray = ([img, imgGray, imgThreshold, imgContours],
-                      [imgBigContour, imgWarpColored, imgWarpGray, imgAdaptiveThre])
+        # imageArray = ([img, imgGray, imgThreshold, imgContours],
+        #               [imgBigContour, imgWarpColored, imgWarpGray, imgAdaptiveThre])
+        imageArray = ([imgThreshold, imgContours],
+                      [imgBigContour, imgWarpColored])
 
     else:
-        imageArray = ([img, imgGray, imgThreshold, imgContours],
-                      [imgBlank, imgBlank, imgBlank, imgBlank])
+        # imageArray = ([img, imgGray, imgThreshold, imgContours],
+        #               [imgBlank, imgBlank, imgBlank, imgBlank])
+        margin = 10
+        height, width, chanel = img.shape
+        width -= margin
+        height -= margin
+        windowPoints = [[[margin, margin]], [[width, margin]],
+                        [[margin, height]], [[width, height]]]
+        imgBigContour = utlis.drawRectangle(imgBigContour, windowPoints, 2)
+
+        imageArray = ([imgThreshold, imgContours],
+                      [imgBigContour, imgBlank])
 
     # LABELS FOR DISPLAY
-    lables = [["Original", "Gray", "Threshold", "Contours"],
-              ["Biggest Contour", "Warp Prespective", "Warp Gray", "Adaptive Threshold"]]
+    # lables = [["Original", "Gray", "Threshold", "Contours"],
+    #           ["Biggest Contour", "Warp Prespective", "Warp Gray", "Adaptive Threshold"]]
+    lables = [["Threshold", "Contours"],
+              ["Biggest Contour", "Warp Prespective"]]
 
     stackedImage = utlis.stackImages(imageArray, 0.75, lables)
     cv2.imshow("Result", stackedImage)
