@@ -1,3 +1,18 @@
+# TODO
+# ✓    ROUND EDGE DETECTION?
+# ANIMATION OF BOUNDS
+# IF NO MAYOR CHANGES DONE THEN IGNORE https://stackoverflow.com/questions/6709693/calculating-the-similarity-of-two-lists
+#   TIME DIALATION
+# create a mask beforehand and then add the square? https://pmcg2k15.wordpress.com/2015/09/14/ball-tracking-with-opencv/
+#   ERRODE
+#   DILATE
+# IGNORE TOUCHING EDGES? https://stackoverflow.com/questions/40615515/how-to-ignore-remove-contours-that-touch-the-image-boundaries/40620226
+#   detect shapes with intersections
+#       https://stackoverflow.com/questions/66977282/python-opencv-detect-shapes-with-intersections
+#       https://stackoverflow.com/questions/65391880/how-to-detect-intersecting-shapes-with-opencv-findcontours
+# STREAM TO WEBPAGE
+
+
 import cv2
 import numpy as np
 import utlis
