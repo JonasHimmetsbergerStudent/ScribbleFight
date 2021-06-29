@@ -11,6 +11,11 @@ function setup() {
   createCanvas(1920, 1080);
   cube = createSprite(400, 200, 50, 50);
   collider = createSprite(400, 500, 200, 200);
+  loadImage('../assets/amogus.png', img => {
+    img.resize(50, 0);
+    cube.addImage(img);
+  });
+
 }
 
 function draw() {
@@ -23,23 +28,25 @@ function draw() {
   }
 
   // Controls
-    //Spacebar
+  //Spacebar
   if (keyWentDown(32)) {
     cube.velocity.y = -JUMP;
   }
-    //A
-  if(keyIsDown(65)) {
-      cube.velocity.x = -SPEED;
+  //A
+  if (keyIsDown(65)) {
+    cube.velocity.x = -SPEED;
   }
-    //D
-  if(keyIsDown(68)) {
-      cube.velocity.x = SPEED;
+  //D
+  if (keyIsDown(68)) {
+    cube.velocity.x = SPEED;
   }
-    //S
-  if(keyIsDown(83)) {
+  //S
+  if (keyIsDown(83)) {
     cube.velocity.y -= GRAVITY;
   }
   drawSprites();
 }
 
- 
+function preload() {
+  var img = loadImage('../assets/amogus.png');
+}
