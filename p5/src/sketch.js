@@ -1,6 +1,7 @@
 //Objects
-var cube;
+var sprite;
 var collider;
+var testSprite;
 
 //Forces
 var GRAVITY = -1;
@@ -9,44 +10,61 @@ var SPEED = 5;
 
 function setup() {
   createCanvas(1920, 1080);
-  cube = createSprite(400, 200, 50, 50);
+  sprite = createSprite(400, 200, 50, 50);
   collider = createSprite(400, 500, 200, 200);
+  testSprite = createSprite(350, 200, 50, 50);
+  collider.setCollider("rectangle", 0, 0, 200, 200, -45);
+  collider.debug = true;
+  testSprite.debug = true;
+  sprite.debug = true;
   loadImage('../assets/amogus.png', img => {
     img.resize(50, 0);
-    cube.addImage(img);
+    sprite.addImage(img);
   });
 
 }
 
 function draw() {
-  cube.velocity.y -= GRAVITY;
-  cube.velocity.x = 0;
+  sprite.velocity.y -= GRAVITY;
+  sprite.velocity.x = 0;
   background(255, 255, 255);
 
-  if (cube.collide(collider)) {
-    cube.velocity.y = 0;
+  if (sprite.collide(collider)) {
+    sprite.velocity.y = 0;
+  }
+  if (sprite.collide(testSprite)) {
+    sprite.velocity.y = 0;
   }
 
   // Controls
   //Spacebar
   if (keyWentDown(32)) {
-    cube.velocity.y = -JUMP;
+    sprite.velocity.y = -JUMP;
   }
   //A
   if (keyIsDown(65)) {
-    cube.velocity.x = -SPEED;
+    sprite.velocity.x = -SPEED;
+
   }
   //D
   if (keyIsDown(68)) {
-    cube.velocity.x = SPEED;
+    sprite.velocity.x = SPEED;
   }
   //S
   if (keyIsDown(83)) {
-    cube.velocity.y -= GRAVITY;
+    sprite.velocity.y -= GRAVITY;
   }
+  mirrorSprite();
   drawSprites();
 }
 
-function preload() {
-  var img = loadImage('../assets/amogus.png');
+function mirrorSprite() {
+  if(keyWentDown(65)) {
+    sprite.mirrorX(sprite.mirrorX() * -1);
+  }
+  if(keyWentDown(68)) {
+   if(sprite.mirrorX()===-1) {
+    sprite.mirrorX(sprite.mirrorX() * -1);
+   }
+  }
 }
