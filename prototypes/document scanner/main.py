@@ -33,7 +33,7 @@ borderColor = (1, 59, 218)
 utlis.initializeTrackbars()
 count = 0
 printed = False
-oldBiggest = imgOldContour = None
+oldBiggest = imgOldContour = oldContour = None
 
 while True:
 
@@ -70,10 +70,12 @@ while True:
     imgBigContour = img.copy()  # COPY IMAGE FOR DISPLAY PURPOSES
     contours, hierarchy = cv2.findContours(
         imgThreshold, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)  # FIND ALL CONTOURS
-    cnt = contours[4]  # ONLY CONTOURS WITH 4 POINTS
-    cv2.drawContours(img, [cnt], 0, borderColor, 3)
-    # cv2.drawContours(imgContours, contours, -1, (0, 255, 0),
-    #                  3)  # DRAW ALL DETECTED CONTOURS
+    if len(contours) >= 5:
+        cnt = contours[4]  # ONLY CONTOURS WITH 4 POINTS
+        cv2.drawContours(img, [cnt], 0, borderColor, 3)
+    else:
+        cv2.drawContours(imgContours, contours, -1, borderColor,
+                         3)  # DRAW ALL DETECTED CONTOURS
 
     # FIND THE BIGGEST COUNTOUR
     accuracy = thres[2]/1000
@@ -94,7 +96,7 @@ while True:
     for i in range(len(hull)):
         cv2.drawContours(imgBigContour, hull, i, (255, 0, 0), 1, 8)
 
-    if biggest.size != 0 and (biggestChanged >= 0.6 or biggestChanged is None):
+    if biggest.size != 0 and (biggestChanged >= 0.5 or biggestChanged is None):
         oldBiggest = biggest
         biggest = utlis.reorder(biggest)
         # DRAW THE BIGGEST CONTOUR
