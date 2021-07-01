@@ -11,10 +11,13 @@
 #       https://stackoverflow.com/questions/66977282/python-opencv-detect-shapes-with-intersections
 #       https://stackoverflow.com/questions/65391880/how-to-detect-intersecting-shapes-with-opencv-findcontours
 # STREAM TO WEBPAGE
+# Fürn schriftlichen teil:
+# https://stackoverflow.com/questions/8830619/difference-between-cv-retr-list-cv-retr-tree-cv-retr-external
 
 
 import cv2
 import numpy as np
+from numpy.lib import utils
 import utlis
 
 ########################################################################
@@ -24,11 +27,13 @@ cap = cv2.VideoCapture(1)
 cap.set(10, 160)
 heightImg = 480
 widthImg = 640
+borderColor = (1, 59, 218)
 ########################################################################
 
 utlis.initializeTrackbars()
 count = 0
 printed = False
+oldBiggest = imgOldContour = None
 
 while True:
 
@@ -56,7 +61,7 @@ while True:
     # threshold2 = 40
     imgThreshold = cv2.Canny(
         imgBlur, threshold1, threshold2)  # APPLY CANNY BLUR
-    kernel = np.ones((5, 5))
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
     imgDial = cv2.dilate(imgThreshold, kernel, iterations=2)  # APPLY DILATION
     imgThreshold = cv2.erode(imgDial, kernel, iterations=1)  # APPLY EROSION
 
@@ -65,19 +70,39 @@ while True:
     imgBigContour = img.copy()  # COPY IMAGE FOR DISPLAY PURPOSES
     contours, hierarchy = cv2.findContours(
         imgThreshold, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)  # FIND ALL CONTOURS
-    cv2.drawContours(imgContours, contours, -1, (0, 255, 0),
-                     10)  # DRAW ALL DETECTED CONTOURS
+    cnt = contours[4]  # ONLY CONTOURS WITH 4 POINTS
+    cv2.drawContours(img, [cnt], 0, borderColor, 3)
+    # cv2.drawContours(imgContours, contours, -1, (0, 255, 0),
+    #                  3)  # DRAW ALL DETECTED CONTOURS
 
     # FIND THE BIGGEST COUNTOUR
     accuracy = thres[2]/1000
     # accuracy = 0.02
     biggest, maxArea = utlis.biggestContour(
         contours, accuracy, thres[3])  # FIND THE BIGGEST CONTOUR
-    if biggest.size != 0:
+
+    if oldBiggest is None:
+        oldBiggest = biggest
+
+    a = np.array(biggest)
+    b = np.array(oldBiggest)
+    biggestChanged = np.mean(a != b)
+    print(biggestChanged)
+
+    # BLUE BORDER WHICH WRAPS UP SMALL BORDERS
+    hull = utlis.findHulls(contours)
+    for i in range(len(hull)):
+        cv2.drawContours(imgBigContour, hull, i, (255, 0, 0), 1, 8)
+
+    if biggest.size != 0 and (biggestChanged >= 0.6 or biggestChanged is None):
+        oldBiggest = biggest
         biggest = utlis.reorder(biggest)
         # DRAW THE BIGGEST CONTOUR
-        # cv2.drawContours(imgBigContour, biggest, -1, (0, 255, 0), 20) # DRAW CIRCLES
-        imgBigContour = utlis.drawRectangle(imgBigContour, biggest, 2)
+        # cv2.drawContours(imgBigContour, biggest, -1,
+        #                  (0, 255, 0), 10)  # DRAW CIRCLES
+        imgBigContour = utlis.drawRectangle(
+            imgBigContour, biggest, borderColor, 2)
+        imgOldContour = imgBigContour
         pts1 = np.float32(biggest)  # PREPARE POINTS FOR WARP
         pts2 = np.float32([[0, 0], [widthImg, 0], [0, heightImg], [
                           widthImg, heightImg]])  # PREPARE POINTS FOR WARP
@@ -105,16 +130,18 @@ while True:
     else:
         # imageArray = ([img, imgGray, imgThreshold, imgContours],
         #               [imgBlank, imgBlank, imgBlank, imgBlank])
-        margin = 10
-        height, width, chanel = img.shape
-        width -= margin
-        height -= margin
-        windowPoints = [[[margin, margin]], [[width, margin]],
-                        [[margin, height]], [[width, height]]]
-        imgBigContour = utlis.drawRectangle(imgBigContour, windowPoints, 2)
+        if imgOldContour is None:
+            margin = 10
+            height, width, chanel = img.shape
+            width -= margin
+            height -= margin
+            windowPoints = [[[margin, margin]], [[width, margin]],
+                            [[margin, height]], [[width, height]]]
+            imgOldContour = utlis.drawRectangle(
+                imgBigContour, windowPoints, borderColor, 2)
 
         imageArray = ([imgThreshold, imgContours],
-                      [imgBigContour, imgBlank])
+                      [imgOldContour, imgBlank])
 
     # LABELS FOR DISPLAY
     # lables = [["Original", "Gray", "Threshold", "Contours"],
@@ -129,7 +156,7 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('s'):
         cv2.imwrite("Scanned/myImage"+str(count)+".jpg", imgWarpColored)
         cv2.rectangle(stackedImage, ((int(stackedImage.shape[1] / 2) - 230), int(stackedImage.shape[0] / 2) + 50),
-                      (1100, 350), (0, 255, 0), cv2.FILLED)
+                      (1100, 350), borderColor, cv2.FILLED)
         cv2.putText(stackedImage, "Scan Saved", (int(stackedImage.shape[1] / 2) - 200, int(stackedImage.shape[0] / 2)),
                     cv2.FONT_HERSHEY_DUPLEX, 3, (0, 0, 255), 5, cv2.LINE_AA)
         cv2.imshow('Result', stackedImage)

@@ -62,6 +62,7 @@ def reorder(myPoints):  # THE GIVEN ARRAY FROM OPEN-CV NEEDS TO BE REARRANGED
 def biggestContour(contours, accuracy, areaVal):  # FIND THE BIGGEST CONTOUR
     biggest = np.array([])
     max_area = 0
+
     for i in contours:
         area = cv2.contourArea(i)
         if area > areaVal:
@@ -74,15 +75,27 @@ def biggestContour(contours, accuracy, areaVal):  # FIND THE BIGGEST CONTOUR
     return biggest, max_area
 
 
-def drawRectangle(img, biggest, thickness):
+def findHulls(contours):
+    # create hull array for convex hull points
+    hull = []
+
+    # calculate points for each contour
+    for i in range(len(contours)):
+        # creating convex hull object for each contour
+        hull.append(cv2.convexHull(contours[i], False))
+
+    return hull
+
+
+def drawRectangle(img, biggest, borderColor, thickness):
     cv2.line(img, (biggest[0][0][0], biggest[0][0][1]),
-             (biggest[1][0][0], biggest[1][0][1]), (0, 255, 0), thickness)
+             (biggest[1][0][0], biggest[1][0][1]), borderColor, thickness)
     cv2.line(img, (biggest[0][0][0], biggest[0][0][1]),
-             (biggest[2][0][0], biggest[2][0][1]), (0, 255, 0), thickness)
+             (biggest[2][0][0], biggest[2][0][1]), borderColor, thickness)
     cv2.line(img, (biggest[3][0][0], biggest[3][0][1]),
-             (biggest[2][0][0], biggest[2][0][1]), (0, 255, 0), thickness)
+             (biggest[2][0][0], biggest[2][0][1]), borderColor, thickness)
     cv2.line(img, (biggest[3][0][0], biggest[3][0][1]),
-             (biggest[1][0][0], biggest[1][0][1]), (0, 255, 0), thickness)
+             (biggest[1][0][0], biggest[1][0][1]), borderColor, thickness)
     return img
 
 
