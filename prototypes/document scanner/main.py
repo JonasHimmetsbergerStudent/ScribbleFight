@@ -1,5 +1,6 @@
 # TODO
 # ✓    ROUND EDGE DETECTION?
+# FIXME CONOUR LASSEN; HINTERGRUND ZEICHNEN
 # ANIMATION OF BOUNDS
 # IF NO MAYOR CHANGES DONE THEN IGNORE https://stackoverflow.com/questions/6709693/calculating-the-similarity-of-two-lists
 #   TIME DIALATION
@@ -13,11 +14,12 @@
 # STREAM TO WEBPAGE
 # Fürn schriftlichen teil:
 # https://stackoverflow.com/questions/8830619/difference-between-cv-retr-list-cv-retr-tree-cv-retr-external
+# ERASE errors
 
 
 import cv2
 import numpy as np
-from numpy.lib import utils
+from numpy.lib import emath, utils
 import utlis
 
 ########################################################################
@@ -33,10 +35,15 @@ borderColor = (1, 59, 218)
 utlis.initializeTrackbars()
 count = 0
 printed = False
-oldBiggest = imgOldContour = oldContour = None
+oldBiggest = []
+imgOldContour = oldContour = None
 
 while True:
 
+    # SECTION webcam to open-cv
+    # NOTE checks webcam connection
+    # converts webcam image to readable open-cv data
+    # uses threshold values that can be set via slider
     if webCamFeed:
         success, img = cap.read()
         if success:
@@ -64,18 +71,21 @@ while True:
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
     imgDial = cv2.dilate(imgThreshold, kernel, iterations=2)  # APPLY DILATION
     imgThreshold = cv2.erode(imgDial, kernel, iterations=1)  # APPLY EROSION
+    # !SECTION
 
-    # FIND ALL COUNTOURS
+    # SECTION find all contours + draw them
     imgContours = img.copy()  # COPY IMAGE FOR DISPLAY PURPOSES
     imgBigContour = img.copy()  # COPY IMAGE FOR DISPLAY PURPOSES
     contours, hierarchy = cv2.findContours(
         imgThreshold, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)  # FIND ALL CONTOURS
-    if len(contours) >= 5:
-        cnt = contours[4]  # ONLY CONTOURS WITH 4 POINTS
-        cv2.drawContours(img, [cnt], 0, borderColor, 3)
-    else:
-        cv2.drawContours(imgContours, contours, -1, borderColor,
-                         3)  # DRAW ALL DETECTED CONTOURS
+    # if len(contours) >= 5:  # IF LESS THEN 5 CONTOURS WERE FOUND THE CODE THREW ERROR
+    #     cnt = contours[4]  # ONLY CONTOURS WITH 4 POINTS
+    #     cv2.drawContours(img, [cnt], 0, borderColor, 3)
+    # else:
+    #     cv2.drawContours(imgContours, contours, -1, borderColor,
+    #                      3)  # DRAW ALL DETECTED CONTOURS
+    cv2.drawContours(imgContours, contours, -1, borderColor,
+                     2)  # DRAW ALL DETECTED CONTOURS
 
     # FIND THE BIGGEST COUNTOUR
     accuracy = thres[2]/1000
@@ -83,25 +93,29 @@ while True:
     biggest, maxArea = utlis.biggestContour(
         contours, accuracy, thres[3])  # FIND THE BIGGEST CONTOUR
 
-    if oldBiggest is None:
+    if len(oldBiggest) == 0:
         oldBiggest = biggest
 
     a = np.array(biggest)
     b = np.array(oldBiggest)
+    # RAISES NAN ERRORS THAT CAN BE IGNORED (CAN!!!)
     biggestChanged = np.mean(a != b)
-    print(biggestChanged)
 
     # BLUE BORDER WHICH WRAPS UP SMALL BORDERS
     hull = utlis.findHulls(contours)
     for i in range(len(hull)):
-        cv2.drawContours(imgBigContour, hull, i, (255, 0, 0), 1, 8)
+        cv2.drawContours(imgContours, hull, i, (255, 0, 0), 1, 8)
+        bigHull, maxHulArea = utlis.biggestContour(
+            hull, accuracy, thres[3])  # FIND THE BIGGEST CONTOUR
+    #!SECTION
 
+    # SECTION evaluate contours and draw biggest + flip image into perspective
     if biggest.size != 0 and (biggestChanged >= 0.5 or biggestChanged is None):
-        oldBiggest = biggest
         biggest = utlis.reorder(biggest)
-        # DRAW THE BIGGEST CONTOUR
+        oldBiggest = biggest
         # cv2.drawContours(imgBigContour, biggest, -1,
         #                  (0, 255, 0), 10)  # DRAW CIRCLES
+        # DRAW THE BIGGEST CONTOUR
         imgBigContour = utlis.drawRectangle(
             imgBigContour, biggest, borderColor, 2)
         imgOldContour = imgBigContour
@@ -132,19 +146,29 @@ while True:
     else:
         # imageArray = ([img, imgGray, imgThreshold, imgContours],
         #               [imgBlank, imgBlank, imgBlank, imgBlank])
-        if imgOldContour is None:
-            margin = 10
-            height, width, chanel = img.shape
-            width -= margin
-            height -= margin
-            windowPoints = [[[margin, margin]], [[width, margin]],
-                            [[margin, height]], [[width, height]]]
+        margin = 10
+        height, width, chanel = img.shape
+        width -= margin
+        height -= margin
+        windowPoints = np.array([[[margin, margin]], [[width, margin]],
+                                 [[margin, height]], [[width, height]]])
+
+        if biggest.size == 0 and oldBiggest.tolist() != windowPoints.tolist():
+            oldBiggest = windowPoints
             imgOldContour = utlis.drawRectangle(
                 imgBigContour, windowPoints, borderColor, 2)
+        else:
+            if biggestChanged < 0.5:
+                # DRAW THE BIGGEST CONTOUR
+                imgOldContour = utlis.drawRectangle(
+                    imgBigContour, oldBiggest, borderColor, 2)
 
         imageArray = ([imgThreshold, imgContours],
                       [imgOldContour, imgBlank])
 
+    # !SECTION
+
+    # SECTION draw open-cv data
     # LABELS FOR DISPLAY
     # lables = [["Original", "Gray", "Threshold", "Contours"],
     #           ["Biggest Contour", "Warp Prespective", "Warp Gray", "Adaptive Threshold"]]
@@ -153,6 +177,7 @@ while True:
 
     stackedImage = utlis.stackImages(imageArray, 0.75, lables)
     cv2.imshow("Result", stackedImage)
+    # !SECTION
 
     # SAVE IMAGE WHEN 's' key is pressed
     if cv2.waitKey(1) & 0xFF == ord('s'):
