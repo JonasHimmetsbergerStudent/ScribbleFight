@@ -81,7 +81,9 @@ function draw() {
 
 function mirrorSprite() {
   if (keyWentDown(65)) {
+    if(sprite.mirrorX() === 1) {
     sprite.mirrorX(sprite.mirrorX() * -1);
+    }
   }
   if (keyWentDown(68)) {
     if (sprite.mirrorX() === -1) {
