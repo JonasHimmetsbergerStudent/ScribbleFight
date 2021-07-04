@@ -19,8 +19,9 @@
 
 import cv2
 import numpy as np
-from numpy.lib import emath, utils
 import utlis
+import imutils
+from time import sleep
 
 ########################################################################
 webCamFeed = True
@@ -62,13 +63,14 @@ while True:
     imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     imgBlur = cv2.GaussianBlur(imgGray, (5, 5), 1)  # ADD GAUSSIAN BLUR
     thres = utlis.valTrackbars()  # GET TRACK BAR VALUES FOR THRESHOLDS
-    threshold1 = thres[0]
-    threshold2 = thres[1]
-    # threshold1 = 40
-    # threshold2 = 40
+    # threshold1 = thres[0]
+    # threshold2 = thres[1]
+    threshold1 = 40
+    threshold2 = 40
     imgThreshold = cv2.Canny(
         imgBlur, threshold1, threshold2)  # APPLY CANNY BLUR
-    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
+    # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
+    kernel = None
     imgDial = cv2.dilate(imgThreshold, kernel, iterations=2)  # APPLY DILATION
     imgThreshold = cv2.erode(imgDial, kernel, iterations=1)  # APPLY EROSION
     # !SECTION
@@ -84,14 +86,23 @@ while True:
     # else:
     #     cv2.drawContours(imgContours, contours, -1, borderColor,
     #                      3)  # DRAW ALL DETECTED CONTOURS
-    cv2.drawContours(imgContours, contours, -1, borderColor,
-                     2)  # DRAW ALL DETECTED CONTOURS
+    # cv2.drawContours(imgContours, contours, -1, borderColor,
+    #                  2)  # DRAW ALL DETECTED CONTOURS
 
     # FIND THE BIGGEST COUNTOUR
-    accuracy = thres[2]/1000
-    # accuracy = 0.02
+    # accuracy = thres[2]/1000
+    accuracy = 20 / 1000
+    # area = thres[3]
+    area = 4000
     biggest, maxArea = utlis.biggestContour(
-        contours, accuracy, thres[3])  # FIND THE BIGGEST CONTOUR
+        contours, accuracy, area)  # FIND THE BIGGEST CONTOUR
+
+    cnts = cv2.findContours(imgThreshold.copy(), cv2.RETR_EXTERNAL,
+                            cv2.CHAIN_APPROX_SIMPLE)
+    cnts = imutils.grab_contours(cnts)
+    if len(cnts) != 0 and cv2.contourArea:
+        c = max(cnts, key=cv2.contourArea)
+        cv2.drawContours(imgContours, [c], -1, (0, 255, 255), 2)
 
     if len(oldBiggest) == 0:
         oldBiggest = biggest
@@ -102,11 +113,9 @@ while True:
     biggestChanged = np.mean(a != b)
 
     # BLUE BORDER WHICH WRAPS UP SMALL BORDERS
-    hull = utlis.findHulls(contours)
+    hull = utlis.findHulls(biggest)
     for i in range(len(hull)):
         cv2.drawContours(imgContours, hull, i, (255, 0, 0), 1, 8)
-        bigHull, maxHulArea = utlis.biggestContour(
-            hull, accuracy, thres[3])  # FIND THE BIGGEST CONTOUR
     #!SECTION
 
     # SECTION evaluate contours and draw biggest + flip image into perspective
@@ -190,3 +199,5 @@ while True:
         cv2.waitKey(300)
         count += 1
         print("image saved")
+
+    # sleep(0.25)
