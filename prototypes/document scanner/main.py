@@ -22,6 +22,7 @@ import numpy as np
 import utlis
 import imutils
 from time import sleep
+from threading import Thread
 
 ########################################################################
 webCamFeed = True
@@ -37,8 +38,22 @@ utlis.initializeTrackbars()
 count = 0
 printed = False
 oldBiggest = []
-imgOldContour = oldContour = None
+global contours, imgThreshold
+imgThreshold = None
 
+
+def check():
+    global contours, imgThreshold
+    if imgThreshold is not None:
+        contours, hierarchy = cv2.findContours(
+            imgThreshold, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)  # FIND ALL CONTOURS
+    else:
+        contours = oldBiggest
+    sleep(0.25)
+    check()
+
+
+Thread(target=check).start()
 while True:
 
     # SECTION webcam to open-cv
@@ -50,7 +65,7 @@ while True:
         if success:
             if not printed:  # BOOLEAN WHICH DESCRIBES IF STARTING MESSAGE IS PRINTED OR NOT
                 printed = True
-                print("document scanner running\nTh1:40\nTh2:40\nAcc:20\nArea:4000")
+                print("document scanner running\nTh1:40\nTh2:20\nAcc:20\nArea:4000")
         else:
             print("scanner failed")
     else:
@@ -63,10 +78,10 @@ while True:
     imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     imgBlur = cv2.GaussianBlur(imgGray, (5, 5), 1)  # ADD GAUSSIAN BLUR
     thres = utlis.valTrackbars()  # GET TRACK BAR VALUES FOR THRESHOLDS
-    # threshold1 = thres[0]
-    # threshold2 = thres[1]
-    threshold1 = 40
-    threshold2 = 40
+    threshold1 = thres[0]
+    threshold2 = thres[1]
+    # threshold1 = 40
+    # threshold2 = 20
     imgThreshold = cv2.Canny(
         imgBlur, threshold1, threshold2)  # APPLY CANNY BLUR
     # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
@@ -78,8 +93,7 @@ while True:
     # SECTION find all contours + draw them
     imgContours = img.copy()  # COPY IMAGE FOR DISPLAY PURPOSES
     imgBigContour = img.copy()  # COPY IMAGE FOR DISPLAY PURPOSES
-    contours, hierarchy = cv2.findContours(
-        imgThreshold, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)  # FIND ALL CONTOURS
+
     # if len(contours) >= 5:  # IF LESS THEN 5 CONTOURS WERE FOUND THE CODE THREW ERROR
     #     cnt = contours[4]  # ONLY CONTOURS WITH 4 POINTS
     #     cv2.drawContours(img, [cnt], 0, borderColor, 3)
@@ -90,10 +104,10 @@ while True:
     #                  2)  # DRAW ALL DETECTED CONTOURS
 
     # FIND THE BIGGEST COUNTOUR
-    # accuracy = thres[2]/1000
-    accuracy = 20 / 1000
-    # area = thres[3]
-    area = 4000
+    accuracy = thres[2]/1000
+    # accuracy = 20 / 1000
+    area = thres[3]
+    # area = 4000
     biggest, maxArea = utlis.biggestContour(
         contours, accuracy, area)  # FIND THE BIGGEST CONTOUR
 
@@ -119,38 +133,9 @@ while True:
     #!SECTION
 
     # SECTION evaluate contours and draw biggest + flip image into perspective
-    if biggest.size != 0 and (biggestChanged >= 0.5 or biggestChanged is None):
+    if biggest.size != 0 and (biggestChanged >= 0.5 or biggestChanged is None) and biggest.tolist() != oldBiggest.tolist():
         biggest = utlis.reorder(biggest)
         oldBiggest = biggest
-        # cv2.drawContours(imgBigContour, biggest, -1,
-        #                  (0, 255, 0), 10)  # DRAW CIRCLES
-        # DRAW THE BIGGEST CONTOUR
-        imgBigContour = utlis.drawRectangle(
-            imgBigContour, biggest, borderColor, 2)
-        imgOldContour = imgBigContour
-        pts1 = np.float32(biggest)  # PREPARE POINTS FOR WARP
-        pts2 = np.float32([[0, 0], [widthImg, 0], [0, heightImg], [
-                          widthImg, heightImg]])  # PREPARE POINTS FOR WARP
-        matrix = cv2.getPerspectiveTransform(pts1, pts2)
-        imgWarpColored = cv2.warpPerspective(
-            img, matrix, (widthImg, heightImg))
-
-        # REMOVE 20 PIXELS FORM EACH SIDE
-        imgWarpColored = imgWarpColored[20:imgWarpColored.shape[0] -
-                                        20, 20:imgWarpColored.shape[1] - 20]
-        imgWarpColored = cv2.resize(imgWarpColored, (widthImg, heightImg))
-
-        # APPLY ADAPTIVE THRESHOLD
-        imgWarpGray = cv2.cvtColor(imgWarpColored, cv2.COLOR_BGR2GRAY)
-        imgAdaptiveThre = cv2.adaptiveThreshold(imgWarpGray, 255, 1, 1, 7, 2)
-        imgAdaptiveThre = cv2.bitwise_not(imgAdaptiveThre)
-        imgAdaptiveThre = cv2.medianBlur(imgAdaptiveThre, 3)
-
-        # Image Array for Display
-        # imageArray = ([img, imgGray, imgThreshold, imgContours],
-        #               [imgBigContour, imgWarpColored, imgWarpGray, imgAdaptiveThre])
-        imageArray = ([imgThreshold, imgContours],
-                      [imgBigContour, imgWarpColored])
 
     else:
         # imageArray = ([img, imgGray, imgThreshold, imgContours],
@@ -163,17 +148,37 @@ while True:
                                  [[margin, height]], [[width, height]]])
 
         if biggest.size == 0 and oldBiggest.tolist() != windowPoints.tolist():
-            oldBiggest = windowPoints
-            imgOldContour = utlis.drawRectangle(
-                imgBigContour, windowPoints, borderColor, 2)
-        else:
-            if biggestChanged < 0.5:
-                # DRAW THE BIGGEST CONTOUR
-                imgOldContour = utlis.drawRectangle(
-                    imgBigContour, oldBiggest, borderColor, 2)
+            oldBiggest = biggest = windowPoints
 
-        imageArray = ([imgThreshold, imgContours],
-                      [imgOldContour, imgBlank])
+    # cv2.drawContours(imgBigContour, biggest, -1,
+    #                  (0, 255, 0), 10)  # DRAW CIRCLES
+    # DRAW THE BIGGEST CONTOUR
+    imgBigContour = utlis.drawRectangle(
+        imgBigContour, oldBiggest, borderColor, 2)
+
+    pts1 = np.float32(oldBiggest)  # PREPARE POINTS FOR WARP
+    pts2 = np.float32([[0, 0], [widthImg, 0], [0, heightImg], [
+        widthImg, heightImg]])  # PREPARE POINTS FOR WARP
+    matrix = cv2.getPerspectiveTransform(pts1, pts2)
+    imgWarpColored = cv2.warpPerspective(
+        img, matrix, (widthImg, heightImg))
+
+    # REMOVE 20 PIXELS FORM EACH SIDE
+    imgWarpColored = imgWarpColored[20:imgWarpColored.shape[0] -
+                                    20, 20:imgWarpColored.shape[1] - 20]
+    imgWarpColored = cv2.resize(imgWarpColored, (widthImg, heightImg))
+
+    # APPLY ADAPTIVE THRESHOLD
+    imgWarpGray = cv2.cvtColor(imgWarpColored, cv2.COLOR_BGR2GRAY)
+    imgAdaptiveThre = cv2.adaptiveThreshold(imgWarpGray, 255, 1, 1, 7, 2)
+    imgAdaptiveThre = cv2.bitwise_not(imgAdaptiveThre)
+    imgAdaptiveThre = cv2.medianBlur(imgAdaptiveThre, 3)
+
+    # Image Array for Display
+    # imageArray = ([img, imgGray, imgThreshold, imgContours],
+    #               [imgBigContour, imgWarpColored, imgWarpGray, imgAdaptiveThre])
+    imageArray = ([imgThreshold, imgContours],
+                  [imgBigContour, imgWarpColored])
 
     # !SECTION
 
