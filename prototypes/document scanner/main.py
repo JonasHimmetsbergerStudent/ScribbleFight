@@ -1,20 +1,27 @@
+
+
 # TODO
 # ✓    ROUND EDGE DETECTION?
-# FIXME CONOUR LASSEN; HINTERGRUND ZEICHNEN
+# ✓    CONOUR LASSEN; HINTERGRUND ZEICHNEN
+# ✓    IF NO MAYOR CHANGES DONE THEN IGNORE https://stackoverflow.com/questions/6709693/calculating-the-similarity-of-two-lists
+# ✓        TIME DIALATION
+# ✓        Threading
+# ✗    create a mask beforehand and then add the square? https://www.programmersought.com/article/77214543444/
+#   works good without it as well and i am too incompetent to do it
+#   https://newbedev.com/get-area-within-contours-opencv-python
+# ✗ IGNORE TOUCHING EDGES? https://stackoverflow.com/questions/40615515/how-to-ignore-remove-contours-that-touch-the-image-boundaries/40620226
+#   why should i do this?
+#       detect shapes with intersections
+#           https://stackoverflow.com/questions/66977282/python-opencv-detect-shapes-with-intersections
+#           https://stackoverflow.com/questions/65391880/how-to-detect-intersecting-shapes-with-opencv-findcontours
 # ANIMATION OF BOUNDS
-# IF NO MAYOR CHANGES DONE THEN IGNORE https://stackoverflow.com/questions/6709693/calculating-the-similarity-of-two-lists
-#   TIME DIALATION
-# create a mask beforehand and then add the square? https://pmcg2k15.wordpress.com/2015/09/14/ball-tracking-with-opencv/
-#   ERRODE
-#   DILATE
-# IGNORE TOUCHING EDGES? https://stackoverflow.com/questions/40615515/how-to-ignore-remove-contours-that-touch-the-image-boundaries/40620226
-#   detect shapes with intersections
-#       https://stackoverflow.com/questions/66977282/python-opencv-detect-shapes-with-intersections
-#       https://stackoverflow.com/questions/65391880/how-to-detect-intersecting-shapes-with-opencv-findcontours
+#   wie zur hölle macht ma sowas
+#   http://www.windytan.com/2017/12/animated-line-drawings-with-opencv.html
+
+
 # STREAM TO WEBPAGE
 # Fürn schriftlichen teil:
 # https://stackoverflow.com/questions/8830619/difference-between-cv-retr-list-cv-retr-tree-cv-retr-external
-# ERASE errors
 
 
 import cv2
@@ -44,13 +51,14 @@ imgThreshold = None
 
 def check():
     global contours, imgThreshold
-    if imgThreshold is not None:
-        contours, hierarchy = cv2.findContours(
-            imgThreshold, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)  # FIND ALL CONTOURS
-    else:
-        contours = oldBiggest
-    sleep(0.25)
-    check()
+    while True:
+        if imgThreshold is not None:
+            # ✓ FIXED RecursionError: maximum recursion depth exceeded while calling a Python object
+            contours, hierarchy = cv2.findContours(
+                imgThreshold, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)  # FIND ALL CONTOURS
+        else:
+            contours = oldBiggest
+        sleep(0.25)
 
 
 Thread(target=check).start()
@@ -94,6 +102,25 @@ while True:
     imgContours = img.copy()  # COPY IMAGE FOR DISPLAY PURPOSES
     imgBigContour = img.copy()  # COPY IMAGE FOR DISPLAY PURPOSES
 
+    ''' FILL AREA WITHIN CONTOURS
+    # SECTION fill area within contours
+    thresh = cv2.threshold(
+        imgGray, threshold1, threshold2, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+
+    # Close contour
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 7))
+    imgContours = cv2.morphologyEx(
+        thresh, cv2.MORPH_CLOSE, kernel, iterations=1)
+
+    # Find outer contour and fill with white
+    cnts = cv2.findContours(
+        imgContours, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+    cv2.fillPoly(imgContours, cnts, [255, 255, 255])
+    # !SECTION
+    '''
+
+    ''' DRAW ALL CONOURS
     # if len(contours) >= 5:  # IF LESS THEN 5 CONTOURS WERE FOUND THE CODE THREW ERROR
     #     cnt = contours[4]  # ONLY CONTOURS WITH 4 POINTS
     #     cv2.drawContours(img, [cnt], 0, borderColor, 3)
@@ -102,6 +129,7 @@ while True:
     #                      3)  # DRAW ALL DETECTED CONTOURS
     # cv2.drawContours(imgContours, contours, -1, borderColor,
     #                  2)  # DRAW ALL DETECTED CONTOURS
+    '''
 
     # FIND THE BIGGEST COUNTOUR
     accuracy = thres[2]/1000
@@ -111,25 +139,31 @@ while True:
     biggest, maxArea = utlis.biggestContour(
         contours, accuracy, area)  # FIND THE BIGGEST CONTOUR
 
+    # SECTION draw enclosing yellow border
     cnts = cv2.findContours(imgThreshold.copy(), cv2.RETR_EXTERNAL,
                             cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
     if len(cnts) != 0 and cv2.contourArea:
         c = max(cnts, key=cv2.contourArea)
         cv2.drawContours(imgContours, [c], -1, (0, 255, 255), 2)
+    # !SECTION
 
     if len(oldBiggest) == 0:
         oldBiggest = biggest
 
+    # CALCULATE PERCENTAGE DIFFERENCE BETWEEN NEW AND OLD CONOURS
     a = np.array(biggest)
     b = np.array(oldBiggest)
     # RAISES NAN ERRORS THAT CAN BE IGNORED (CAN!!!)
     biggestChanged = np.mean(a != b)
 
-    # BLUE BORDER WHICH WRAPS UP SMALL BORDERS
+    ''' 
+    # BLUE HULL WHICH WRAPS UP SMALL BORDERS
     hull = utlis.findHulls(biggest)
     for i in range(len(hull)):
         cv2.drawContours(imgContours, hull, i, (255, 0, 0), 1, 8)
+    '''
+
     #!SECTION
 
     # SECTION evaluate contours and draw biggest + flip image into perspective
@@ -139,7 +173,7 @@ while True:
 
     else:
         # imageArray = ([img, imgGray, imgThreshold, imgContours],
-        #               [imgBlank, imgBlank, imgBlank, imgBlank])
+        #               [imgBlank, imgBlank, imgBlank, imgBlank]) # FULL IMAGE ARRAY THAT CAN BE DISPLAYED
         margin = 10
         height, width, chanel = img.shape
         width -= margin
@@ -165,7 +199,7 @@ while True:
 
     # REMOVE 20 PIXELS FORM EACH SIDE
     imgWarpColored = imgWarpColored[20:imgWarpColored.shape[0] -
-                                    20, 20:imgWarpColored.shape[1] - 20]
+                                    20, 20: imgWarpColored.shape[1] - 20]
     imgWarpColored = cv2.resize(imgWarpColored, (widthImg, heightImg))
 
     # APPLY ADAPTIVE THRESHOLD
