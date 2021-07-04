@@ -1,9 +1,12 @@
+
+
 //Objects
 var sprite;
 var collider;
 var testSprite;
 var started;
 var pixels = [];
+var lines;
 
 //Forces
 var GRAVITY = -1;
@@ -16,7 +19,9 @@ function setup() {
   sprite = createSprite(400, 200, 50, 50);
   sprite.setCollider("rectangle", 0, 0, 40, 40);
   sprite.addAnimation("normal", "../assets/amogus.png");
+  lines = createSprite(1200,500,500,500);
   collider = createSprite(400, 500, 200, 200);
+  lines.debug = true;
  
   collider.debug = true;
 
@@ -33,9 +38,14 @@ function setup() {
     started = true;
   });
 
+  loadImage('../assets/lines.png', img => {
+    img.resize(1200, 0);
+    lines.addImage(img);
+  
+  });
+
   for (let index = 0; index < 300; index++) {
     pixels[index] = index;
-    
   }
 
 
@@ -55,7 +65,16 @@ function draw() {
       }
     }
 
-    pixels.forEach(index => {
+    if (lines.overlapPixel(sprite.position.x, sprite.position.y)) {
+      sprite.velocity.y = 0;
+      while (lines.overlapPixel(sprite.position.x, sprite.position.y)) {
+        sprite.position.y--;
+      }
+    }
+
+   
+
+    /*pixels.forEach(index => {
       if(sprite.overlapPoint(index,200)) {
         sprite.velocity.y = 0;
         while(sprite.overlapPoint(index,200)) {
@@ -68,8 +87,9 @@ function draw() {
           
         }
       }
-    });
+    }); */
 
+   
    
     
 
