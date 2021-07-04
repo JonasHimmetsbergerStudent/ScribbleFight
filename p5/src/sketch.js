@@ -3,6 +3,7 @@ var sprite;
 var collider;
 var testSprite;
 var started;
+var pixels = [];
 
 //Forces
 var GRAVITY = -1;
@@ -16,9 +17,9 @@ function setup() {
   sprite.setCollider("rectangle", 0, 0, 40, 40);
   sprite.addAnimation("normal", "../assets/amogus.png");
   collider = createSprite(400, 500, 200, 200);
-  testSprite = createSprite(350, 200, 50, 50);
+ 
   collider.debug = true;
-  testSprite.debug = true;
+
   sprite.debug = true;
   loadImage('../assets/amogus.png', img => {
     img.resize(50, 0);
@@ -31,6 +32,11 @@ function setup() {
     collider.addImage(img);
     started = true;
   });
+
+  for (let index = 0; index < 300; index++) {
+    pixels[index] = index;
+    
+  }
 
 
 
@@ -49,12 +55,30 @@ function draw() {
       }
     }
 
-    if (sprite.collide(testSprite)) {
+    pixels.forEach(index => {
+      if(sprite.overlapPoint(index,200)) {
+        sprite.velocity.y = 0;
+        while(sprite.overlapPoint(index,200)) {
+          if(sprite.position.y < 200) {
+            sprite.position.y--;
+          }
+          if(sprite.position.y > 200) {
+            sprite.position.y++;
+          }
+          
+        }
+      }
+    });
+
+   
+    
+
+    /*if (sprite.collide(testSprite)) {
       if (sprite.touching.left) {
         console.log("hallo");
       }
       sprite.velocity.y = 0;
-    }
+    } */
 
     // Controls
     //Spacebar
