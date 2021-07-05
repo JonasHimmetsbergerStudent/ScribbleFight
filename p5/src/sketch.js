@@ -1,3 +1,5 @@
+
+
 //Objects
 var sprite;
 var collider;
@@ -9,6 +11,7 @@ var pixels = [];
 var lines;
 var big_lines;
 var curved_line;
+var dummy = [];
 
 //Forces
 var GRAVITY = -1;
@@ -40,7 +43,9 @@ function setup() {
     started2 = true;
   });
 
-
+for (let i = 0; i < 1000; i++) {
+  dummy[i] = createSprite(i,i,5,5);
+}
 
 
   loadImage('../assets/platform.png', img => {
@@ -65,12 +70,6 @@ function setup() {
     big_lines.addImage(img);
 
   }); */
-
-  for (let index = 0; index < 300; index++) {
-    pixels[index] = index;
-  }
-
-
 
 }
 
@@ -154,6 +153,13 @@ function draw() {
         console.log("hallo");
       }
       sprite.velocity.y = 0;
+    }
+
+    for (let i = 0; i < dummy.length; i++) {
+      if(sprite.collide(dummy[i])) {
+        sprite.velocity.y = 0;
+      }
+      
     }
 
     // Controls
