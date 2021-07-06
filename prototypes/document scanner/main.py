@@ -49,11 +49,12 @@ global contours, imgThreshold
 imgThreshold = None
 
 
-def check():
+def check():  # CHANGE 84-215 in Thread verlagern, global: imgX
+    # CHANGE wenn verlagert, dann brauch ich contours nicht mehr global machen
     global contours, imgThreshold
     while True:
         if imgThreshold is not None:
-            # ✓ FIXED RecursionError: maximum recursion depth exceeded while calling a Python object
+            # ✓ FIXED WITH WHILE LOOP: RecursionError: maximum recursion depth exceeded while calling a Python object
             contours, hierarchy = cv2.findContours(
                 imgThreshold, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)  # FIND ALL CONTOURS
         else:
@@ -61,7 +62,7 @@ def check():
         sleep(0.25)
 
 
-Thread(target=check).start()
+Thread(target=check).start()  # START THREAD
 while True:
 
     # SECTION webcam to open-cv
@@ -79,6 +80,7 @@ while True:
     else:
         img = cv2.imread(pathImage)
         print("scanner failed")
+
     img = cv2.resize(img, (widthImg, heightImg))  # RESIZE IMAGE
     # CREATE A BLANK IMAGE FOR TESTING DEBUGING IF REQUIRED
     imgBlank = np.zeros((heightImg, widthImg, 3), np.uint8)

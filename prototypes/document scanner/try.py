@@ -1,4 +1,4 @@
-from time import sleep
+'''from time import sleep
 import imutils
 import utlis
 import numpy as np
@@ -24,3 +24,15 @@ class Smth:
 
 
 Smth(1).start()
+'''
+
+from PIL import Image
+import sys
+import numpy as np
+np.set_printoptions(threshold=sys.maxsize)
+
+i = Image.open('Unbenannt_map.png')
+iar = np.asarray(i).tolist()
+
+with open('readme.txt', 'w') as f:
+    f.writelines(repr(iar))
