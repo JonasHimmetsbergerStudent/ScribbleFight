@@ -1,13 +1,13 @@
-
-
 //Objects
 var sprite;
 var collider;
 var box1;
 var started = false;
-var started1 = false;
-var started2 = false;
-var pixels_clumps = [];
+var sprite_pixels = [];
+
+
+//Variables
+var bg;
 
 //Forces
 var GRAVITY = -1;
@@ -15,14 +15,14 @@ var JUMP = 15;
 var SPEED = 5;
 var HIT_DURATION = 40;
 var hit = false;
+var player_direction;
 
 function setup() {
-  createCanvas(1920, 1080);
+ 
+  createCanvas(windowWidth, windowHeight);
   background(51);
   sprite = createSprite(400, 200, 50, 50);
-  box1 = createSprite(300, 200, 50, 50);
-  box1.setCollider("rectangle", 0, 0, 50, 50);
-  box2 = createSprite(400, 100, 50, 50);
+  //box1 = createSprite(400, 400, 50, 50);
   sprite.setCollider("rectangle", 0, 0, 35, 45);
   sprite.addAnimation("normal", "../assets/amogus.png");
   collider = createSprite(400, 500, 200, 200);
@@ -33,12 +33,23 @@ function setup() {
   loadImage('../assets/amogus.png', img => {
     img.resize(50, 0);
     sprite.addImage(img);
-    started2 = true;
   });
 
-for (let i = 0; i < 500; i++) {
-  pixels_clumps[i] = createSprite(i,i,5,5);
-}
+  //bg = loadImage('../assets/smiley_bg.png');
+ // bg.resize(10,10);
+
+ //initialising the pixel sprites for the playing environment
+  for (let i = 0; i < pixel_clumps.length; i++) {
+    sprite_pixels[i] = [];
+    for (let j = 0; j <pixel_clumps[0].length; j++) {
+      if(pixel_clumps[i][j][3]>10) {
+        sprite_pixels[i][j] = createSprite(j*20,i*20,8,8);
+      }
+    }
+     
+  }
+
+
 
 
   loadImage('../assets/platform.png', img => {
@@ -49,6 +60,7 @@ for (let i = 0; i < 500; i++) {
 }
 
 function draw() {
+  background(255,255,255);
   if (started) {
     //Hitbox change on attack
     if (hit) {
@@ -63,34 +75,18 @@ function draw() {
     }
     sprite.velocity.y -= GRAVITY;
     sprite.velocity.x = 0;
-    background(255, 255, 255);
 
-    if (collider.overlapPixel(sprite.position.x, sprite.position.y + 20)) {
-      sprite.velocity.y = 0;
-    }
-    while (collider.overlapPixel(sprite.position.x, sprite.position.y + 20)) {
-      sprite.position.y--;
-    }
 
-    if (sprite.collide(box1)) {
-      if (sprite.touching.left) {
-        console.log("hallo");
+
+    for (let i = 0; i < 33; i++) {
+      for (let j = 0; j <57; j++) {
+        if(sprite_pixels[i][j]!==undefined) {
+          if(sprite.collide(sprite_pixels[i][j])) {
+            sprite.velocity.y = 0;
+          }
+        }
       }
-      sprite.velocity.y = 0;
-    }
-
-    if (sprite.collide(box2)) {
-      if (sprite.touching.left) {
-        console.log("hallo");
-      }
-      sprite.velocity.y = 0;
-    }
-
-    for (let i = 0; i < pixels_clumps.length; i++) {
-      if(sprite.collide(pixels_clumps[i])) {
-        sprite.velocity.y = 0;
-      }
-      
+       
     }
 
     // Controls
@@ -108,13 +104,13 @@ function draw() {
       sprite.velocity.x = SPEED;
     }
     //S
-    if (keyIsDown(83)) {
-      sprite.velocity.y -= GRAVITY;
-    }
+   // if (keyIsDown(83)) {
+    //  sprite.velocity.y -= GRAVITY;
+    //}
     //attack
     if (mouseIsPressed) {
       if (mouseButton === LEFT) {
-        if (sprite.mirrorX() === -1) {
+        if (player_direction == "left") {
           sprite.setCollider("rectangle", -7, 0, 40, 45);
         } else {
           sprite.setCollider("rectangle", 7, 0, 40, 45);
@@ -133,11 +129,13 @@ function mirrorSprite() {
   if (keyWentDown(65)) {
     if (sprite.mirrorX() === 1) {
       sprite.mirrorX(sprite.mirrorX() * -1);
+      player_direction = "left";
     }
   }
   if (keyWentDown(68)) {
     if (sprite.mirrorX() === -1) {
       sprite.mirrorX(sprite.mirrorX() * -1);
+      player_direction = "right";
     }
   }
 }
