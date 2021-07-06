@@ -7,11 +7,7 @@ var box1;
 var started = false;
 var started1 = false;
 var started2 = false;
-var pixels = [];
-var lines;
-var big_lines;
-var curved_line;
-var dummy = [];
+var pixels_clumps = [];
 
 //Forces
 var GRAVITY = -1;
@@ -29,10 +25,7 @@ function setup() {
   box2 = createSprite(400, 100, 50, 50);
   sprite.setCollider("rectangle", 0, 0, 35, 45);
   sprite.addAnimation("normal", "../assets/amogus.png");
-  lines = createSprite(1200, 200, 500, 500);
-  curved_line = createSprite(500, 200, 300, 300);
   collider = createSprite(400, 500, 200, 200);
-  lines.debug = true;
   sprite.debug = true;
   collider.debug = true;
 
@@ -43,8 +36,8 @@ function setup() {
     started2 = true;
   });
 
-for (let i = 0; i < 1000; i++) {
-  dummy[i] = createSprite(i,i,5,5);
+for (let i = 0; i < 500; i++) {
+  pixels_clumps[i] = createSprite(i,i,5,5);
 }
 
 
@@ -53,28 +46,10 @@ for (let i = 0; i < 1000; i++) {
     collider.addImage(img);
     started = true;
   });
-
-  /* loadImage('../assets/lines.png', img => {
-     img.resize(1200, 0);
-     lines.addImage(img);
-   }); */
-  loadImage('../assets/curved_line.png', img => {
-    img.resize(200, 0);
-    curved_line.addImage(img);
-    started1 = true;
-  });
-
-
-  /*loadImage('../assets/big_lines.png', img => {
-    img.resize(700, 0);
-    big_lines.addImage(img);
-
-  }); */
-
 }
 
 function draw() {
-  if (started && started1 && started2) {
+  if (started) {
     //Hitbox change on attack
     if (hit) {
       HIT_DURATION--;
@@ -97,50 +72,6 @@ function draw() {
       sprite.position.y--;
     }
 
-    /* if (curved_line.overlapPixel(sprite.position.x, sprite.position.y + (sprite.height / 2))) {
-       sprite.velocity.y -= GRAVITY;
-     }
- 
-     while (curved_line.overlapPixel(sprite.position.x, sprite.position.y + (sprite.height / 2))
-       || curved_line.overlapPixel(sprite.position.x, sprite.position.y - (sprite.height / 2))) {
-       sprite.velocity.y = 0;
-       if (sprite.previousPosition.y < sprite.position.y) {
-         console.log("moin");
-         sprite.position.y--;
-       } else if (sprite.previousPosition.y > sprite.position.y) {
-         console.log("hi");
-         sprite.position.y++;
-       } else if(sprite.previousPosition.y == sprite.position.y) {
-         sprite.position.x += 50 ;
-         sprite.position.y+=50;
-       } 
-       
- 
-     } */
-
-
-
-
-
-    /* pixels.forEach(index => {
-       if(sprite.overlapPoint(index,200)) {
-         sprite.velocity.y = 0;
-         while(sprite.overlapPoint(index,200)) {
-           if(sprite.position.y < 200) {
-             sprite.position.y--;
-           }
-           if(sprite.position.y > 200) {
-             sprite.position.y++;
-           }
-           
-         }
-       }
-     }); */
-
-
-
-
-
     if (sprite.collide(box1)) {
       if (sprite.touching.left) {
         console.log("hallo");
@@ -155,8 +86,8 @@ function draw() {
       sprite.velocity.y = 0;
     }
 
-    for (let i = 0; i < dummy.length; i++) {
-      if(sprite.collide(dummy[i])) {
+    for (let i = 0; i < pixels_clumps.length; i++) {
+      if(sprite.collide(pixels_clumps[i])) {
         sprite.velocity.y = 0;
       }
       
