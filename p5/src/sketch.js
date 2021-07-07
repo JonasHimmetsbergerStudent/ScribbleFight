@@ -6,7 +6,11 @@ var sprite_pixels = [];
 
 //Variables
 var bg;
+var player_height = 75;
+var player_width = 75;
 var JUMP_COUNT = 0;
+var same_x_counter = 1;
+var MAX_JUMP = 3;
 
 //Forces
 var GRAVITY = -1;
@@ -18,31 +22,53 @@ var player_direction;
 
 function setup() {
 
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(1429, 830);
   background(51);
-  sprite = createSprite(500, 200, 50, 50);
+  sprite = createSprite(500, 200, player_width, player_height);
   //box1 = createSprite(400, 400, 50, 50);
-  sprite.setCollider("rectangle", 0, 0, 35, 45);
+  sprite.setCollider("rectangle", 0, 0, 60, 75);
   sprite.addAnimation("normal", "../assets/amogus.png");
   sprite.debug = true;
   loadImage('../assets/amogus.png', img => {
-    img.resize(50, 0);
+    img.resize(100, 0);
     sprite.addImage(img);
     //initialising the pixel sprites for the playing environment
+    /*  for (let i = 0; i < pixel_clumps.length; i++) {
+        sprite_pixels[i] = [];
+        for (let j = 0; j < pixel_clumps[0].length; j++) {
+          if (pixel_clumps[i][j][3] > 0) {
+            if(sprite_pixels[i][j-1]!==undefined) {
+              same_x_counter++;
+              sprite_pixels[i][j] = createSprite(j -  , i * 20, 7 * same_x_counter, 7);
+              console.log(same_x_counter);
+            } else {
+              same_x_counter = 1;
+              sprite_pixels[i][j] = createSprite(j * 20, i * 20, 7, 7);
+            }
+            sprite_pixels[i][j].immovable = true;
+          }
+        }
+      } */
+
+    console.log(sprite_pixels);
+
+
+
     for (let i = 0; i < pixel_clumps.length; i++) {
       sprite_pixels[i] = [];
       for (let j = 0; j < pixel_clumps[0].length; j++) {
         if (pixel_clumps[i][j][3] > 0) {
-          sprite_pixels[i][j] = createSprite(j * 20, i * 20, 7, 7);
+          sprite_pixels[i][j] = createSprite(j * 25, i * 25, 5, 5);
           sprite_pixels[i][j].immovable = true;
+          sprite_pixels[i][j].visible = false;
         }
       }
     }
+
     started2 = true;
   });
 
-  loadImage('../assets/smiley_bg.png',img=> {
-    img.resize(windowWidth,windowHeight);
+  loadImage('../assets/smiley_bg.png', img => {
     bg = img;
     started = true;
   })
@@ -57,7 +83,7 @@ function draw() {
       HIT_DURATION--;
       if (HIT_DURATION == 0) {
         // reset hitbox
-        sprite.setCollider("rectangle", 0, 0, 35, 45);
+        sprite.setCollider("rectangle", 0, 0, 60, 75);
         HIT_DURATION = 40;
         hit = false;
       }
@@ -76,7 +102,7 @@ function draw() {
             }
             sprite.velocity.y = 0;
           }
-          
+
         }
       }
 
@@ -85,7 +111,7 @@ function draw() {
     // Controls
     //Spacebar
     if (keyWentDown(32)) {
-      if (!(JUMP_COUNT > 1)) {
+      if (!(JUMP_COUNT >= MAX_JUMP)) {
         sprite.velocity.y = -JUMP;
         JUMP_COUNT++;
       }
@@ -103,8 +129,7 @@ function draw() {
     // if (keyIsDown(83)) {
     //  sprite.velocity.y -= GRAVITY;
     //}
-    //attack
-   
+
     mirrorSprite();
     drawSprites();
   }
@@ -114,7 +139,7 @@ function mirrorSprite() {
   if (keyWentDown(65)) {
     if (sprite.mirrorX() === 1) {
       //hitbox should also switch directions during attack
-      if(hit) {
+      if (hit) {
         sprite.setCollider("rectangle", -10, 0, 55, 45);
       }
       sprite.mirrorX(sprite.mirrorX() * -1);
@@ -123,8 +148,8 @@ function mirrorSprite() {
   }
   if (keyWentDown(68)) {
     if (sprite.mirrorX() === -1) {
-      if(hit) {
-         //hitbox should also switch directions during attack
+      if (hit) {
+        //hitbox should also switch directions during attack
         sprite.setCollider("rectangle", 10, 0, 55, 45);
       }
       sprite.mirrorX(sprite.mirrorX() * -1);
@@ -133,12 +158,12 @@ function mirrorSprite() {
   }
 }
 
-
+//attack
 function mouseClicked() {
   if (player_direction == "left") {
-    sprite.setCollider("rectangle", -10, 0, 55, 45);
+    sprite.setCollider("rectangle", -10, 0, 80, 75);
   } else {
-    sprite.setCollider("rectangle", 10, 0, 55, 45);
+    sprite.setCollider("rectangle", 10, 0, 80, 75);
   }
   hit = true;
 }
