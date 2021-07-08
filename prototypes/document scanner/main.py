@@ -133,9 +133,9 @@ while True:
 
     special_contours = cv2.findContours(image_contours, cv2.RETR_LIST,
                                         cv2.CHAIN_APPROX_SIMPLE)[0]
-
-    cv2.drawContours(image_binary, [max(special_contours, key=cv2.contourArea, default=0)],
-                     -1, (255, 255, 255), -1)
+    if len(special_contours) > 0:
+        cv2.drawContours(image_binary, [max(special_contours, key=cv2.contourArea, default=0)],
+                         -1, (255, 255, 255), -1)
 
     imgGray = image_binary
 
