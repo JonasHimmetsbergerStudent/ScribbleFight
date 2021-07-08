@@ -28,8 +28,10 @@ import cv2
 import numpy as np
 import utlis
 import imutils
+import math
 from time import sleep
 from threading import Thread
+
 
 ########################################################################
 webCamFeed = True
@@ -94,10 +96,54 @@ while True:
     # threshold2 = 20
     imgThreshold = cv2.Canny(
         imgBlur, threshold1, threshold2)  # APPLY CANNY BLUR
-    # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
-    kernel = None
-    imgDial = cv2.dilate(imgThreshold, kernel, iterations=2)  # APPLY DILATION
-    imgThreshold = cv2.erode(imgDial, kernel, iterations=1)  # APPLY EROSION
+
+    ''' DRAW STRONG LINES
+    lines = cv2.HoughLines(imgThreshold, 1, np.pi / 180, 150, None, 0, 0)
+
+    if lines is not None:
+        for i in range(0, len(lines)):
+            rho = lines[i][0][0]
+            theta = lines[i][0][1]
+            a = math.cos(theta)
+            b = math.sin(theta)
+            x0 = a * rho
+            y0 = b * rho
+            pt1 = (int(x0 + 1000*(-b)), int(y0 + 1000*(a)))
+            pt2 = (int(x0 - 1000*(-b)), int(y0 - 1000*(a)))
+            cv2.line(imgGray, pt1, pt2, (0, 0, 255), 3, cv2.LINE_AA)
+
+    linesP = cv2.HoughLinesP(imgThreshold, 1, np.pi / 180, 50, None, 50, 10)
+
+    if linesP is not None:
+        for i in range(0, len(linesP)):
+            l = linesP[i][0]
+            cv2.line(imgGray, (l[0], l[1]), (l[2], l[3]),
+                     (0, 0, 255), 3, cv2.LINE_AA)'''
+
+    image_contours = np.zeros((heightImg, widthImg, 1), np.uint8)
+
+    image_binary = np.zeros((heightImg, widthImg, 1), np.uint8)
+
+    for channel in range(img.shape[2]):
+        ret, image_thresh = cv2.threshold(
+            img[:, :, channel],  200, 200, cv2.THRESH_BINARY)
+        special_contours = cv2.findContours(image_thresh, 1, 1)[0]
+        cv2.drawContours(image_contours, special_contours, -
+                         1, (255, 255, 255), 3)
+
+    special_contours = cv2.findContours(image_contours, cv2.RETR_LIST,
+                                        cv2.CHAIN_APPROX_SIMPLE)[0]
+
+    cv2.drawContours(image_binary, [max(special_contours, key=cv2.contourArea, default=0)],
+                     -1, (255, 255, 255), -1)
+
+    imgGray = image_binary
+
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
+    # kernel = None
+    imgDial = cv2.dilate(imgThreshold, kernel,
+                         iterations=10)  # APPLY DILATION
+    imgThreshold = cv2.erode(imgDial, kernel, iterations=5)  # APPLY EROSION
     # !SECTION
 
     # SECTION find all contours + draw them
@@ -213,7 +259,7 @@ while True:
     # Image Array for Display
     # imageArray = ([img, imgGray, imgThreshold, imgContours],
     #               [imgBigContour, imgWarpColored, imgWarpGray, imgAdaptiveThre])
-    imageArray = ([imgThreshold, imgContours],
+    imageArray = ([imgGray, imgThreshold],
                   [imgBigContour, imgWarpColored])
 
     # !SECTION
@@ -222,7 +268,7 @@ while True:
     # LABELS FOR DISPLAY
     # lables = [["Original", "Gray", "Threshold", "Contours"],
     #           ["Biggest Contour", "Warp Prespective", "Warp Gray", "Adaptive Threshold"]]
-    lables = [["Threshold", "Contours"],
+    lables = [["Gray", "Threshold"],
               ["Biggest Contour", "Warp Prespective"]]
 
     stackedImage = utlis.stackImages(imageArray, 0.75, lables)
