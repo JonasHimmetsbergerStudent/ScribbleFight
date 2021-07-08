@@ -17,6 +17,8 @@
 # ANIMATION OF BOUNDS
 #   wie zur hölle macht ma sowas
 #   http://www.windytan.com/2017/12/animated-line-drawings-with-opencv.html
+#
+# Remove stuff tat is sourrounded with contour  https://www.programmersought.com/article/58794301085/
 
 
 # STREAM TO WEBPAGE
@@ -42,7 +44,6 @@ heightImg = 480
 widthImg = 640
 borderColor = (1, 59, 218)
 ########################################################################
-
 utlis.initializeTrackbars()
 count = 0
 printed = False
@@ -79,9 +80,10 @@ while True:
                 print("document scanner running\nTh1:40\nTh2:20\nAcc:20\nArea:4000")
         else:
             print("scanner failed")
+            continue
     else:
-        img = cv2.imread(pathImage)
-        print("scanner failed")
+        print("scanner failed miserably")
+        continue
 
     img = cv2.resize(img, (widthImg, heightImg))  # RESIZE IMAGE
     # CREATE A BLANK IMAGE FOR TESTING DEBUGING IF REQUIRED
@@ -136,14 +138,16 @@ while True:
     if len(special_contours) > 0:
         cv2.drawContours(image_binary, [max(special_contours, key=cv2.contourArea, default=0)],
                          -1, (255, 255, 255), -1)
+        cv2.drawContours(image_binary, special_contours,
+                         -1, (255, 255, 0), 2)
 
     imgGray = image_binary
 
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
     # kernel = None
     imgDial = cv2.dilate(imgThreshold, kernel,
-                         iterations=10)  # APPLY DILATION
-    imgThreshold = cv2.erode(imgDial, kernel, iterations=5)  # APPLY EROSION
+                         iterations=3)  # APPLY DILATION
+    imgThreshold = cv2.erode(imgDial, kernel, iterations=3)  # APPLY EROSION
     # !SECTION
 
     # SECTION find all contours + draw them
@@ -193,7 +197,8 @@ while True:
     cnts = imutils.grab_contours(cnts)
     if len(cnts) != 0 and cv2.contourArea:
         c = max(cnts, key=cv2.contourArea)
-        cv2.drawContours(imgContours, [c], -1, (0, 255, 255), 2)
+        cv2.drawContours(
+            imgContours, [c], -1, (0, 255, 255), -1)
     # !SECTION
 
     if len(oldBiggest) == 0:
@@ -229,8 +234,11 @@ while True:
         windowPoints = np.array([[[margin, margin]], [[width, margin]],
                                  [[margin, height]], [[width, height]]])
 
-        if biggest.size == 0 and oldBiggest.tolist() != windowPoints.tolist():
-            oldBiggest = biggest = windowPoints
+        if biggest.size == 0 and oldBiggest.size == 0:
+            oldBiggest = windowPoints
+
+        # if biggest.size == 0 and oldBiggest.tolist() != windowPoints.tolist():
+        #     oldBiggest = biggest = windowPoints
 
     # cv2.drawContours(imgBigContour, biggest, -1,
     #                  (0, 255, 0), 10)  # DRAW CIRCLES
@@ -259,7 +267,7 @@ while True:
     # Image Array for Display
     # imageArray = ([img, imgGray, imgThreshold, imgContours],
     #               [imgBigContour, imgWarpColored, imgWarpGray, imgAdaptiveThre])
-    imageArray = ([imgGray, imgThreshold],
+    imageArray = ([imgContours, imgThreshold],
                   [imgBigContour, imgWarpColored])
 
     # !SECTION
