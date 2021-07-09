@@ -12,8 +12,9 @@ var JUMP_COUNT = 0;
 var same_x_counter = 1;
 var MAX_JUMP = 3;
 
+
 //Forces
-var GRAVITY = -1;
+var GRAVITY = -0.8;
 var JUMP = 15;
 var SPEED = 5;
 var HIT_DURATION = 40;
@@ -58,7 +59,7 @@ function setup() {
       sprite_pixels[i] = [];
       for (let j = 0; j < pixel_clumps[0].length; j++) {
         if (pixel_clumps[i][j][3] > 0) {
-          sprite_pixels[i][j] = createSprite(j * 25, i * 25, 5, 5);
+          sprite_pixels[i][j] = createSprite(j * 25, i * 25, 1, 1);
           sprite_pixels[i][j].immovable = true;
           sprite_pixels[i][j].visible = false;
         }
@@ -77,29 +78,17 @@ function setup() {
 
 function draw() {
   if (started && started2) {
-    background(bg);
-    //Hitbox change on attack
-    if (hit) {
-      HIT_DURATION--;
-      if (HIT_DURATION == 0) {
-        // reset hitbox
-        sprite.setCollider("rectangle", 0, 0, 60, 75);
-        HIT_DURATION = 40;
-        hit = false;
-      }
-
-    }
     sprite.velocity.y -= GRAVITY;
     sprite.velocity.x = 0;
+    background(bg);
 
 
     for (let i = 0; i < pixel_clumps.length; i++) {
       for (let j = 0; j < pixel_clumps[0].length; j++) {
         if (sprite_pixels[i][j] !== undefined) {
           if (sprite.collide(sprite_pixels[i][j])) {
-            if (sprite.touching.bottom) {
-              JUMP_COUNT = 0;
-            }
+            console.log("collision");
+            JUMP_COUNT = 0;
             sprite.velocity.y = 0;
           }
 
@@ -108,7 +97,8 @@ function draw() {
 
     }
 
-    // Controls
+  
+  
     //Spacebar
     if (keyWentDown(32)) {
       if (!(JUMP_COUNT >= MAX_JUMP)) {
@@ -129,6 +119,25 @@ function draw() {
     // if (keyIsDown(83)) {
     //  sprite.velocity.y -= GRAVITY;
     //}
+
+    //Hitbox change on attack
+    if (hit) {
+      HIT_DURATION--;
+      if (HIT_DURATION == 0) {
+        // reset hitbox
+        sprite.setCollider("rectangle", 0, 0, 60, 75);
+        HIT_DURATION = 40;
+        hit = false;
+      }
+
+    }
+
+
+
+
+
+    // Controls
+
 
     mirrorSprite();
     drawSprites();
@@ -156,14 +165,17 @@ function mirrorSprite() {
       player_direction = "right";
     }
   }
+  if (keyWentDown(69)) {
+    if (player_direction == "left") {
+      sprite.setCollider("rectangle", -10, 0, 80, 75);
+    } else {
+      sprite.setCollider("rectangle", 10, 0, 80, 75);
+    }
+    hit = true;
+  }
 }
 
 //attack
 function mouseClicked() {
-  if (player_direction == "left") {
-    sprite.setCollider("rectangle", -10, 0, 80, 75);
-  } else {
-    sprite.setCollider("rectangle", 10, 0, 80, 75);
-  }
-  hit = true;
+
 }
