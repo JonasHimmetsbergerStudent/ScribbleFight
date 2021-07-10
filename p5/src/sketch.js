@@ -78,12 +78,13 @@ function setup() {
 
 function draw() {
   if (started && started2) {
-    
-    if(sprite.velocity.y <= 25) {
+    // max speed is 25 
+    if(sprite.velocity.y <= 20) {
       sprite.velocity.y -= GRAVITY;
     }
+
+    console.log(sprite.velocity.y);
       
-      console.log(sprite.velocity.y);
       sprite.velocity.x = 0;
     
 
