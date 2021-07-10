@@ -14,7 +14,7 @@ var MAX_JUMP = 3;
 
 
 //Forces
-var GRAVITY = -0.8;
+var GRAVITY = -1;
 var JUMP = 15;
 var SPEED = 5;
 var HIT_DURATION = 40;
@@ -78,8 +78,15 @@ function setup() {
 
 function draw() {
   if (started && started2) {
-    sprite.velocity.y -= GRAVITY;
-    sprite.velocity.x = 0;
+    
+    if(sprite.velocity.y <= 25) {
+      sprite.velocity.y -= GRAVITY;
+    }
+      
+      console.log(sprite.velocity.y);
+      sprite.velocity.x = 0;
+    
+
     background(bg);
 
 
@@ -87,7 +94,6 @@ function draw() {
       for (let j = 0; j < pixel_clumps[0].length; j++) {
         if (sprite_pixels[i][j] !== undefined) {
           if (sprite.collide(sprite_pixels[i][j])) {
-            console.log("collision");
             JUMP_COUNT = 0;
             sprite.velocity.y = 0;
           }
@@ -97,8 +103,8 @@ function draw() {
 
     }
 
-  
-  
+
+
     //Spacebar
     if (keyWentDown(32)) {
       if (!(JUMP_COUNT >= MAX_JUMP)) {
