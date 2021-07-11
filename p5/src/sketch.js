@@ -34,37 +34,43 @@ function setup() {
     img.resize(100, 0);
     sprite.addImage(img);
     //initialising the pixel sprites for the playing environment
-    /*  for (let i = 0; i < pixel_clumps.length; i++) {
+      for (let i = 0; i < pixel_clumps.length; i++) {
         sprite_pixels[i] = [];
         for (let j = 0; j < pixel_clumps[0].length; j++) {
           if (pixel_clumps[i][j][3] > 0) {
             if(sprite_pixels[i][j-1]!==undefined) {
               same_x_counter++;
-              sprite_pixels[i][j] = createSprite(j -  , i * 20, 7 * same_x_counter, 7);
-              console.log(same_x_counter);
+              if(same_x_counter==2) {
+                sprite_pixels[i][j] = createSprite((j - ((same_x_counter)/2)) * 25      , i * 25, (same_x_counter-1)  *25 , 5);
+
+              } else {
+                sprite_pixels[i][j] = createSprite((j - ((same_x_counter-1)/2)) * 25      , i * 25, 25  *same_x_counter , 5);
+              }
+              sprite_pixels[i][j-1].remove();
+              sprite_pixels[i][j-1] = undefined;
             } else {
               same_x_counter = 1;
-              sprite_pixels[i][j] = createSprite(j * 20, i * 20, 7, 7);
+              sprite_pixels[i][j] = createSprite(j * 25, i * 25, 5, 5);
             }
-            sprite_pixels[i][j].immovable = true;
           }
         }
-      } */
-
-    console.log(sprite_pixels);
+      } 
 
 
 
+    
+
+
+/*
     for (let i = 0; i < pixel_clumps.length; i++) {
       sprite_pixels[i] = [];
       for (let j = 0; j < pixel_clumps[0].length; j++) {
         if (pixel_clumps[i][j][3] > 0) {
-          sprite_pixels[i][j] = createSprite(j * 25, i * 25, 1, 1);
+          sprite_pixels[i][j] = createSprite(j * 25, i * 25, 5, 5);
           sprite_pixels[i][j].immovable = true;
-          sprite_pixels[i][j].visible = false;
         }
       }
-    }
+    } */
 
     started2 = true;
   });
@@ -83,7 +89,6 @@ function draw() {
       sprite.velocity.y -= GRAVITY;
     }
 
-    console.log(sprite.velocity.y);
       
       sprite.velocity.x = 0;
     
