@@ -6,7 +6,7 @@
 # ✓    IF NO MAYOR CHANGES DONE THEN IGNORE https://stackoverflow.com/questions/6709693/calculating-the-similarity-of-two-lists
 # ✓        TIME DIALATION
 # ✓        Threading
-# ✗    create a mask beforehand and then add the square? https://www.programmersought.com/article/77214543444/
+# ✓    create a mask beforehand and then add the square? https://www.programmersought.com/article/77214543444/
 #   works good without it as well and i am too incompetent to do it
 #   https://newbedev.com/get-area-within-contours-opencv-python
 # ✗ IGNORE TOUCHING EDGES? https://stackoverflow.com/questions/40615515/how-to-ignore-remove-contours-that-touch-the-image-boundaries/40620226
@@ -234,7 +234,7 @@ while True:
         windowPoints = np.array([[[margin, margin]], [[width, margin]],
                                  [[margin, height]], [[width, height]]])
 
-        if biggest.size == 0 and oldBiggest.size == 0:
+        if (biggest.size == 0 and oldBiggest.size == 0) or len(contours) == 0:
             oldBiggest = windowPoints
 
         # if biggest.size == 0 and oldBiggest.tolist() != windowPoints.tolist():
