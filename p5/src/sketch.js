@@ -42,7 +42,7 @@ function setup() {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
             sprite_pixels[i][j] = createSprite((j - ((same_x_counter - 1) / 2)) * 25, i * 25, 25 * (same_x_counter-1), 5);
-            sprite_pixels[i][j].visible = false;
+            //sprite_pixels[i][j].visible = false;
             sprite_pixels[i][j - 1].remove();
             sprite_pixels[i][j - 1] = undefined;
           } else {
@@ -108,7 +108,7 @@ function draw() {
     }
 
 
-
+      // Controls
     //Spacebar
     if (keyWentDown(32)) {
       if (!(JUMP_COUNT >= MAX_JUMP)) {
@@ -130,7 +130,16 @@ function draw() {
     //  sprite.velocity.y -= GRAVITY;
     //}
 
-    //Hitbox change on attack
+    if (keyWentDown(69)) {
+      if (player_direction == "left") {
+        sprite.setCollider("rectangle", -10, 0, 80, 75);
+      } else {
+        sprite.setCollider("rectangle", 10, 0, 80, 75);
+      }
+      hit = true;
+    }
+
+    //Hitbox change/reset on attack
     if (hit) {
       HIT_DURATION--;
       if (HIT_DURATION == 0) {
@@ -141,25 +150,18 @@ function draw() {
       }
 
     }
-
-
-
-
-
-    // Controls
-
-
     mirrorSprite();
     drawSprites();
   }
 }
 
+// mirrors the sprite 
 function mirrorSprite() {
   if (keyWentDown(65)) {
     if (sprite.mirrorX() === 1) {
       //hitbox should also switch directions during attack
       if (hit) {
-        sprite.setCollider("rectangle", -10, 0, 55, 45);
+        sprite.setCollider("rectangle", -10, 0, 80, 75);
       }
       sprite.mirrorX(sprite.mirrorX() * -1);
       player_direction = "left";
@@ -169,19 +171,11 @@ function mirrorSprite() {
     if (sprite.mirrorX() === -1) {
       if (hit) {
         //hitbox should also switch directions during attack
-        sprite.setCollider("rectangle", 10, 0, 55, 45);
+        sprite.setCollider("rectangle", 10, 0, 80, 75);
       }
       sprite.mirrorX(sprite.mirrorX() * -1);
       player_direction = "right";
     }
-  }
-  if (keyWentDown(69)) {
-    if (player_direction == "left") {
-      sprite.setCollider("rectangle", -10, 0, 80, 75);
-    } else {
-      sprite.setCollider("rectangle", 10, 0, 80, 75);
-    }
-    hit = true;
   }
 }
 
