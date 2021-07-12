@@ -11,6 +11,7 @@ var player_width = 75;
 var JUMP_COUNT = 0;
 var same_x_counter = 1;
 var MAX_JUMP = 3;
+var touches_side;
 
 
 //Forces
@@ -51,12 +52,6 @@ function setup() {
         }
       }
     }
-
-
-
-
-
-
     /*
         for (let i = 0; i < pixel_clumps.length; i++) {
           sprite_pixels[i] = [];
@@ -79,6 +74,7 @@ function setup() {
 }
 
 function draw() {
+  touches_side = false;
   if (started && started2) {
     // max speed is 25 
     if (sprite.velocity.y <= 20) {
@@ -96,10 +92,16 @@ function draw() {
       for (let j = 0; j < pixel_clumps[0].length; j++) {
         if (sprite_pixels[i][j] !== undefined) {
           if (sprite.collide(sprite_pixels[i][j])) {
+            if(sprite.touching.left || sprite.touching.right) {
+              touches_side = true;
+            }
+            if(touches_side) {
+              sprite.velocity.y = sprite.velocity.y + 5;
+            } else {
+              sprite.velocity.y = 0;
+            }
             JUMP_COUNT = 0;
-            sprite.velocity.y = 0;
           }
-
         }
       }
 
