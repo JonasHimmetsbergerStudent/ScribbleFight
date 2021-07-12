@@ -34,43 +34,39 @@ function setup() {
     img.resize(100, 0);
     sprite.addImage(img);
     //initialising the pixel sprites for the playing environment
-      for (let i = 0; i < pixel_clumps.length; i++) {
-        sprite_pixels[i] = [];
-        for (let j = 0; j < pixel_clumps[0].length; j++) {
-          if (pixel_clumps[i][j][3] > 0) {
-            if(sprite_pixels[i][j-1]!==undefined) {
-              same_x_counter++;
-              if(same_x_counter==2) {
-                sprite_pixels[i][j] = createSprite((j - ((same_x_counter)/2)) * 25      , i * 25, (same_x_counter-1)  *25 , 5);
-
-              } else {
-                sprite_pixels[i][j] = createSprite((j - ((same_x_counter-1)/2)) * 25      , i * 25, 25  *same_x_counter , 5);
-              }
-              sprite_pixels[i][j-1].remove();
-              sprite_pixels[i][j-1] = undefined;
-            } else {
-              same_x_counter = 1;
-              sprite_pixels[i][j] = createSprite(j * 25, i * 25, 5, 5);
-            }
-          }
-        }
-      } 
-
-
-
-    
-
-
-/*
     for (let i = 0; i < pixel_clumps.length; i++) {
       sprite_pixels[i] = [];
       for (let j = 0; j < pixel_clumps[0].length; j++) {
         if (pixel_clumps[i][j][3] > 0) {
-          sprite_pixels[i][j] = createSprite(j * 25, i * 25, 5, 5);
-          sprite_pixels[i][j].immovable = true;
+          if (sprite_pixels[i][j - 1] !== undefined) {
+            same_x_counter++;
+            sprite_pixels[i][j] = createSprite((j - ((same_x_counter - 1) / 2)) * 25, i * 25, 25 * (same_x_counter-1), 5);
+            sprite_pixels[i][j].visible = false;
+            sprite_pixels[i][j - 1].remove();
+            sprite_pixels[i][j - 1] = undefined;
+          } else {
+            same_x_counter = 1;
+            sprite_pixels[i][j] = createSprite(j * 25, i * 25, 5, 5);
+          }
         }
       }
-    } */
+    }
+
+
+
+
+
+
+    /*
+        for (let i = 0; i < pixel_clumps.length; i++) {
+          sprite_pixels[i] = [];
+          for (let j = 0; j < pixel_clumps[0].length; j++) {
+            if (pixel_clumps[i][j][3] > 0) {
+              sprite_pixels[i][j] = createSprite(j * 25, i * 25, 5, 5);
+              sprite_pixels[i][j].immovable = true;
+            }
+          }
+        } */
 
     started2 = true;
   });
@@ -85,13 +81,13 @@ function setup() {
 function draw() {
   if (started && started2) {
     // max speed is 25 
-    if(sprite.velocity.y <= 20) {
+    if (sprite.velocity.y <= 20) {
       sprite.velocity.y -= GRAVITY;
     }
 
-      
-      sprite.velocity.x = 0;
-    
+
+    sprite.velocity.x = 0;
+
 
     background(bg);
 
