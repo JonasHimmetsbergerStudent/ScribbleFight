@@ -3,6 +3,8 @@ var sprite;
 var started = false;
 var started2 = false;
 var sprite_pixels = [];
+var environment;
+var ball;
 
 //Variables
 var bg;
@@ -12,6 +14,7 @@ var JUMP_COUNT = 0;
 var same_x_counter = 1;
 var MAX_JUMP = 3;
 var touches_side;
+var one = 1;
 
 
 //Forces
@@ -29,11 +32,15 @@ function setup() {
   sprite = createSprite(500, 200, player_width, player_height);
   //box1 = createSprite(400, 400, 50, 50);
   sprite.setCollider("rectangle", 0, 0, player_width -15, player_height);
+  environment = new Group();
+  ball = createSprite(700,200,100,100);
+  ball.mass = 0.1;
   sprite.addAnimation("normal", "../assets/amogus.png");
   sprite.debug = true;
   loadImage('../assets/amogus.png', img => {
     img.resize(100, 0);
     sprite.addImage(img);
+
     //initialising the pixel sprites for the playing environment
     for (let i = 0; i < pixel_clumps.length; i++) {
       sprite_pixels[i] = [];
@@ -42,7 +49,9 @@ function setup() {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
             sprite_pixels[i][j] = createSprite((j - ((same_x_counter - 1) / 2)) * 25, i * 25, 25 * (same_x_counter-1), 5);
-            //sprite_pixels[i][j].visible = false;
+            sprite_pixels[i][j].visible = false;
+            environment.add(sprite_pixels[i][j]);
+            sprite_pixels[i][j].immovable = true;
             sprite_pixels[i][j - 1].remove();
             sprite_pixels[i][j - 1] = undefined;
           } else {
@@ -105,7 +114,26 @@ function draw() {
         }
       }
 
+    } 
+
+    if(ball.velocity.y <= 20) {
+      ball.velocity.y -= GRAVITY;
     }
+    if(one == 1) {
+      ball.velocity.x += 5;
+      one++;
+    }
+    ball.bounce(environment);
+    if(ball.touching.right) {
+      ball.velocity.x-=0.5;
+      console.log("right");
+    }
+    if(ball.touching.left){
+      ball.velocity.x-=0.5;
+      console.log("left")
+    }
+
+    sprite.collide(ball);
 
 
       // Controls
