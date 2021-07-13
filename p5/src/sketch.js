@@ -31,50 +31,13 @@ function setup() {
   background(51);
   sprite = createSprite(500, 200, player_width, player_height);
   //box1 = createSprite(400, 400, 50, 50);
-  sprite.setCollider("rectangle", 0, 0, player_width -15, player_height);
+  sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
   environment = new Group();
-  ball = createSprite(700,200,100,100);
+  ball = createSprite(700, 200, 100, 100);
   ball.mass = 0.1;
   sprite.addAnimation("normal", "../assets/amogus.png");
   sprite.debug = true;
-  loadImage('../assets/amogus.png', img => {
-    img.resize(100, 0);
-    sprite.addImage(img);
-
-    //initialising the pixel sprites for the playing environment
-    for (let i = 0; i < pixel_clumps.length; i++) {
-      sprite_pixels[i] = [];
-      for (let j = 0; j < pixel_clumps[0].length; j++) {
-        if (pixel_clumps[i][j][3] > 0) {
-          if (sprite_pixels[i][j - 1] !== undefined) {
-            same_x_counter++;
-            sprite_pixels[i][j] = createSprite((j - ((same_x_counter - 1) / 2)) * 25, i * 25, 25 * (same_x_counter-1), 5);
-            sprite_pixels[i][j].visible = false;
-            environment.add(sprite_pixels[i][j]);
-            sprite_pixels[i][j].immovable = true;
-            sprite_pixels[i][j - 1].remove();
-            sprite_pixels[i][j - 1] = undefined;
-          } else {
-            same_x_counter = 1;
-            sprite_pixels[i][j] = createSprite(j * 25, i * 25, 5, 5);
-          }
-        }
-      }
-    }
-    /*
-        for (let i = 0; i < pixel_clumps.length; i++) {
-          sprite_pixels[i] = [];
-          for (let j = 0; j < pixel_clumps[0].length; j++) {
-            if (pixel_clumps[i][j][3] > 0) {
-              sprite_pixels[i][j] = createSprite(j * 25, i * 25, 5, 5);
-              sprite_pixels[i][j].immovable = true;
-            }
-          }
-        } */
-
-    started2 = true;
-  });
-
+  init();
   loadImage('../assets/smiley_bg.png', img => {
     bg = img;
     started = true;
@@ -96,76 +59,11 @@ function draw() {
 
     background(bg);
 
+    checkForCollisions();
 
-    for (let i = 0; i < pixel_clumps.length; i++) {
-      for (let j = 0; j < pixel_clumps[0].length; j++) {
-        if (sprite_pixels[i][j] !== undefined) {
-          if (sprite.collide(sprite_pixels[i][j])) {
-            if(sprite.touching.left || sprite.touching.right) {
-              touches_side = true;
-            }
-            if(touches_side) {
-              sprite.velocity.y = sprite.velocity.y + 5;
-            } else {
-              sprite.velocity.y = 0;
-            }
-            JUMP_COUNT = 0;
-          }
-        }
-      }
+    ballBounce();
 
-    } 
-
-    if(ball.velocity.y <= 20) {
-      ball.velocity.y -= GRAVITY;
-    }
-    if(one == 1) {
-      ball.velocity.x += 5;
-      one++;
-    }
-    ball.bounce(environment);
-    if(ball.touching.right) {
-      ball.velocity.x-=0.5;
-      console.log("right");
-    }
-    if(ball.touching.left){
-      ball.velocity.x-=0.5;
-      console.log("left")
-    }
-
-    sprite.collide(ball);
-
-
-      // Controls
-    //Spacebar
-    if (keyWentDown(32)) {
-      if (!(JUMP_COUNT >= MAX_JUMP)) {
-        sprite.velocity.y = -JUMP;
-        JUMP_COUNT++;
-      }
-    }
-    //A
-    if (keyIsDown(65)) {
-      sprite.velocity.x = -SPEED;
-
-    }
-    //D
-    if (keyIsDown(68)) {
-      sprite.velocity.x = SPEED;
-    }
-    //S
-    // if (keyIsDown(83)) {
-    //  sprite.velocity.y -= GRAVITY;
-    //}
-
-    if (keyWentDown(69)) {
-      if (player_direction == "left") {
-        sprite.setCollider("rectangle", -10, 0, player_width + 5, player_height);
-      } else {
-        sprite.setCollider("rectangle", 10, 0, player_width + 5, player_height);
-      }
-      hit = true;
-    }
+    controls();
 
     //Hitbox change/reset on attack
     if (hit) {
@@ -210,4 +108,88 @@ function mirrorSprite() {
 //attack
 function mouseClicked() {
 
+}
+
+
+function init() {
+  loadImage('../assets/amogus.png', img => {
+    img.resize(100, 0);
+    sprite.addImage(img);
+
+    //initialising the pixel sprites for the playing environment
+    for (let i = 0; i < pixel_clumps.length; i++) {
+      sprite_pixels[i] = [];
+      for (let j = 0; j < pixel_clumps[0].length; j++) {
+        if (pixel_clumps[i][j][3] > 0) {
+          if (sprite_pixels[i][j - 1] !== undefined) {
+            same_x_counter++;
+            sprite_pixels[i][j] = createSprite((j - ((same_x_counter - 1) / 2)) * 25, i * 25, 25 * (same_x_counter - 1), 5);
+            sprite_pixels[i][j].visible = false;
+            environment.add(sprite_pixels[i][j]);
+            sprite_pixels[i][j].immovable = true;
+            sprite_pixels[i][j - 1].remove();
+            sprite_pixels[i][j - 1] = undefined;
+          } else {
+            same_x_counter = 1;
+            sprite_pixels[i][j] = createSprite(j * 25, i * 25, 5, 5);
+          }
+        }
+      }
+    }
+    /*
+        for (let i = 0; i < pixel_clumps.length; i++) {
+          sprite_pixels[i] = [];
+          for (let j = 0; j < pixel_clumps[0].length; j++) {
+            if (pixel_clumps[i][j][3] > 0) {
+              sprite_pixels[i][j] = createSprite(j * 25, i * 25, 5, 5);
+              sprite_pixels[i][j].immovable = true;
+            }
+          }
+        } */
+
+    started2 = true;
+  });
+}
+
+
+function checkForCollisions() {
+  for (let i = 0; i < pixel_clumps.length; i++) {
+    for (let j = 0; j < pixel_clumps[0].length; j++) {
+      if (sprite_pixels[i][j] !== undefined) {
+        if (sprite.collide(sprite_pixels[i][j])) {
+          if (sprite.touching.left || sprite.touching.right) {
+            touches_side = true;
+          }
+          if (touches_side) {
+            sprite.velocity.y = sprite.velocity.y + 5;
+          } else {
+            sprite.velocity.y = 0;
+          }
+          JUMP_COUNT = 0;
+        }
+      }
+    }
+
+  }
+}
+
+
+
+function ballBounce() {
+  if (ball.velocity.y <= 20) {
+    ball.velocity.y -= GRAVITY;
+  }
+  if (one == 1) {
+    ball.velocity.x += 5;
+    one++;
+  }
+  ball.bounce(environment);
+  if (ball.touching.right) {
+    ball.velocity.x -= 0.5;
+  }
+  if (ball.touching.left) {
+    ball.velocity.x -= 0.5;
+  }
+
+  sprite.collide(ball);
 }
