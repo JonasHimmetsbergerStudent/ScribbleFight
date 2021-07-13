@@ -28,7 +28,7 @@ function setup() {
   background(51);
   sprite = createSprite(500, 200, player_width, player_height);
   //box1 = createSprite(400, 400, 50, 50);
-  sprite.setCollider("rectangle", 0, 0, 60, 75);
+  sprite.setCollider("rectangle", 0, 0, player_width -15, player_height);
   sprite.addAnimation("normal", "../assets/amogus.png");
   sprite.debug = true;
   loadImage('../assets/amogus.png', img => {
@@ -132,9 +132,9 @@ function draw() {
 
     if (keyWentDown(69)) {
       if (player_direction == "left") {
-        sprite.setCollider("rectangle", -10, 0, 80, 75);
+        sprite.setCollider("rectangle", -10, 0, player_width + 5, player_height);
       } else {
-        sprite.setCollider("rectangle", 10, 0, 80, 75);
+        sprite.setCollider("rectangle", 10, 0, player_width + 5, player_height);
       }
       hit = true;
     }
@@ -144,7 +144,7 @@ function draw() {
       HIT_DURATION--;
       if (HIT_DURATION == 0) {
         // reset hitbox
-        sprite.setCollider("rectangle", 0, 0, 60, 75);
+        sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
         HIT_DURATION = 40;
         hit = false;
       }
@@ -161,7 +161,7 @@ function mirrorSprite() {
     if (sprite.mirrorX() === 1) {
       //hitbox should also switch directions during attack
       if (hit) {
-        sprite.setCollider("rectangle", -10, 0, 80, 75);
+        sprite.setCollider("rectangle", -10, 0, player_width + 5, player_height);
       }
       sprite.mirrorX(sprite.mirrorX() * -1);
       player_direction = "left";
@@ -171,7 +171,7 @@ function mirrorSprite() {
     if (sprite.mirrorX() === -1) {
       if (hit) {
         //hitbox should also switch directions during attack
-        sprite.setCollider("rectangle", 10, 0, 80, 75);
+        sprite.setCollider("rectangle", 10, 0, player_width + 5, player_height);
       }
       sprite.mirrorX(sprite.mirrorX() * -1);
       player_direction = "right";
