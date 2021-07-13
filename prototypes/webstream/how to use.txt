@@ -1,0 +1,4 @@
+Process Webcam image with opencv using websockets
+send to python "server"
+Process data
+send back
