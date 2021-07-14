@@ -30,8 +30,15 @@ function controls() {
         hit = true;
     }*/
 
+    // E
     if(keyWentDown(69)) {
-        defaultAttack();
+        ballBounce();
     } 
 
+    
+
 }
+
+function mouseClicked() {
+    defaultAttack();
+  }

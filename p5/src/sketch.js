@@ -3,7 +3,6 @@ var sprite;
 var started = false;
 var sprite_pixels = [];
 var environment;
-var bomb;
 
 //Variables
 var bg;
@@ -16,6 +15,7 @@ var same_x_counter = 1;
 var MAX_JUMP = 3;
 var touches_side;
 var one = 1;
+var bombImg;
 
 
 //Forces
@@ -24,7 +24,7 @@ var JUMP = 15;
 var SPEED = 5;
 var HIT_DURATION = 40;
 var hit = false;
-var player_direction;
+var player_direction = "right";
 
 function setup() {
   createCanvas(1429, 830);
@@ -33,9 +33,6 @@ function setup() {
   //box1 = createSprite(400, 400, 50, 50);
   sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
   environment = new Group();
-  bomb = createSprite(700, 200, 100, 100);
-  bomb.setCollider("circle",0,0,25);
-  bomb.debug = true;
   sprite.addAnimation("normal", "../assets/amogus.png");
   sprite.debug = true;
   init();
@@ -57,9 +54,8 @@ function draw() {
 
     checkForCollisions();
 
-    //ballBounce();
-
     controls();
+    
 
     // if a projectile exists and hits the map, destroy it
     if(projectile !== undefined) {
@@ -68,6 +64,24 @@ function draw() {
       }
     }
 
+    // bomb physics
+    if(bomb!== undefined) {
+    if (bomb.velocity.y <= 20) {
+      bomb.velocity.y -= GRAVITY;
+    }
+    bomb.bounce(environment);
+    if (bomb.touching.right) {
+      bomb.velocity.x -= 0.2;
+    }
+    if (bomb.touching.left) {
+      bomb.velocity.x -= 0.2;
+    }
+
+    if(bomb.position.x > screenWidth || bomb.position.y > screenHeight || bomb.life == 0) {
+      bomb.remove();
+      bomb = undefined;
+    }
+  }
    
     //Hitbox change/reset on attack
     if (hit) {
@@ -80,6 +94,7 @@ function draw() {
       }
 
     }
+    console.log(bomb);
     mirrorSprite();
     drawSprites();
   }
@@ -108,12 +123,6 @@ function mirrorSprite() {
     }
   }
 }
-
-//attack
-function mouseClicked() {
-
-}
-
 
 function init() {
   loadImage('../assets/amogus.png', img => {
@@ -155,7 +164,7 @@ function init() {
           bg = img;
           loadImage('../assets/bomb.png', img => {
             img.resize(50,0);
-            bomb.addImage(img);
+            bombImg = img;
             started = true;
           })
         })
@@ -188,23 +197,5 @@ function checkForCollisions() {
 
 
 
-function ballBounce() {
-  if (bomb.velocity.y <= 20) {
-    bomb.velocity.y -= GRAVITY;
-  }
-  if (one == 1) {
-    bomb.velocity.x += 5;
-    one++;
-  }
-  bomb.bounce(environment);
-  if (bomb.touching.right) {
-    bomb.velocity.x -= 0.2;
-  }
-  if (bomb.touching.left) {
-    bomb.velocity.x -= 0.2;
-  }
 
-  bomb.mass = 5;
-  sprite.mass=1;
 
-}
