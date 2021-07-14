@@ -1,13 +1,14 @@
 //Objects
 var sprite;
 var started = false;
-var started2 = false;
 var sprite_pixels = [];
 var environment;
-var ball;
+var bomb;
 
 //Variables
 var bg;
+var screenWidth  = 1429;
+var screenHeight = 830;
 var player_height = 75;
 var player_width = 75;
 var JUMP_COUNT = 0;
@@ -26,28 +27,25 @@ var hit = false;
 var player_direction;
 
 function setup() {
-
   createCanvas(1429, 830);
   background(51);
   sprite = createSprite(500, 200, player_width, player_height);
   //box1 = createSprite(400, 400, 50, 50);
   sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
   environment = new Group();
-  ball = createSprite(700, 200, 100, 100);
-  ball.mass = 0.1;
+  bomb = createSprite(700, 200, 100, 100);
+  bomb.setCollider("circle",0,0,25);
+  bomb.debug = true;
   sprite.addAnimation("normal", "../assets/amogus.png");
   sprite.debug = true;
   init();
-  loadImage('../assets/smiley_bg.png', img => {
-    bg = img;
-    started = true;
-  })
+
 
 }
 
 function draw() {
   touches_side = false;
-  if (started && started2) {
+  if (started) {
     // max speed is 25 
     if (sprite.velocity.y <= 20) {
       sprite.velocity.y -= GRAVITY;
@@ -55,16 +53,22 @@ function draw() {
 
 
     sprite.velocity.x = 0;
-
-
     background(bg);
 
     checkForCollisions();
 
-    ballBounce();
+    //ballBounce();
 
     controls();
 
+    // if a projectile exists and hits the map, destroy it
+    if(projectile !== undefined) {
+      if(projectile.overlap(environment)) {
+        projectile.remove();
+      }
+    }
+
+   
     //Hitbox change/reset on attack
     if (hit) {
       HIT_DURATION--;
@@ -147,7 +151,16 @@ function init() {
           }
         } */
 
-    started2 = true;
+        loadImage('../assets/smiley_bg.png', img => {
+          bg = img;
+          loadImage('../assets/bomb.png', img => {
+            img.resize(50,0);
+            bomb.addImage(img);
+            started = true;
+          })
+        })
+
+        
   });
 }
 
@@ -176,20 +189,22 @@ function checkForCollisions() {
 
 
 function ballBounce() {
-  if (ball.velocity.y <= 20) {
-    ball.velocity.y -= GRAVITY;
+  if (bomb.velocity.y <= 20) {
+    bomb.velocity.y -= GRAVITY;
   }
   if (one == 1) {
-    ball.velocity.x += 5;
+    bomb.velocity.x += 5;
     one++;
   }
-  ball.bounce(environment);
-  if (ball.touching.right) {
-    ball.velocity.x -= 0.5;
+  bomb.bounce(environment);
+  if (bomb.touching.right) {
+    bomb.velocity.x -= 0.2;
   }
-  if (ball.touching.left) {
-    ball.velocity.x -= 0.5;
+  if (bomb.touching.left) {
+    bomb.velocity.x -= 0.2;
   }
 
-  sprite.collide(ball);
+  bomb.mass = 5;
+  sprite.mass=1;
+
 }

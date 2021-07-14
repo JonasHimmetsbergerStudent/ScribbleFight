@@ -21,12 +21,17 @@ function controls() {
     //  sprite.velocity.y -= GRAVITY;
     //}
 
-    if (keyWentDown(69)) {
+    /*if (keyWentDown(69)) {
         if (player_direction == "left") {
             sprite.setCollider("rectangle", -10, 0, player_width + 5, player_height);
         } else {
             sprite.setCollider("rectangle", 10, 0, player_width + 5, player_height);
         }
         hit = true;
-    }
+    }*/
+
+    if(keyWentDown(69)) {
+        defaultAttack();
+    } 
+
 }
