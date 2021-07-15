@@ -1,203 +1,115 @@
-/*
- *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
- *
- *  Use of this source code is governed by a BSD-style license
- *  that can be found in the LICENSE file in the root of the source
- *  tree.
- */
 
-'use strict';
 
-const dimensions = document.querySelector('#dimensions');
-const video = document.querySelector('video');
-let stream;
-
-const flipButton = document.querySelector('#flip');
-const vgaButton = document.querySelector('#vga');
-const qvgaButton = document.querySelector('#qvga');
-const hdButton = document.querySelector('#hd');
-const fullHdButton = document.querySelector('#full-hd');
-const cinemaFourKButton = document.querySelector('#cinemaFourK');
-const televisionFourKButton = document.querySelector('#televisionFourK');
-const eightKButton = document.querySelector('#eightK');
-
-const videoblock = document.querySelector('#videoblock');
-const messagebox = document.querySelector('#errormessage');
-
-const widthInput = document.querySelector('div#width input');
-const widthOutput = document.querySelector('div#width span');
-const aspectLock = document.querySelector('#aspectlock');
-const sizeLock = document.querySelector('#sizelock');
-
-let currentWidth = 0;
-let currentHeight = 0;
-let shouldFaceUser = true;
-let oldConstraints = null;
-
-flip.onclick = () => {
-    shouldFaceUser = !shouldFaceUser
-    getMedia(oldConstraints);
-}
-
-vgaButton.onclick = () => {
-    getMedia(vgaConstraints);
-};
-
-qvgaButton.onclick = () => {
-    getMedia(qvgaConstraints);
-};
-
-hdButton.onclick = () => {
-    getMedia(hdConstraints);
-};
-
-fullHdButton.onclick = () => {
-    getMedia(fullHdConstraints);
-};
-
-televisionFourKButton.onclick = () => {
-    getMedia(televisionFourKConstraints);
-};
-
-cinemaFourKButton.onclick = () => {
-    getMedia(cinemaFourKConstraints);
-};
-
-eightKButton.onclick = () => {
-    getMedia(eightKConstraints);
-};
-
-const qvgaConstraints = {
-    video: { width: { exact: 320 }, height: { exact: 240 } }
-};
-
-const vgaConstraints = {
-    video: { width: { exact: 640 }, height: { exact: 480 } }
-};
-
-const hdConstraints = {
-    video: { width: { exact: 1280 }, height: { exact: 720 } }
-};
-
-const fullHdConstraints = {
-    video: { width: { exact: 1920 }, height: { exact: 1080 } }
-};
-
-const televisionFourKConstraints = {
-    video: { width: { exact: 3840 }, height: { exact: 2160 } }
-};
-
-const cinemaFourKConstraints = {
-    video: { width: { exact: 4096 }, height: { exact: 2160 } }
-};
-
-const eightKConstraints = {
-    video: { width: { exact: 7680 }, height: { exact: 4320 } }
-};
-
-function gotStream(mediaStream) {
-    stream = window.stream = mediaStream; // stream available to console
-    video.srcObject = mediaStream;
-    messagebox.style.display = 'none';
-    videoblock.style.display = 'block';
-    const track = mediaStream.getVideoTracks()[0];
-    const constraints = track.getConstraints();
-    alert('Result constraints: ' + JSON.stringify(constraints));
-    if (constraints && constraints.width && constraints.width.exact) {
-        widthInput.value = constraints.width.exact;
-        widthOutput.textContent = constraints.width.exact;
-    } else if (constraints && constraints.width && constraints.width.min) {
-        widthInput.value = constraints.width.min;
-        widthOutput.textContent = constraints.width.min;
+function checkMobile() {
+    var isMobile = false; //initiate as false
+    // device detection
+    if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent)
+        || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(navigator.userAgent.substr(0, 4))) {
+        isMobile = true;
     }
+    return isMobile;
 }
 
-function errorMessage(who, what) {
-    const message = who + ': ' + what;
-    messagebox.innerText = message;
-    messagebox.style.display = 'block';
-    console.log(message);
+
+document.addEventListener('DOMContentLoaded', startCameraStream);
+const video = document.getElementById('video'),
+    // button = document.getElementById('button'), select = document.getElementById('select'),
+    flipBtn = document.getElementById('camera-facing-flip');
+
+let currentStream,
+    cameras = [],
+    cameraCounter = 0,
+    shouldFaceUser = true,
+    stream = null;
+
+function startCameraStream() {
+    capture();
+    // openFullscreen(); // NOTE - not supported --> user has to give the command
 }
 
-function clearErrorMessage() {
-    messagebox.style.display = 'none';
+function stopMediaTracks(_stream) {
+    _stream.getTracks().forEach(track => {
+        track.stop();
+    });
 }
 
-function displayVideoDimensions(whereSeen) {
-    if (video.videoWidth) {
-        dimensions.innerText = 'Actual video dimensions: ' + video.videoWidth +
-            'x' + video.videoHeight + 'px.';
-        if (currentWidth !== video.videoWidth ||
-            currentHeight !== video.videoHeight) {
-            console.log(whereSeen + ': ' + dimensions.innerText);
-            currentWidth = video.videoWidth;
-            currentHeight = video.videoHeight;
-        }
-    } else {
-        dimensions.innerText = 'Video not ready';
+// check whether we can use facingMode
+let supports = navigator.mediaDevices.getSupportedConstraints();
+if (supports['facingMode'] === true) {
+    flipBtn.disabled = false;
+}
+
+flipBtn.addEventListener('click', function () {
+    if (stream == null) return
+    // we need to flip, stop everything
+    stream.getTracks().forEach(t => {
+        t.stop();
+    });
+    // toggle / flip
+    shouldFaceUser = !shouldFaceUser;
+    capture();
+});
+
+function capture() {
+    if (typeof currentStream !== 'undefined') {
+        stopMediaTracks(currentStream);
     }
-}
 
-video.onloadedmetadata = () => {
-    displayVideoDimensions('loadedmetadata');
-};
+    const constraints = {
+        video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false
+    };
 
-video.onresize = () => {
-    displayVideoDimensions('resize');
-};
+    if (supports['facingMode'] === true)
+        constraints.video.facingMode = shouldFaceUser ? 'user' : 'environment';
 
-function constraintChange(e) {
-    widthOutput.textContent = e.target.value;
-    const track = window.stream.getVideoTracks()[0];
-    let constraints;
-    if (aspectLock.checked) {
-        constraints = {
-            width: { exact: e.target.value },
-            aspectRatio: {
-                exact: video.videoWidth / video.videoHeight
+    navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then(async _stream => {
+            stream = _stream;
+            currentStream = _stream;
+            video.srcObject = _stream;
+
+            await sleep(1000);
+
+            const track = _stream.getVideoTracks()[0],
+                capabilities = track.getCapabilities(),
+                settings = track.getSettings(),
+                input = document.getElementById('zoom-slider'),
+                error = document.getElementById('error');
+
+            _stream.getVideoTracks().forEach(t => {
+                alert(t.label);
+            })
+            alert(JSON.stringify(capabilities) + (_stream.getVideoTracks()));
+
+            // Check whether zoom is supported or not.
+            if (!('zoom' in capabilities)) {
+                if (!error.innerHTML.includes(track.label)) error.innerHTML += 'Zoom is not supported by ' + track.label + '<br>';
+                return Promise.reject('Zoom is not supported by ' + track.label);
+            } else {
+                input.style.display = 'block';
+                // Map zoom to a slider element.
+                input.min = capabilities.zoom.min;
+                input.max = capabilities.zoom.max;
+                input.step = capabilities.zoom.step;
+                input.value = settings.zoom;
+                input.oninput = function (event) {
+                    track.applyConstraints({
+                        advanced: [{
+                            zoom: event.target.value
+                        }]
+                    });
+                }
+                input.hidden = false;
             }
-        };
-    } else {
-        constraints = { width: { exact: e.target.value } };
-    }
-    clearErrorMessage();
-    console.log('applying ' + JSON.stringify(constraints));
-    track.applyConstraints(constraints)
-        .then(() => {
-            console.log('applyConstraint success');
-            displayVideoDimensions('applyConstraints');
+            return navigator.mediaDevices.enumerateDevices();
         })
-        .catch(err => {
-            errorMessage('applyConstraints', err.name);
+        .catch(error => {
+            console.error('Argh!', error.name || error)
         });
 }
 
-widthInput.onchange = constraintChange;
-
-sizeLock.onchange = () => {
-    if (sizeLock.checked) {
-        console.log('Setting fixed size');
-        video.style.width = '100%';
-    } else {
-        console.log('Setting auto size');
-        video.style.width = 'auto';
-    }
-};
-
-function getMedia(constraints) {
-    if (stream) {
-        stream.getTracks().forEach(track => {
-            track.stop();
-        });
-    }
-
-    constraints.video.facingMode = shouldFaceUser ? 'user' : 'environment';
-    oldConstraints = constraints
-    clearErrorMessage();
-    videoblock.style.display = 'none';
-    navigator.mediaDevices.getUserMedia(constraints)
-        .then(gotStream)
-        .catch(e => {
-            errorMessage('getUserMedia', e.message, e.name);
-        });
+function sleep(ms) {
+    return new Promise(r => setTimeout(r, ms));
 }
