@@ -1,105 +1,83 @@
 <!DOCTYPE html>
-<!--
- *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
- *
- *  Use of this source code is governed by a BSD-style license
- *  that can be found in the LICENSE file in the root of the source
- *  tree.
--->
-<html>
+<html lang="en">
 
 <head>
-
     <meta charset="utf-8">
-    <meta name="description" content="WebRTC code samples">
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
-    <meta itemprop="description" content="Client-side WebRTC code samples">
-    <meta itemprop="name" content="WebRTC code samples">
     <meta name="mobile-web-app-capable" content="yes">
     <meta id="theme-color" name="theme-color" content="#ffffff">
 
     <base target="_blank">
-
-    <title>getUserMedia: select resolution</title>
-
-    <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
-
+    <title>:D</title>
     <style>
-        body,
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
         html {
             height: 100%;
         }
 
-        button {
-            margin: 0 10px 20px 0;
-            min-width: 90px;
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            min-height: 100%;
+            display: grid;
+            grid-template-rows: 1fr auto;
         }
 
-        div#buttons {
-            margin: 0 0 1em 0;
+        header {
+            background: #f0293e;
+            color: #fff;
+            text-align: center;
         }
 
-        div#container {
-            max-width: 100%;
+        main {
+            background: #ffffff;
+            min-height: 80vh;
         }
 
-        #errormessage {
-            display: none;
-            font-size: 300%;
-        }
-
-        #videoblock {
-            display: none;
-        }
-
-        p#dimensions {
-            height: 1em;
-            margin: 0 0 1.5em 0;
+        .controls {
+            text-align: center;
+            padding: 0.5em 0;
+            background: #333e5a;
+            z-index: 2;
+            position: fixed;
+            width: 100vw;
         }
 
         video {
-            background: none;
-            height: auto;
-            width: auto;
+            position: fixed;
+            left: 0;
+            top: 0;
+            object-fit: cover;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #zoom-slider {
+            display: none;
+        }
+
+        #error {
+            color: #ff3939;
         }
     </style>
 
 </head>
 
 <body>
-
-    <div id="container">
-
-
-        <div id="buttons">
-            <button id="flip">Flip</button>
-            <button id="qvga">QVGA</button>
-            <button id="vga">VGA</button>
-            <button id="hd">HD</button>
-            <button id="full-hd">Full HD</button>
-            <button id="televisionFourK">Television 4K (3840x2160)</button>
-            <button id="cinemaFourK">Cinema 4K (4096x2160)</button>
-            <button id="eightK">8K</button>
+    <main>
+        <div class="controls">
+            <!-- <button id="button">Get camera</button> <select id="select"></select>-->
+            <button id="camera-facing-flip">flipp</button>
+            <input type="range" min="0" max="100" id="zoom-slider" step="2" value="0">
+            <p id="error"></p>
         </div>
 
-        <div id="videoblock">
-            <p id="dimensions"></p>
-
-            <video id="gum-res-local" playsinline autoplay></video>
-            <div id="width">
-                <label>Width <span></span>px:</label>
-                <input type="range" min="0" max="7680" value="0">
-            </div>
-            <input id="sizelock" type="checkbox">Lock video size<br>
-            <input id="aspectlock" type="checkbox">Lock aspect ratio<br>
-        </div>
-        <p id="errormessage"></p>
-
-
-    </div>
-
-    <script src="js/main.js" async></script>
-
+        <video id="video" autoplay playsinline></video>
+    </main>
     <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 
