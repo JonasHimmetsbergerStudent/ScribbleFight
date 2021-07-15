@@ -32,7 +32,7 @@ function controls() {
 
     // E
     if(keyWentDown(69)) {
-        ballBounce();
+        bombAttack();
     } 
 
     

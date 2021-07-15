@@ -6,7 +6,7 @@ var environment;
 
 //Variables
 var bg;
-var screenWidth  = 1429;
+var screenWidth = 1429;
 var screenHeight = 830;
 var player_height = 75;
 var player_width = 75;
@@ -14,16 +14,17 @@ var JUMP_COUNT = 0;
 var same_x_counter = 1;
 var MAX_JUMP = 3;
 var touches_side;
-var one = 1;
 var bombImg;
+// is he flying?
+var flying = false;
+// how long is he flying away
+var flyingDuration = 50;
 
 
 //Forces
 var GRAVITY = -1;
 var JUMP = 15;
 var SPEED = 5;
-var HIT_DURATION = 40;
-var hit = false;
 var player_direction = "right";
 
 function setup() {
@@ -36,65 +37,37 @@ function setup() {
   sprite.addAnimation("normal", "../assets/amogus.png");
   sprite.debug = true;
   init();
-
-
 }
 
 function draw() {
   touches_side = false;
   if (started) {
-    // max speed is 25 
+    // max speed is 20 
     if (sprite.velocity.y <= 20) {
       sprite.velocity.y -= GRAVITY;
     }
+    bombPhysics();
 
-
-    sprite.velocity.x = 0;
     background(bg);
 
     checkForCollisions();
 
-    controls();
+    if(!flying) {
+      controls();
+    }
     
 
+
+
     // if a projectile exists and hits the map, destroy it
-    if(projectile !== undefined) {
-      if(projectile.overlap(environment)) {
+    if (projectile !== undefined) {
+      if (projectile.overlap(environment)) {
         projectile.remove();
       }
     }
 
     // bomb physics
-    if(bomb!== undefined) {
-    if (bomb.velocity.y <= 20) {
-      bomb.velocity.y -= GRAVITY;
-    }
-    bomb.bounce(environment);
-    if (bomb.touching.right) {
-      bomb.velocity.x -= 0.2;
-    }
-    if (bomb.touching.left) {
-      bomb.velocity.x -= 0.2;
-    }
-
-    if(bomb.position.x > screenWidth || bomb.position.y > screenHeight || bomb.life == 0) {
-      bomb.remove();
-      bomb = undefined;
-    }
-  }
    
-    //Hitbox change/reset on attack
-    if (hit) {
-      HIT_DURATION--;
-      if (HIT_DURATION == 0) {
-        // reset hitbox
-        sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
-        HIT_DURATION = 40;
-        hit = false;
-      }
-
-    }
-    console.log(bomb);
     mirrorSprite();
     drawSprites();
   }
@@ -104,20 +77,12 @@ function draw() {
 function mirrorSprite() {
   if (keyWentDown(65)) {
     if (sprite.mirrorX() === 1) {
-      //hitbox should also switch directions during attack
-      if (hit) {
-        sprite.setCollider("rectangle", -10, 0, player_width + 5, player_height);
-      }
       sprite.mirrorX(sprite.mirrorX() * -1);
       player_direction = "left";
     }
   }
   if (keyWentDown(68)) {
     if (sprite.mirrorX() === -1) {
-      if (hit) {
-        //hitbox should also switch directions during attack
-        sprite.setCollider("rectangle", 10, 0, player_width + 5, player_height);
-      }
       sprite.mirrorX(sprite.mirrorX() * -1);
       player_direction = "right";
     }
@@ -160,39 +125,44 @@ function init() {
           }
         } */
 
-        loadImage('../assets/smiley_bg.png', img => {
-          bg = img;
-          loadImage('../assets/bomb.png', img => {
-            img.resize(50,0);
-            bombImg = img;
-            started = true;
-          })
-        })
+    loadImage('../assets/smiley_bg.png', img => {
+      bg = img;
+      loadImage('../assets/bomb.png', img => {
+        img.resize(50, 0);
+        bombImg = img;
+        started = true;
+      })
+    })
 
-        
+
   });
 }
 
 
 function checkForCollisions() {
-  for (let i = 0; i < pixel_clumps.length; i++) {
-    for (let j = 0; j < pixel_clumps[0].length; j++) {
-      if (sprite_pixels[i][j] !== undefined) {
-        if (sprite.collide(sprite_pixels[i][j])) {
-          if (sprite.touching.left || sprite.touching.right) {
-            touches_side = true;
+  if(!flying) {
+    for (let i = 0; i < pixel_clumps.length; i++) {
+      for (let j = 0; j < pixel_clumps[0].length; j++) {
+        if (sprite_pixels[i][j] !== undefined) {
+          if (sprite.collide(sprite_pixels[i][j])) {
+            if (sprite.touching.left || sprite.touching.right) {
+              touches_side = true;
+            }
+            if (touches_side) {
+              sprite.velocity.y = sprite.velocity.y + 5;
+            } else {
+              sprite.velocity.y = 0;
+            }
+            JUMP_COUNT = 0;
           }
-          if (touches_side) {
-            sprite.velocity.y = sprite.velocity.y + 5;
-          } else {
-            sprite.velocity.y = 0;
-          }
-          JUMP_COUNT = 0;
         }
       }
+  
     }
-
+  } else {
+    sprite.bounce(environment);
   }
+
 }
 
 

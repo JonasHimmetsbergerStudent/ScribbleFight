@@ -12,10 +12,13 @@ function defaultAttack() {
     console.log("x: " + camera.mouseX);
 }
 
-function ballBounce() {
-    console.log("e");
+function bombAttack() {
     if(bomb===undefined) {
-        bomb = createSprite(sprite.position.x, sprite.position.y, 100, 100);
+        if(player_direction=="right") {
+            bomb = createSprite(sprite.position.x + player_width, sprite.position.y, 100, 100);
+        } else if(player_direction=="left") {
+            bomb = createSprite(sprite.position.x - player_width, sprite.position.y, 100, 100);
+        }
         bomb.addImage(bombImg);
         bomb.setCollider("circle",0,0,25);
         bomb.life = 1000;
@@ -28,10 +31,39 @@ function ballBounce() {
     
     
         bomb.mass = 5;
-        sprite.mass=1;
-    
-   
-  
+        sprite.mass=1;  
   }
+}
+
+function bombPhysics() {
+    if (bomb !== undefined) {
+        if (bomb.velocity.y <= 20) {
+          bomb.velocity.y -= GRAVITY;
+        }
+        bomb.bounce(environment);
+  
+        if (bomb.bounce(sprite)) {
+          flying = true;
+          bomb.remove();
+          bomb = undefined;
+        } else if (bomb.position.x > screenWidth || bomb.position.y > screenHeight || bomb.life == 0) {
+          bomb.remove();
+          bomb = undefined;
+        }
+  
+      }
+  
+      if(flying) {
+        flyingDuration--;
+        if(flyingDuration==0) {
+          flyingDuration = 100;
+          flying = false;
+        }
+      }
+  
+      if(!flying) {
+        sprite.velocity.x = 0;
+        console.log("yes");
+      }
 }
 
