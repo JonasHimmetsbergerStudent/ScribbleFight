@@ -1,15 +1,30 @@
 var projectile;
 var bomb;
+// is he flying?
+var flying = false;
+// how long is he flying away
+var flyingDuration = 50;
+// how long has he been flying
+var timeFlying = flyingDuration;
 
 function defaultAttack() {
 
     projectile = createSprite(sprite.position.x, sprite.position.y, 20, 20);
+    projectile.mass = 0.1;
     projectile.life = 200;
     projectile.velocity.x = (camera.mouseX - sprite.position.x) / 15;
     projectile.velocity.y = (camera.mouseY- sprite.position.y) / 15;
-
+    
+  console.log(projectile.velocity.x);
     console.log("y: " + camera.mouseY);
     console.log("x: " + camera.mouseX);
+}
+
+function defaultAttackPhysics() {
+  if(projectile!==undefined) {
+    
+  }
+  
 }
 
 function bombAttack() {
@@ -20,7 +35,6 @@ function bombAttack() {
             bomb = createSprite(sprite.position.x - player_width, sprite.position.y, 100, 100);
         }
         bomb.addImage(bombImg);
-        bomb.setCollider("circle",0,0,25);
         bomb.life = 1000;
         if(player_direction == "left") {
             bomb.velocity.x -= 5;
@@ -28,11 +42,8 @@ function bombAttack() {
             bomb.velocity.x += 5;
         }
         bomb.debug = true;
-    
-    
-        bomb.mass = 5;
-        sprite.mass=1;  
   }
+  sprite.mass = 0.01;
 }
 
 function bombPhysics() {
@@ -54,16 +65,19 @@ function bombPhysics() {
       }
   
       if(flying) {
-        flyingDuration--;
-        if(flyingDuration==0) {
-          flyingDuration = 100;
+        timeFlying--;
+        if(timeFlying<=flyingDuration/2 && timeFlying > 0) {
+          if(sprite.velocity.x>0) {sprite.velocity.x -= 0.3;}
+          if(sprite.velocity.x<0) {sprite.velocity.x += 0.3;}
+          if(sprite.velocity.y>0) {sprite.velocity.y -= 0.3;}
+          if(sprite.velocity.y<0) {sprite.velocity.y += 0.3;}
+          console.log("test");
+        }
+        if(timeFlying==0) {
+          timeFlying = 100;
           flying = false;
         }
       }
   
-      if(!flying) {
-        sprite.velocity.x = 0;
-        console.log("yes");
-      }
 }
 

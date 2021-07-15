@@ -1,11 +1,12 @@
 //Objects
 var sprite;
-var started = false;
 var sprite_pixels = [];
 var environment;
+var enemy;
 
 //Variables
 var bg;
+var started = false;
 var screenWidth = 1429;
 var screenHeight = 830;
 var player_height = 75;
@@ -31,6 +32,7 @@ function setup() {
   createCanvas(1429, 830);
   background(51);
   sprite = createSprite(500, 200, player_width, player_height);
+  enemy = createSprite(700,200,player_width,player_height);
   //box1 = createSprite(400, 400, 50, 50);
   sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
   environment = new Group();
@@ -43,30 +45,32 @@ function draw() {
   touches_side = false;
   if (started) {
     // max speed is 20 
+    
     if (sprite.velocity.y <= 20) {
       sprite.velocity.y -= GRAVITY;
+      enemy.velocity.y -= GRAVITY;
     }
     bombPhysics();
+    defaultAttackPhysics();
 
     background(bg);
 
     checkForCollisions();
 
     if(!flying) {
+      sprite.velocity.x = 0;
+    }
+
+    if(!flying) {
       controls();
     }
     
-
-
-
     // if a projectile exists and hits the map, destroy it
     if (projectile !== undefined) {
       if (projectile.overlap(environment)) {
         projectile.remove();
       }
     }
-
-    // bomb physics
    
     mirrorSprite();
     drawSprites();
@@ -125,16 +129,18 @@ function init() {
           }
         } */
 
-    loadImage('../assets/smiley_bg.png', img => {
-      bg = img;
-      loadImage('../assets/bomb.png', img => {
-        img.resize(50, 0);
-        bombImg = img;
-        started = true;
-      })
-    })
-
-
+        loadImage('../assets/amogus.png',img =>{
+          img.resize(100,0);
+          enemy.addImage(img);
+          loadImage('../assets/smiley_bg.png', img => {
+            bg = img;
+            loadImage('../assets/bomb.png', img => {
+              img.resize(50, 0);
+              bombImg = img;
+              started = true;
+            })
+          })
+        })
   });
 }
 
@@ -154,6 +160,9 @@ function checkForCollisions() {
               sprite.velocity.y = 0;
             }
             JUMP_COUNT = 0;
+          }
+          if (enemy.collide(sprite_pixels[i][j])) {
+           enemy.velocity.y = 0;
           }
         }
       }
