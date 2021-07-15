@@ -1,4 +1,5 @@
 var projectile;
+var projectiles = [];
 var bomb;
 // is he flying?
 var flying = false;
@@ -14,6 +15,7 @@ function defaultAttack() {
     projectile.life = 200;
     projectile.velocity.x = (camera.mouseX - sprite.position.x) / 15;
     projectile.velocity.y = (camera.mouseY- sprite.position.y) / 15;
+    projectiles.push(projectile);
     
   console.log(projectile.velocity.x);
     console.log("y: " + camera.mouseY);

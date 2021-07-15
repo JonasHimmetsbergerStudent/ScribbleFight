@@ -16,10 +16,7 @@ var same_x_counter = 1;
 var MAX_JUMP = 3;
 var touches_side;
 var bombImg;
-// is he flying?
-var flying = false;
-// how long is he flying away
-var flyingDuration = 50;
+
 
 
 //Forces
@@ -32,7 +29,7 @@ function setup() {
   createCanvas(1429, 830);
   background(51);
   sprite = createSprite(500, 200, player_width, player_height);
-  enemy = createSprite(700,200,player_width,player_height);
+  enemy = createSprite(700, 200, player_width, player_height);
   //box1 = createSprite(400, 400, 50, 50);
   sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
   environment = new Group();
@@ -45,7 +42,7 @@ function draw() {
   touches_side = false;
   if (started) {
     // max speed is 20 
-    
+
     if (sprite.velocity.y <= 20) {
       sprite.velocity.y -= GRAVITY;
       enemy.velocity.y -= GRAVITY;
@@ -57,21 +54,25 @@ function draw() {
 
     checkForCollisions();
 
-    if(!flying) {
+    if (!flying) {
       sprite.velocity.x = 0;
     }
 
-    if(!flying) {
+    if (!flying) {
       controls();
     }
-    
+
     // if a projectile exists and hits the map, destroy it
-    if (projectile !== undefined) {
-      if (projectile.overlap(environment)) {
-        projectile.remove();
-      }
+
+    if (projectiles[0] !== undefined) {
+      projectiles.forEach(projectile => {
+        if (projectile.overlap(environment)) {
+          projectile.remove();
+          projectile = undefined;
+        }
+      });
     }
-   
+
     mirrorSprite();
     drawSprites();
   }
@@ -129,24 +130,24 @@ function init() {
           }
         } */
 
-        loadImage('../assets/amogus.png',img =>{
-          img.resize(100,0);
-          enemy.addImage(img);
-          loadImage('../assets/smiley_bg.png', img => {
-            bg = img;
-            loadImage('../assets/bomb.png', img => {
-              img.resize(50, 0);
-              bombImg = img;
-              started = true;
-            })
-          })
+    loadImage('../assets/amogus.png', img => {
+      img.resize(100, 0);
+      enemy.addImage(img);
+      loadImage('../assets/smiley_bg.png', img => {
+        bg = img;
+        loadImage('../assets/bomb.png', img => {
+          img.resize(50, 0);
+          bombImg = img;
+          started = true;
         })
+      })
+    })
   });
 }
 
 
 function checkForCollisions() {
-  if(!flying) {
+  if (!flying) {
     for (let i = 0; i < pixel_clumps.length; i++) {
       for (let j = 0; j < pixel_clumps[0].length; j++) {
         if (sprite_pixels[i][j] !== undefined) {
@@ -162,11 +163,11 @@ function checkForCollisions() {
             JUMP_COUNT = 0;
           }
           if (enemy.collide(sprite_pixels[i][j])) {
-           enemy.velocity.y = 0;
+            enemy.velocity.y = 0;
           }
         }
       }
-  
+
     }
   } else {
     sprite.bounce(environment);
