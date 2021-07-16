@@ -1,5 +1,3 @@
-
-
 function checkMobile() {
     var isMobile = false; //initiate as false
     // device detection
@@ -19,12 +17,14 @@ const video = document.getElementById('video'),
 let currentStream,
     cameras = [],
     cameraCounter = 0,
-    shouldFaceUser = true,
+    shouldFaceUser = false,
     stream = null;
 
 function startCameraStream() {
-    capture();
-    // openFullscreen(); // NOTE - not supported --> user has to give the command
+    if (checkMobile()) // if app is used on mobile device then show video stream
+        capture();
+    else // else: don't
+        throw new Error("please use mobile device")
 }
 
 function stopMediaTracks(_stream) {
@@ -35,9 +35,6 @@ function stopMediaTracks(_stream) {
 
 // check whether we can use facingMode
 let supports = navigator.mediaDevices.getSupportedConstraints();
-if (supports['facingMode'] === true) {
-    flipBtn.disabled = false;
-}
 
 flipBtn.addEventListener('click', function () {
     if (stream == null) return
@@ -49,6 +46,25 @@ flipBtn.addEventListener('click', function () {
     shouldFaceUser = !shouldFaceUser;
     capture();
 });
+
+navigator.mediaDevices.enumerateDevices()
+    .then(gotDevices)
+    .catch(error => {
+        console.error('Argh!', error.name || error)
+    });
+
+async function gotDevices(deviceInfos) {
+    deviceInfos.forEach(device => {
+        if (device.kind === 'videoinput') cameras.push(device)
+    });
+
+    await sleep(1000);
+
+    console.log(cameras)
+
+    if (cameras.length > 1 && supports['facingMode'] === true) flipBtn.disabled = false;
+    else flipBtn.disabled = true;
+}
 
 function capture() {
     if (typeof currentStream !== 'undefined') {
@@ -70,7 +86,7 @@ function capture() {
             currentStream = _stream;
             video.srcObject = _stream;
 
-            await sleep(1000);
+            // await sleep(1000);
 
             const track = _stream.getVideoTracks()[0],
                 capabilities = track.getCapabilities(),
@@ -79,9 +95,9 @@ function capture() {
                 error = document.getElementById('error');
 
             _stream.getVideoTracks().forEach(t => {
-                alert(t.label);
+                console.log(t.label);
             })
-            alert(JSON.stringify(capabilities) + (_stream.getVideoTracks()));
+            console.log(JSON.stringify(capabilities) + (_stream.getVideoTracks()));
 
             // Check whether zoom is supported or not.
             if (!('zoom' in capabilities)) {
