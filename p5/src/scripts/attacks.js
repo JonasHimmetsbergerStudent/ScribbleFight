@@ -7,6 +7,9 @@ var flying = false;
 var flyingDuration = 50;
 // how long has he been flying
 var timeFlying = flyingDuration;
+var k;
+var diffDirection = false;
+var testKnockback = 2;
 
 function defaultAttack() {
 
@@ -49,13 +52,31 @@ function bombAttack() {
 }
 
 function bombPhysics() {
+  diffDirection = false;
     if (bomb !== undefined) {
-        if (bomb.velocity.y <= 20) {
-          bomb.velocity.y -= GRAVITY;
-        }
+       if (bomb.velocity.y <= 20) {
+        bomb.velocity.y -= GRAVITY;
+       }
         bomb.bounce(environment);
+        k = bomb.velocity.y / bomb.velocity.x;
+        console.log(sprite.velocity.y);
   
-        if (bomb.bounce(sprite)) {
+        if (bomb.collide(sprite)) {
+          if(sprite.velocity.x > 0 && bomb.velocity.x > 0 ) {
+            diffDirection = true;
+          }  if(sprite.velocity.y > 2 && bomb.velocity.y >= 0) {
+            diffDirection = true;
+          }
+          if(!diffDirection) {
+            sprite.velocity.x = bomb.velocity.x * testKnockback;
+            sprite.velocity.y = bomb.velocity.y * testKnockback;
+            console.log("normal");
+          } else {
+            sprite.velocity.x = -bomb.velocity.x  *testKnockback;
+            sprite.velocity.y = -bomb.velocity.y * testKnockback;
+            console.log("diffDirection");
+          }
+          
           flying = true;
           bomb.remove();
           bomb = undefined;
@@ -68,12 +89,11 @@ function bombPhysics() {
   
       if(flying) {
         timeFlying--;
-        if(timeFlying<=flyingDuration/2 && timeFlying > 0) {
+        if(timeFlying<=flyingDuration/4 && timeFlying > 0) {
           if(sprite.velocity.x>0) {sprite.velocity.x -= 0.3;}
           if(sprite.velocity.x<0) {sprite.velocity.x += 0.3;}
           if(sprite.velocity.y>0) {sprite.velocity.y -= 0.3;}
           if(sprite.velocity.y<0) {sprite.velocity.y += 0.3;}
-          console.log("test");
         }
         if(timeFlying==0) {
           timeFlying = 100;
