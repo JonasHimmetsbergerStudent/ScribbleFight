@@ -43,9 +43,11 @@ function draw() {
   if (started) {
     // max speed is 20 
 
-    if (sprite.velocity.y <= 20) {
+    if (sprite.velocity.y <= 20 && !flying) {
       sprite.velocity.y -= GRAVITY;
       enemy.velocity.y -= GRAVITY;
+    } else if(flying) {
+      sprite.velocity.y -= GRAVITY/1.25;
     }
     bombPhysics();
     defaultAttackPhysics();
@@ -62,16 +64,7 @@ function draw() {
       controls();
     }
 
-    // if a projectile exists and hits the map, destroy it
 
-    if (projectiles[0] !== undefined) {
-      projectiles.forEach(projectile => {
-        if (projectile.overlap(environment)) {
-          projectile.remove();
-          projectile = undefined;
-        }
-      });
-    }
 
     mirrorSprite();
     drawSprites();
