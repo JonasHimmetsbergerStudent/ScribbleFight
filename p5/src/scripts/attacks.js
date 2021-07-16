@@ -8,8 +8,7 @@ var flyingDuration = 50;
 // how long has he been flying
 var timeFlying = flyingDuration;
 var diffDirection = false;
-var testKnockback = 2;
-var k;
+var testKnockback = 3;
 
 function defaultAttack() {
 
@@ -18,14 +17,9 @@ function defaultAttack() {
     projectile.life = 200;
     projectile.velocity.x = (camera.mouseX - sprite.position.x) / 15 * 100;
     projectile.velocity.y = (camera.mouseY- sprite.position.y) / 15 * 100;
-    projectile.limitSpeed(20);
-    console.log(projectile.velocity.x);
-    console.log(projectile.velocity.y);
- 
+    projectile.limitSpeed(20);   
     projectiles.push(projectile);
-    
-    console.log("y: " + camera.mouseY);
-    console.log("x: " + camera.mouseX);
+
 }
 
 function defaultAttackPhysics() {
@@ -77,12 +71,13 @@ function bombPhysics() {
             diffDirection = true;
           }
           if(!diffDirection) {
-            sprite.velocity.x = bomb.velocity.x * testKnockback;
-            sprite.velocity.y = bomb.velocity.y * testKnockback;
+            sprite.velocity.x = bomb.velocity.x * 100;
+            sprite.velocity.y = bomb.velocity.y * testKnockback * 100;
           } else {
-            sprite.velocity.x = -bomb.velocity.x  *testKnockback;
-            sprite.velocity.y = -bomb.velocity.y * testKnockback;
+            sprite.velocity.x = -bomb.velocity.x * 100;
+            sprite.velocity.y = -bomb.velocity.y  * 100;
           }
+          sprite.limitSpeed(10 * testKnockback);
           
           flying = true;
           bomb.remove();
