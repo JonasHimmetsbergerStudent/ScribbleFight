@@ -30,7 +30,6 @@ import cv2
 import numpy as np
 import utlis
 import imutils
-import math
 from time import sleep
 from threading import Thread
 

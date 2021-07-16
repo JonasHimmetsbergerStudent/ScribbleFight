@@ -50,5 +50,7 @@ video {
 }
 
 #error {
+    position: absolute;
+    display: none;
     color: #ff3939;
 }

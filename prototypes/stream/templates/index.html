@@ -19,10 +19,11 @@
             <!-- <button id="button">Get camera</button> <select id="select"></select>-->
             <button id="camera-facing-flip">flipp</button>
             <input type="range" min="0" max="100" id="zoom-slider" step="2" value="0">
-            <p id="error"></p>
+
         </div>
 
-        <video id="video" autoplay playsinline></video>
+        <video id="video" playsinline></video>
+        <p id="error">please use mobile device</p>
     </main>
     <script type="text/javascript" src="{{ url_for('static', filename='js/camera.js') }}"></script>
 </body>
