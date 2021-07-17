@@ -38,6 +38,7 @@
     </div>
     <script>
         var interval = null;
+        var ms = 0;
 
 
         function b64(e) {
@@ -59,8 +60,10 @@
             });
             socket.on('imageConversionByClient', function (data) {
                 console.log(data.buffer);
-                $("#img").attr("src", "data:image/png;base64," + b64(data.buffer));
+                // $("#img").attr("src", "data:image/png;base64," + b64(data.buffer));
                 $("#img").attr("src", "data:image/png;base64," + data.buffer);
+                window.clearInterval(interval);
+                console.log(ms)
             });
             socket.on('imageConversionByServer', function (data) {
                 console.log(data);
@@ -72,6 +75,7 @@
                 reader.onload = function () {
                     const base64 = this.result.replace(/.*base64,/, '');
                     socket.emit('my image', { data: base64 });
+                    interval = window.setInterval(function () { ms += 1 }, 1);
                 };
                 reader.readAsDataURL(document.getElementById("image").files[0]);
                 return false;
