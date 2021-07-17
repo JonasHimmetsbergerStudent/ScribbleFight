@@ -16,6 +16,11 @@ def test_message(message):
     emit('my response', {'data': message['data']})
 
 
+@socketio.on('my image')
+def test_message(message):
+    emit('imageConversionByClient', {'buffer': message['data']})
+
+
 @socketio.on('my broadcast event')
 def test_message(message):
     emit('my response', {'data': message['data']}, broadcast=True)
@@ -32,4 +37,6 @@ def test_disconnect():
 
 
 if __name__ == '__main__':
+    print('server running')
     socketio.run(app)
+    print('server closed')
