@@ -53,7 +53,7 @@ flipBtn.addEventListener('click', function () {
 navigator.mediaDevices.enumerateDevices()
     .then(gotDevices)
     .catch(error => {
-        // console.error('Argh!', error.name || error)
+        console.error('Argh!', error.name || error)
     });
 
 async function gotDevices(deviceInfos) {
@@ -63,7 +63,7 @@ async function gotDevices(deviceInfos) {
 
     await sleep(1000);
 
-    // console.log(cameras)
+    console.log(cameras)
 
     if (cameras.length > 1 && supports['facingMode'] === true) flipBtn.disabled = false;
     else flipBtn.disabled = true;
@@ -102,10 +102,10 @@ function capture() {
                 input = document.getElementById('zoom-slider'),
                 error = document.getElementById('error');
 
-            // _stream.getVideoTracks().forEach(t => {
-            //     console.log(t.label);
-            // })
-            // console.log(JSON.stringify(capabilities) + (_stream.getVideoTracks()));
+            _stream.getVideoTracks().forEach(t => {
+                console.log(t.label);
+            })
+            console.log(JSON.stringify(capabilities) + (_stream.getVideoTracks()));
 
             // Check whether zoom is supported or not.
             if (!('zoom' in capabilities)) {
