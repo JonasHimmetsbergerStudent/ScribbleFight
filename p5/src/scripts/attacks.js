@@ -9,12 +9,13 @@ var flyingDuration = 50;
 var timeFlying = flyingDuration;
 var diffDirection = false;
 var testKnockback = 3;
+var projectileIndex;
 
 function defaultAttack() {
 
     projectile = createSprite(sprite.position.x, sprite.position.y, 20, 20);
-    projectile.mass = 0.1;
-    projectile.life = 200;
+    projectile.mass = 10;
+    projectile.life = 100;
     projectile.velocity.x = (camera.mouseX - sprite.position.x) / 15 * 100;
     projectile.velocity.y = (camera.mouseY- sprite.position.y) / 15 * 100;
     projectile.limitSpeed(20);   
@@ -23,12 +24,29 @@ function defaultAttack() {
 }
 
 function defaultAttackPhysics() {
-      // if a projectile exists and hits the map, destroy it
-      if (projectiles[0] !== undefined) {
+     
+      console.log(enemy.velocity.x);
+      // if a projectile exists
+      if (projectiles.length > 0) {
         projectiles.forEach(projectile => {
+          projectileIndex = projectiles.indexOf(projectile);
+          //and hits the map, destroy it
           if (projectile.overlap(environment)) {
             projectile.remove();
-            projectile = undefined;
+            if (projectileIndex > -1) {
+              projectiles.splice(projectileIndex, 1);
+            }
+          }
+          // and flies outside of the map, destroy it
+          if(projectile.life == 0 ) {
+            if (projectileIndex > -1) {
+              projectiles.splice(projectileIndex, 1);
+            }
+          }
+          if(projectile.bounce(enemy)) {
+            enemy.limitSpeed(5);
+            projectile.remove();
+            projectiles.splice(projectileIndex,1);
           }
         });
       

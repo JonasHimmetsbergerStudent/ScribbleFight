@@ -43,9 +43,13 @@ function draw() {
   if (started) {
     // max speed is 20 
 
+    if(enemy.velocity.y <= 20) {
+      enemy.velocity.y -= GRAVITY;
+    }
+    enemy.velocity.x = 0;
+
     if (sprite.velocity.y <= 20 && !flying) {
       sprite.velocity.y -= GRAVITY;
-      enemy.velocity.y -= GRAVITY;
     } else if(flying) {
       sprite.velocity.y -= GRAVITY/1.25;
     }
@@ -164,6 +168,17 @@ function checkForCollisions() {
     }
   } else {
     sprite.bounce(environment);
+  }
+
+  for (let i = 0; i < pixel_clumps.length; i++) {
+    for (let j = 0; j < pixel_clumps[0].length; j++) {
+      if (sprite_pixels[i][j] !== undefined) {
+        if (enemy.collide(sprite_pixels[i][j])) {
+         enemy.velocity.y = 0;
+        }
+      }
+    }
+
   }
 
 }
