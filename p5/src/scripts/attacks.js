@@ -48,8 +48,8 @@ function defaultAttackPhysics() {
         }
       }
       console.log(projectile.life);
-      // if you shoot the projectile, it needs about 9 frames to be outside of your own hitbox
-      if(projectile.life <= 91) {
+      // if you shoot the projectile, it needs about 10 frames to be outside of your own hitbox
+      if(projectile.life <= 90) {
         if (projectile.collide(sprite)) {
           if (sprite.velocity.x > 0 && projectile.velocity.x > 0 || sprite.velocity.x < 0 && projectile.velocity.x < 0) {
             diffDirection = true;
