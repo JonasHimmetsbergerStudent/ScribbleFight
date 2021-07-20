@@ -59,9 +59,10 @@
                 $('#log').append('<p>Received: ' + msg.data + '</p>');
             });
             socket.on('imageConversionByClient', function (data) {
-                console.log(data.buffer);
-                // $("#img").attr("src", "data:image/png;base64," + b64(data.buffer));
-                $("#img").attr("src", "data:image/png;base64," + data.buffer);
+                // $("#img").attr("src", "data:image/png;base64," + data.buffer);
+                // str = "data:image/png;base64," + b64(data.buffer);
+                str = "data:image/png;base64," + data.buffer;
+                $("#img").attr("src", str);
                 window.clearInterval(interval);
                 console.log(ms)
             });
