@@ -1,5 +1,5 @@
-// it takes 20 seconds for a new item to spawn
-var timer = 20;
+// it takes 10 seconds for a new item to spawn
+var timer = 10;
 var spawning;
 var xCoordinates = [];
 var xCoordinatesUsed = [];
@@ -13,7 +13,7 @@ function spawn() {
     }
     if (timer == 0) {
         spawning = true;
-        timer = 20;
+        timer = 10;
     }
     if (spawning) {
         if(items.length < xCoordinates.length) {        
@@ -21,12 +21,16 @@ function spawn() {
            while(xCoordinatesUsed.includes(x)) {
                 x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
             } 
-            items.push(createSprite(x, 0, 25, 25));
+            items.push(createSprite(x, 0, 50, 50));
             xCoordinatesUsed.push(x);
+            if(xCoordinatesUsed.length == xCoordinates.length && xCoordinatesUsed.length != items.length) {
+                xCoordinatesUsed = [];
+            }
         }
     }
     if (items.length > 0) {
         items.forEach(item => {
+            item.addImage(itemImg);
             if (item.velocity.y <= 20) {
                 item.velocity.y -= GRAVITY;
             }
@@ -52,5 +56,4 @@ function getXCoordinates() {
             }
         }
     }
-    console.log(xCoordinates);
 }

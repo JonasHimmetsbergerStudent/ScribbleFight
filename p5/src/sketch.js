@@ -13,16 +13,17 @@ var player_height = 75;
 var player_width = 75;
 var JUMP_COUNT = 0;
 var same_x_counter = 1;
-var MAX_JUMP = 3;
+const MAX_JUMP = 3;
 var touches_side;
 var bombImg;
+var itemImg;
 
 
 
 //Forces
-var GRAVITY = -1;
-var JUMP = 15;
-var SPEED = 5;
+const GRAVITY = -1;
+const JUMP = 15;
+const SPEED = 5;
 var player_direction = "right";
 
 function setup() {
@@ -133,7 +134,11 @@ function init() {
         loadImage('../assets/bomb.png', img => {
           img.resize(50, 0);
           bombImg = img;
-          started = true;
+          loadImage('../assets/item.png',img => {
+            img.resize(50,0);
+            itemImg = img;
+            started = true;
+          })
         })
       })
     })
