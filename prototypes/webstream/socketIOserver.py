@@ -38,5 +38,6 @@ def test_disconnect():
 
 if __name__ == '__main__':
     print('server running')
-    socketio.run(app)
+    socketio.run(app, certfile="./cert/cert.pem", keyfile="./keys/key.pem")
+    # socketio.run(app)
     print('server closed')
