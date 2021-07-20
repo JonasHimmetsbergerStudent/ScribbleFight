@@ -43,18 +43,19 @@ function draw() {
   if (started) {
     // max speed is 20 
 
-    if(enemy.velocity.y <= 20) {
+    if (enemy.velocity.y <= 20) {
       enemy.velocity.y -= GRAVITY;
     }
     enemy.velocity.x = 0;
 
     if (sprite.velocity.y <= 20 && !flying) {
       sprite.velocity.y -= GRAVITY;
-    } else if(flying) {
-      sprite.velocity.y -= GRAVITY/1.25;
+    } else if (flying) {
+      sprite.velocity.y -= GRAVITY / 1.25;
     }
     bombPhysics();
     defaultAttackPhysics();
+    spawn();
 
     background(bg);
 
@@ -110,6 +111,9 @@ function init() {
         }
       }
     }
+
+    // X Coordinates for the item drops
+    getXCoordinates();
     /*
         for (let i = 0; i < pixel_clumps.length; i++) {
           sprite_pixels[i] = [];
@@ -151,7 +155,7 @@ function checkForCollisions() {
             } else {
               sprite.velocity.y = 0;
             }
-            if(!sprite.touching.top) {
+            if (!sprite.touching.top) {
               JUMP_COUNT = 0;
             }
           }
@@ -170,7 +174,7 @@ function checkForCollisions() {
     for (let j = 0; j < pixel_clumps[0].length; j++) {
       if (sprite_pixels[i][j] !== undefined) {
         if (enemy.collide(sprite_pixels[i][j])) {
-         enemy.velocity.y = 0;
+          enemy.velocity.y = 0;
         }
       }
     }

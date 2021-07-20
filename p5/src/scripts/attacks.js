@@ -47,9 +47,8 @@ function defaultAttackPhysics() {
           projectiles.splice(projectileIndex, 1);
         }
       }
-      console.log(projectile.life);
       // if you shoot the projectile, it needs about 10 frames to be outside of your own hitbox
-      if(projectile.life <= 90) {
+      if (projectile.life <= 90) {
         if (projectile.collide(sprite)) {
           if (sprite.velocity.x > 0 && projectile.velocity.x > 0 || sprite.velocity.x < 0 && projectile.velocity.x < 0) {
             diffDirection = true;
@@ -65,7 +64,7 @@ function defaultAttackPhysics() {
             sprite.velocity.y = -projectile.velocity.y * 100;
           }
           sprite.limitSpeed(2 * testKnockback);
-  
+
           flying = true;
           flyingDuration = 10;
           timeFlying = flyingDuration;
@@ -73,7 +72,7 @@ function defaultAttackPhysics() {
           projectiles.splice(projectileIndex, 1);
         }
       }
-     
+
     });
   }
   sendHimFlying();
@@ -131,7 +130,7 @@ function bombPhysics() {
       bomb.remove();
       bomb = undefined;
     }
-      sendHimFlying();    
+    sendHimFlying();
   }
 
 
