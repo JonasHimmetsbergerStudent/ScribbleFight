@@ -62,14 +62,8 @@ function draw() {
 
     if (!flying) {
       sprite.velocity.x = 0;
-    }
-
-    if (!flying) {
       controls();
     }
-
-
-
     mirrorSprite();
     drawSprites();
   }
@@ -157,7 +151,9 @@ function checkForCollisions() {
             } else {
               sprite.velocity.y = 0;
             }
-            JUMP_COUNT = 0;
+            if(!sprite.touching.top) {
+              JUMP_COUNT = 0;
+            }
           }
           if (enemy.collide(sprite_pixels[i][j])) {
             enemy.velocity.y = 0;

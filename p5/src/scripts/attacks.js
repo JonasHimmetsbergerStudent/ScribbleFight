@@ -53,9 +53,10 @@ function defaultAttackPhysics() {
         if (projectile.collide(sprite)) {
           if (sprite.velocity.x > 0 && projectile.velocity.x > 0 || sprite.velocity.x < 0 && projectile.velocity.x < 0) {
             diffDirection = true;
-          } if (sprite.velocity.y > 2 && projectile.velocity.y >= 0) {
+          } if (sprite.velocity.y < 2 && sprite.velocity.y != 1 && projectile.velocity.y <= 0) {
             diffDirection = true;
           }
+          console.log(diffDirection);
           if (!diffDirection) {
             sprite.velocity.x = projectile.velocity.x * 100;
             sprite.velocity.y = projectile.velocity.y * testKnockback * 100;
@@ -89,9 +90,9 @@ function bombAttack() {
     bomb.addImage(bombImg);
     bomb.life = 1000;
     if (player_direction == "left") {
-      bomb.velocity.x -= 2;
+      bomb.velocity.x -= 5;
     } else if (player_direction == "right") {
-      bomb.velocity.x += 2;
+      bomb.velocity.x += 5;
     }
     bomb.debug = true;
   }
@@ -109,7 +110,7 @@ function bombPhysics() {
     if (bomb.collide(sprite)) {
       if (sprite.velocity.x > 0 && bomb.velocity.x > 0 || sprite.velocity.x < 0 && bomb.velocity.x < 0) {
         diffDirection = true;
-      } if (sprite.velocity.y > 2 && bomb.velocity.y >= 0) {
+      } if (sprite.velocity.y < 2 && sprite.velocity.y != 1 && bomb.velocity.y <= 0) {
         diffDirection = true;
       }
       if (!diffDirection) {
@@ -140,7 +141,6 @@ function bombPhysics() {
 function sendHimFlying() {
   if (flying) {
     timeFlying--;
-    console.log(timeFlying);
     //slowdown 
     if (timeFlying <= flyingDuration / 2 && timeFlying > 0) {
       if (sprite.velocity.x > 0) { sprite.velocity.x -= 0.3; }
