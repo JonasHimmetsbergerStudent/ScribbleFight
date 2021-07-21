@@ -30,17 +30,22 @@ function spawn() {
     }
     if (items.length > 0) {
         items.forEach(item => {
+            i = items.indexOf(items);
             item.addImage(itemImg);
             if (item.velocity.y <= 20) {
                 item.velocity.y -= GRAVITY;
             }
             item.collide(environment);
+            if(item.collide(player.sprite)) {
+                player.item = new Item("bomb");
+                item.remove();
+                items.splice(i,1);
+            }
         });
 
     }
 
 }
-
 
 function getRandomInt(num) {
     return Math.floor(Math.random() * num + 1);
