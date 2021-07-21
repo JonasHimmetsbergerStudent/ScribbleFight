@@ -3,18 +3,18 @@ function controls() {
     //Spacebar
     if (keyWentDown(32)) {
         if (!(JUMP_COUNT >= MAX_JUMP)) {
-            sprite.velocity.y = -JUMP;
+            player.sprite.velocity.y = -JUMP;
             JUMP_COUNT++;
         }
     }
     //A
     if (keyIsDown(65)) {
-        sprite.velocity.x = -SPEED;
+        player.sprite.velocity.x = -SPEED;
 
     }
     //D
     if (keyIsDown(68)) {
-        sprite.velocity.x = SPEED;
+        player.sprite.velocity.x = SPEED;
     }
     //S
     // if (keyIsDown(83)) {

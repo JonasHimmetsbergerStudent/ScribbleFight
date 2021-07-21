@@ -1,8 +1,7 @@
 //Objects
-var sprite;
+var player;
 var sprite_pixels = [];
 var environment;
-var enemy;
 
 //Variables
 var bg;
@@ -29,13 +28,11 @@ var player_direction = "right";
 function setup() {
   createCanvas(1429, 830);
   background(51);
-  sprite = createSprite(500, 200, player_width, player_height);
-  enemy = createSprite(700, 200, player_width, player_height);
-  //box1 = createSprite(400, 400, 50, 50);
-  sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
+  player = new Player(createSprite(500, 200, player_width, player_height));
+  player.sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
   environment = new Group();
-  sprite.addAnimation("normal", "../assets/amogus.png");
-  sprite.debug = true;
+  player.sprite.addAnimation("normal", "../assets/amogus.png");
+  player.sprite.debug = true;
   init();
 }
 
@@ -43,16 +40,10 @@ function draw() {
   touches_side = false;
   if (started) {
     // max speed is 20 
-
-    if (enemy.velocity.y <= 20) {
-      enemy.velocity.y -= GRAVITY;
-    }
-    enemy.velocity.x = 0;
-
-    if (sprite.velocity.y <= 20 && !flying) {
-      sprite.velocity.y -= GRAVITY;
+    if (player.sprite.velocity.y <= 20 && !flying) {
+      player.sprite.velocity.y -= GRAVITY;
     } else if (flying) {
-      sprite.velocity.y -= GRAVITY / 1.25;
+      player.sprite.velocity.y -= GRAVITY / 1.25;
     }
     bombPhysics();
     defaultAttackPhysics();
@@ -63,7 +54,7 @@ function draw() {
     checkForCollisions();
 
     if (!flying) {
-      sprite.velocity.x = 0;
+      player.sprite.velocity.x = 0;
       controls();
     }
     mirrorSprite();
@@ -74,14 +65,14 @@ function draw() {
 // mirrors the sprite 
 function mirrorSprite() {
   if (keyWentDown(65)) {
-    if (sprite.mirrorX() === 1) {
-      sprite.mirrorX(sprite.mirrorX() * -1);
+    if (player.sprite.mirrorX() === 1) {
+      player.sprite.mirrorX(player.sprite.mirrorX() * -1);
       player_direction = "left";
     }
   }
   if (keyWentDown(68)) {
-    if (sprite.mirrorX() === -1) {
-      sprite.mirrorX(sprite.mirrorX() * -1);
+    if (player.sprite.mirrorX() === -1) {
+      player.sprite.mirrorX(player.sprite.mirrorX() * -1);
       player_direction = "right";
     }
   }
@@ -90,7 +81,7 @@ function mirrorSprite() {
 function init() {
   loadImage('../assets/amogus.png', img => {
     img.resize(100, 0);
-    sprite.addImage(img);
+    player.sprite.addImage(img);
 
     //initialising the pixel sprites for the playing environment
     for (let i = 0; i < pixel_clumps.length; i++) {
@@ -128,7 +119,6 @@ function init() {
 
     loadImage('../assets/amogus.png', img => {
       img.resize(100, 0);
-      enemy.addImage(img);
       loadImage('../assets/smiley_bg.png', img => {
         bg = img;
         loadImage('../assets/bomb.png', img => {
@@ -151,41 +141,26 @@ function checkForCollisions() {
     for (let i = 0; i < pixel_clumps.length; i++) {
       for (let j = 0; j < pixel_clumps[0].length; j++) {
         if (sprite_pixels[i][j] !== undefined) {
-          if (sprite.collide(sprite_pixels[i][j])) {
-            if (sprite.touching.left || sprite.touching.right) {
+          if (player.sprite.collide(sprite_pixels[i][j])) {
+            if (player.sprite.touching.left || player.sprite.touching.right) {
               touches_side = true;
             }
             if (touches_side) {
-              sprite.velocity.y = sprite.velocity.y + 5;
+              player.sprite.velocity.y = player.sprite.velocity.y + 5;
             } else {
-              sprite.velocity.y = 0;
+              player.sprite.velocity.y = 0;
             }
-            if (!sprite.touching.top) {
+            if (!player.sprite.touching.top) {
               JUMP_COUNT = 0;
             }
-          }
-          if (enemy.collide(sprite_pixels[i][j])) {
-            enemy.velocity.y = 0;
           }
         }
       }
 
     }
   } else {
-    sprite.bounce(environment);
+    player.sprite.bounce(environment);
   }
-
-  for (let i = 0; i < pixel_clumps.length; i++) {
-    for (let j = 0; j < pixel_clumps[0].length; j++) {
-      if (sprite_pixels[i][j] !== undefined) {
-        if (enemy.collide(sprite_pixels[i][j])) {
-          enemy.velocity.y = 0;
-        }
-      }
-    }
-
-  }
-
 }
 
 
