@@ -108,9 +108,8 @@ function capture() {
             console.log(JSON.stringify(capabilities) + (_stream.getVideoTracks()));
 
             await sleep(1000);
-            svg.style.width = video.videoWidth * video.offsetWidth / constraints.video.width.ideal
-            svg.style.height = video.videoHeight * video.offsetHeight / constraints.video.height.ideal
-            alert(video.videoWidth + "x" + video.videoHeight)
+            svg.style.width = video.offsetWidth // / video.videoWidth
+            svg.style.height = video.offsetHeight // video.videoHeight
 
             // Check whether zoom is supported or not.
             if (!('zoom' in capabilities)) {

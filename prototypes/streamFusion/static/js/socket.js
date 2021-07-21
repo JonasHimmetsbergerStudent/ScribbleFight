@@ -43,7 +43,7 @@ $(document).ready(function () {
 
 
     $('#convert').click(function (e) {
-        interval = window.setInterval(function () { emitImage() }, 1000);
+        interval = window.setInterval(function () { emitImage() }, 500);
     });
 
     function emitImage() {
