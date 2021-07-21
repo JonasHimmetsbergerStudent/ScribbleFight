@@ -1,6 +1,8 @@
 
 let interval = ping = null;
 let ms = 0;
+let svg = document.getElementById("boundingBox");
+let polygon = document.querySelector("#boundingBox polygon");
 
 
 function b64(e) {
@@ -16,11 +18,6 @@ function b64(e) {
 
 $(document).ready(function () {
     let socket = io();
-    let svg = document.getElementById("boundingBox");
-    let ratio = video.offsetWidth / constraints.video.width.ideal
-    svg.style.width = constraints.video.width.ideal * ratio
-    svg.style.height = constraints.video.height.ideal * ratio
-    let polygon = document.querySelector("#boundingBox polygon");
 
 
     socket.on('my response', function (msg) {

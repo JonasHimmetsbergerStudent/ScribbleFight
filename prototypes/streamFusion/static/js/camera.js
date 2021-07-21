@@ -27,7 +27,8 @@ let currentStream,
     cameras = [],
     cameraCounter = 0,
     shouldFaceUser = false,
-    stream = null;
+    stream = null,
+    actWidth, actHeight;
 
 function startCameraStream() {
     if (checkMobile()) { // if app is used on mobile device then show video stream
@@ -93,7 +94,6 @@ function capture() {
             video.srcObject = _stream;
             video.play();
 
-            // await sleep(1000);
 
             const track = _stream.getVideoTracks()[0],
                 capabilities = track.getCapabilities(),
@@ -104,7 +104,13 @@ function capture() {
             _stream.getVideoTracks().forEach(t => {
                 console.log(t.label);
             })
+
             console.log(JSON.stringify(capabilities) + (_stream.getVideoTracks()));
+
+            await sleep(1000);
+            svg.style.width = video.videoWidth * video.offsetWidth / constraints.video.width.ideal
+            svg.style.height = video.videoHeight * video.offsetHeight / constraints.video.height.ideal
+            alert(video.videoWidth + "x" + video.videoHeight)
 
             // Check whether zoom is supported or not.
             if (!('zoom' in capabilities)) {
@@ -126,6 +132,7 @@ function capture() {
                 }
                 input.hidden = false;
             }
+
             return navigator.mediaDevices.enumerateDevices();
         })
         .catch(error => {
