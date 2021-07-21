@@ -21,6 +21,12 @@
 </head>
 
 <body>
+    <div id="ping"></div>
+    <svg id="boundingBox">
+        <polygon />
+        Sorry, your browser does not support inline SVG.
+    </svg>
+
     <main>
         <div class="controls">
             <button id="camera-facing-flip">flipp</button>
@@ -31,9 +37,9 @@
         <p id="error">please use mobile device</p>
     </main>
     <button id="convert">Convert</button>
-    <div id="log">
-        <img src="" width="100%" alt="image" id="img">
-    </div>
+    <div id="log"></div>
+
+
     <script type="text/javascript" src="{{ url_for('static', filename='js/camera.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/socket.js') }}"></script>
 

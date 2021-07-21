@@ -13,7 +13,15 @@ function checkMobile() {
 document.addEventListener('DOMContentLoaded', startCameraStream);
 const video = document.getElementById('video'),
     // button = document.getElementById('button'), select = document.getElementById('select'),
-    flipBtn = document.getElementById('camera-facing-flip');
+    flipBtn = document.getElementById('camera-facing-flip'),
+    constraints = {
+        video: {
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+            frameRate: { ideal: 25 }
+        },
+        audio: false
+    };
 
 let currentStream,
     cameras = [],
@@ -73,15 +81,6 @@ function capture() {
     if (typeof currentStream !== 'undefined') {
         stopMediaTracks(currentStream);
     }
-
-    const constraints = {
-        video: {
-            width: { ideal: 1280 },
-            height: { ideal: 720 },
-            frameRate: { ideal: 25 }
-        },
-        audio: false
-    };
 
     if (supports['facingMode'] === true)
         constraints.video.facingMode = shouldFaceUser ? 'user' : 'environment';

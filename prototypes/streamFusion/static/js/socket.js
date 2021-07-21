@@ -1,13 +1,13 @@
 
-var interval = null;
-var ms = 0;
+let interval = ping = null;
+let ms = 0;
 
 
 function b64(e) {
-    var t = "";
-    var n = new Uint8Array(e);
-    var r = n.byteLength;
-    for (var i = 0; i < r; i++) {
+    let t = "";
+    let n = new Uint8Array(e);
+    let r = n.byteLength;
+    for (let i = 0; i < r; i++) {
         t += String.fromCharCode(n[i])
     }
     return window.btoa(t)
@@ -15,7 +15,13 @@ function b64(e) {
 
 
 $(document).ready(function () {
-    var socket = io();
+    let socket = io();
+    let svg = document.getElementById("boundingBox");
+    let ratio = video.offsetWidth / constraints.video.width.ideal
+    svg.style.width = constraints.video.width.ideal * ratio
+    svg.style.height = constraints.video.height.ideal * ratio
+    let polygon = document.querySelector("#boundingBox polygon");
+
 
     socket.on('my response', function (msg) {
         $('#log').append('<p>Received: ' + msg.data + '</p>');
@@ -23,23 +29,35 @@ $(document).ready(function () {
 
 
     socket.on('edge array', function (data) {
-        console.warn(data.edges);
-        window.clearInterval(interval);
-        console.log(ms)
+        $("#boundingBox polygon").attr("points", "");
+        let draw = JSON.parse(data.edges);
+        data = draw.flat(1);
+
+        for (value of data) {
+            let point = svg.createSVGPoint();
+            point.x = value[0];
+            point.y = value[1];
+            polygon.points.appendItem(point);
+        }
+
+        window.clearInterval(ping);
+        $('#ping').html('<p>Ping: ' + ms + '</p>');
     });
 
 
-    $('#convert').click(function (event) {
-        event.preventDefault();
+    $('#convert').click(function (e) {
+        interval = window.setInterval(function () { emitImage() }, 1000);
+    });
+
+    function emitImage() {
         if (typeof currentStream === 'undefined') return;
 
         let src = takeSnapshot();
         const base64 = src.replace(/.*base64,/, '');
         socket.emit('my image', { data: base64 });
-        interval = window.setInterval(function () { ms += 1 }, 1);
-
-        return false;
-    });
+        ms = 0;
+        ping = window.setInterval(function () { ms += 1 }, 1);
+    }
 });
 
 
@@ -53,8 +71,8 @@ document.onkeypress = function (e) {
 
 
 function takeSnapshot() {
-    var context;
-    var width = video.offsetWidth,
+    let context;
+    let width = video.offsetWidth,
         height = video.offsetHeight;
 
     canvas = document.createElement('canvas');

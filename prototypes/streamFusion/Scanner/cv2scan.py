@@ -93,23 +93,3 @@ def check(img):
     edges = getEdges(oldBiggest, biggest, contours, img, biggestChanged)
 
     return edges
-
-
-def getEdges(oldBiggest, biggest, contours, img, biggestChanged):
-    # SECTION determine biggest contour
-    # SECTION evaluate contours and draw biggest + flip image into perspective
-    if biggest.size != 0 and (biggestChanged >= 0.5 or biggestChanged is None) and biggest.tolist() != oldBiggest.tolist():
-        biggest = reorder(biggest)
-        oldBiggest = biggest
-    else:
-        margin = 10
-        height, width, chanel = img.shape
-        width -= margin
-        height -= margin
-        windowPoints = np.array([[[margin, margin]], [[width, margin]],
-                                 [[margin, height]], [[width, height]]])
-
-        if (biggest.size == 0 and oldBiggest.size == 0) or len(contours) == 0:
-            oldBiggest = windowPoints
-
-    return oldBiggest

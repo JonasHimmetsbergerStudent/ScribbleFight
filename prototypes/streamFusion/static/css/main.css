@@ -56,3 +56,18 @@ video {
     display: none;
     color: #ff3939;
 }
+
+#boundingBox, #ping {
+    position: absolute;
+    /* background: red; */
+}
+
+#boundingBox polygon {
+    fill: none;
+    stroke: rgb(255, 72, 0);
+    stroke-width: 3;
+}
+
+#log {
+    display: none
+}
