@@ -22,19 +22,10 @@ $(document).ready(function () {
     });
 
 
-    socket.on('imageConversionByClient', function (data) {
-        // $("#img").attr("src", "data:image/png;base64," + data.buffer);
-        // str = "data:image/png;base64," + b64(data.buffer);
-        str = "data:image/png;base64," + data.buffer;
-        $("#img").attr("src", str);
+    socket.on('edge array', function (data) {
+        console.warn(data.edges);
         window.clearInterval(interval);
         console.log(ms)
-    });
-
-
-    socket.on('imageConversionByServer', function (data) {
-        console.log(data);
-        $("#img").attr("src", data);
     });
 
 
@@ -51,6 +42,7 @@ $(document).ready(function () {
     });
 });
 
+
 document.onkeypress = function (e) {
     if ((e.keyCode || e.which) === 13) {
         e.preventDefault();
@@ -58,6 +50,7 @@ document.onkeypress = function (e) {
         $('#log').append('<p>Interval cleared</p>');
     }
 };
+
 
 function takeSnapshot() {
     var context;

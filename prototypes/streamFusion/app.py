@@ -1,8 +1,11 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
+
+import Scanner.cv2scan as scanner
 import cv2
 import numpy as np
 import base64
+import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
@@ -32,11 +35,12 @@ def index():
 def test_message(message):
     base64_data = message['data']
     img = convertB64ToCv2img(base64_data)  # COVERT B64 MESSAGE TO CV2 IMAGE
+    edges = scanner.check(img)
 
-    imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    src = convertCv2imgToB64(imgGray)  # CONVERT CV2 IMAGE BACK TO B64 STRING
+    lists = edges.tolist()
+    json_str = json.dumps(lists)
 
-    emit('imageConversionByClient', {'buffer': src})
+    emit('edge array', {'edges': json_str})
 
 
 @socketio.on('connect')
