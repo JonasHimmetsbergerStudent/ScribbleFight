@@ -44,6 +44,13 @@ $(document).ready(function () {
     });
 
 
+    socket.on('perspective transformed', function (msg) {
+        str = "data:image/png;base64," + msg.buffer;
+        $("#img").attr("src", str);
+        $("#img").attr("src", str);
+    });
+
+
     $('#convert').click(function (e) {
         if (!convertedOnce) {
             convertedOnce = true;
@@ -58,8 +65,8 @@ $(document).ready(function () {
             [...polygon.points].forEach(element => {
                 snipset.push([element.x, element.y]);
             });
-            console.log(snipset);
-            // socket.emit('perspectivetransform', { img: base64, snipset:  });
+            socket.emit('getDataFromImage', { img: base64, snipset: snipset });
+            $('#log').css('display', 'block')
         }
     });
 

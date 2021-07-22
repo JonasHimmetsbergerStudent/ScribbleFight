@@ -43,16 +43,16 @@ def test_message(message):
     emit('edge array', {'edges': json_str})
 
 
-@socketio.on('perspectivetransform')
+@socketio.on('getDataFromImage')
 def test_message(message):
     base64_data = message['img']
-    snipset = message['snipset']
-    print(np.array(snipset))
+    snipset = np.array(message['snipset'])
     img = convertB64ToCv2img(base64_data)  # COVERT B64 MESSAGE TO CV2 IMAGE
 
-    json_str = convertCv2imgToB64(img)
+    wrapedImg = scanner.getWrappedImg(img, snipset)
+    json_str = convertCv2imgToB64(wrapedImg)
 
-    emit('perspective transformed', {'edges': json_str})
+    emit('perspective transformed', {'buffer': json_str})
 
 
 @socketio.on('connect')

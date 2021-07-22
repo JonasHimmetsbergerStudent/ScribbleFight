@@ -71,8 +71,6 @@ async function gotDevices(deviceInfos) {
 
     await sleep(1000);
 
-    console.log(cameras)
-
     if (cameras.length > 1 && supports['facingMode'] === true) flipBtn.disabled = false;
     else flipBtn.disabled = true;
 }
