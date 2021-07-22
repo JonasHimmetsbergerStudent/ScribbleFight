@@ -28,7 +28,8 @@ let currentStream,
     cameraCounter = 0,
     shouldFaceUser = false,
     stream = null,
-    actWidth, actHeight;
+    actWidth, actHeight,
+    snap = null;
 
 function startCameraStream() {
     if (checkMobile()) { // if app is used on mobile device then show video stream
@@ -142,16 +143,14 @@ function sleep(ms) {
 }
 
 $('#snap').click(function () {
-
-    src = takeSnapshot();
-    $('#converted').attr('src', src);
-    $('#converted').width(video.offsetWidth);
-    $('#converted').height(video.offsetHeight);
+    snap = takeSnapshot()
+    $('#converted').append(snap.canvas);
     $('#converted').css('display', 'block')
     window.clearInterval(interval);
     stopMediaTracks(stream);
     video.style.display = "none";
     draggablePolygon(polygon);
+    $('#convert').prop('disabled', false);
 });
 
 function draggablePolygon(polygon) {

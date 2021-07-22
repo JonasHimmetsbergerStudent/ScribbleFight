@@ -3,6 +3,8 @@ let interval = ping = null;
 let ms = 0;
 let svg = document.getElementById("boundingBox");
 let polygon = document.getElementById("draggable");
+let convertedOnce = false
+let drawOri = [];
 
 
 function b64(e) {
@@ -27,8 +29,8 @@ $(document).ready(function () {
 
     socket.on('edge array', function (data) {
         $("#draggable").attr("points", "");
-        let draw = JSON.parse(data.edges);
-        data = draw.flat(1);
+        data = JSON.parse(data.edges);
+        data = data.flat(1);
 
         for (value of data) {
             let point = svg.createSVGPoint();
@@ -43,17 +45,28 @@ $(document).ready(function () {
 
 
     $('#convert').click(function (e) {
-        e.target.disabled = true;
-        interval = window.setInterval(function () {
-            emitImage()
-            $('#convert').prop('disabled', false);
-        }, 500);
+        if (!convertedOnce) {
+            convertedOnce = true;
+            e.target.disabled = true;
+            interval = window.setInterval(function () {
+                emitImage()
+            }, 500);
+        } else {
+            if (snap === null || polygon.points.length === 0) return;
+            const base64 = snap.src.replace(/.*base64,/, '');
+            let snipset = [];
+            [...polygon.points].forEach(element => {
+                snipset.push([element.x, element.y]);
+            });
+            console.log(snipset);
+            // socket.emit('perspectivetransform', { img: base64, snipset:  });
+        }
     });
 
     function emitImage() {
         if (typeof currentStream === 'undefined') return;
 
-        let src = takeSnapshot();
+        let src = takeSnapshot().src;
         const base64 = src.replace(/.*base64,/, '');
         socket.emit('my image', { data: base64 });
         ms = 0;
@@ -85,5 +98,5 @@ function takeSnapshot() {
 
     src = canvas.toDataURL('image/png');
 
-    return src;
+    return { src: src, canvas: canvas };
 }

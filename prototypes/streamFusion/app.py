@@ -43,6 +43,18 @@ def test_message(message):
     emit('edge array', {'edges': json_str})
 
 
+@socketio.on('perspectivetransform')
+def test_message(message):
+    base64_data = message['img']
+    snipset = message['snipset']
+    print(np.array(snipset))
+    img = convertB64ToCv2img(base64_data)  # COVERT B64 MESSAGE TO CV2 IMAGE
+
+    json_str = convertCv2imgToB64(img)
+
+    emit('perspective transformed', {'edges': json_str})
+
+
 @socketio.on('connect')
 def test_connect():
     emit('my response', {'data': 'Connected'})
