@@ -51,9 +51,7 @@ let supports = navigator.mediaDevices.getSupportedConstraints();
 flipBtn.addEventListener('click', function () {
     if (stream == null) return
     // we need to flip, stop everything
-    stream.getTracks().forEach(t => {
-        t.stop();
-    });
+    stopMediaTracks(stream);
     // toggle / flip
     shouldFaceUser = !shouldFaceUser;
     capture();
@@ -141,4 +139,50 @@ function capture() {
 
 function sleep(ms) {
     return new Promise(r => setTimeout(r, ms));
+}
+
+$('#snap').click(function () {
+
+    src = takeSnapshot();
+    $('#converted').attr('src', src);
+    $('#converted').width(video.offsetWidth);
+    $('#converted').height(video.offsetHeight);
+    $('#converted').css('display', 'block')
+    window.clearInterval(interval);
+    stopMediaTracks(stream);
+    video.style.display = "none";
+    draggablePolygon(polygon);
+});
+
+function draggablePolygon(polygon) {
+    var points = polygon.points;
+    var svgRoot = $(polygon).closest("svg");
+
+    for (var i = 0; i < points.numberOfItems; i++) {
+        (function (i) { // close over variables for drag call back
+            var point = points.getItem(i);
+
+            var handle = document.createElement("div");
+            handle.className = "handle";
+            document.body.appendChild(handle);
+
+            var base = svgRoot.position();
+            // center handles over polygon
+            var cs = window.getComputedStyle(handle, null);
+            base.left -= (parseInt(cs.width) + parseInt(cs.borderLeftWidth) + parseInt(cs.borderRightWidth)) / 2;
+            base.top -= (parseInt(cs.height) + parseInt(cs.borderTopWidth) + parseInt(cs.borderBottomWidth)) / 2;
+
+            handle.style.left = base.left + point.x + "px";
+            handle.style.top = base.top + point.y + "px";
+
+            $(handle).draggable({
+                scroll: false,
+                containment: "#boundingBox",
+                drag: function (event) {
+                    point.x = parseInt(handle.style.left) - base.left;
+                    point.y = parseInt(handle.style.top) - base.top;
+                }
+            });
+        }(i));
+    }
 }

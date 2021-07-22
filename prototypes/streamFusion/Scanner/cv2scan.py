@@ -64,7 +64,7 @@ def check(img):
 
         # FIND THE BIGGEST COUNTOUR
         accuracy = 25/1000
-        area = 2000
+        area = 1000
         biggest, maxArea = biggestContour(
             contours, accuracy, area)  # FIND THE BIGGEST CONTOUR
 

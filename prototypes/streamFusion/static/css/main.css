@@ -12,6 +12,7 @@ body {
     min-height: 100%;
     display: grid;
     grid-template-rows: 1fr auto;
+    background-color: rgb(15, 15, 15);
 }
 
 header {
@@ -21,7 +22,6 @@ header {
 }
 
 main {
-    background: #ffffff;
     height: 100%;
     width: 100%;
     display: flex;
@@ -61,7 +61,12 @@ video {
     /* background: red; */
 }
 
-#boundingBox polygon {
+#ping p {
+    color: white;
+    text-shadow: 0 0 2px rgb(15, 15, 15);
+}
+
+#draggable {
     fill: none;
     stroke: rgb(255, 72, 0);
     stroke-width: 2;
@@ -69,4 +74,38 @@ video {
 
 #log {
     display: none
+}
+
+#contr {
+    position: absolute;
+    bottom: 5%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#snap {
+    border: solid 5px white;
+    background: transparent;
+    width: 93px;
+    height: 93px;
+    border-radius: 100%;
+    box-shadow: 0 0 10px rgb(15, 15, 15);
+}
+
+#convert {
+    padding: 20px;
+}
+
+#converted {
+    display: none;
+}
+
+.handle {
+    position: absolute;
+    border: 0.1em solid black;
+    width: 1em;
+    height: 1em;
 }

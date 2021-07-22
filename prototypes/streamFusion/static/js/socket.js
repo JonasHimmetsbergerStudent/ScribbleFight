@@ -2,7 +2,7 @@
 let interval = ping = null;
 let ms = 0;
 let svg = document.getElementById("boundingBox");
-let polygon = document.querySelector("#boundingBox polygon");
+let polygon = document.getElementById("draggable");
 
 
 function b64(e) {
@@ -26,7 +26,7 @@ $(document).ready(function () {
 
 
     socket.on('edge array', function (data) {
-        $("#boundingBox polygon").attr("points", "");
+        $("#draggable").attr("points", "");
         let draw = JSON.parse(data.edges);
         data = draw.flat(1);
 
@@ -43,7 +43,11 @@ $(document).ready(function () {
 
 
     $('#convert').click(function (e) {
-        interval = window.setInterval(function () { emitImage() }, 500);
+        e.target.disabled = true;
+        interval = window.setInterval(function () {
+            emitImage()
+            $('#convert').prop('disabled', false);
+        }, 500);
     });
 
     function emitImage() {
