@@ -1,10 +1,12 @@
 // it takes 10 seconds for a new item to spawn
-var timer = 10;
+var timer = 5;
 var spawning;
 var xCoordinates = [];
 var xCoordinatesUsed = [];
 var items = [];
 var x;
+var i;
+
 
 function spawn() {
     spawning = false;
@@ -13,7 +15,7 @@ function spawn() {
     }
     if (timer == 0) {
         spawning = true;
-        timer = 10;
+        timer = 5;
     }
     if (spawning) {
         if(items.length < xCoordinates.length) {        
@@ -21,34 +23,55 @@ function spawn() {
            while(xCoordinatesUsed.includes(x)) {
                 x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
             } 
-            items.push(createSprite(x, 0, 50, 50));
+            i = createSprite(x, 0, 50, 50);
+            i.addImage(itemImg);
+            console.log(i.position.x);
+            items.push(i);
             xCoordinatesUsed.push(x);
-            if(xCoordinatesUsed.length == xCoordinates.length && xCoordinatesUsed.length != items.length) {
-                xCoordinatesUsed = [];
-            }
         }
     }
+   itemPickUp();
+
+}
+
+function itemPickUp() {
     if (items.length > 0) {
         items.forEach(item => {
-            i = items.indexOf(items);
-            item.addImage(itemImg);
-            if (item.velocity.y <= 20) {
+            if (item.velocity.y <= 10) {
                 item.velocity.y -= GRAVITY;
             }
             item.collide(environment);
-            if(item.collide(player.sprite)) {
+            if(item.overlapPixel(player.sprite.position.x + player_width / 2 ,player.sprite.position.y)
+            || item.overlapPixel(player.sprite.position.x - player_width / 2 ,player.sprite.position.y)
+            || item.overlapPixel(player.sprite.position.x,player.sprite.position.y + player_height / 2)
+            || item.overlapPixel(player.sprite.position.x,player.sprite.position.y - player_height / 2)) {
                 player.item = new Item("bomb");
+                items.splice(items.indexOf(item),1);
+                xCoordinatesUsed.splice(xCoordinatesUsed.indexOf(item.position.x),1);
+                console.log(items);
+                console.log(xCoordinatesUsed);
                 item.remove();
-                items.splice(i,1);
+                
             }
         });
 
     }
-
+ 
 }
 
 function getRandomInt(num) {
     return Math.floor(Math.random() * num + 1);
+}
+
+function removeA(arr) {
+    var what, a = arguments, L = a.length, ax;
+    while (L > 1 && arr.length) {
+        what = a[--L];
+        while ((ax= arr.indexOf(what)) !== -1) {
+            arr.splice(ax, 1);
+        }
+    }
+    return arr;
 }
 
 function getXCoordinates() {

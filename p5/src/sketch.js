@@ -48,6 +48,7 @@ function draw() {
     bombPhysics();
     defaultAttackPhysics();
     spawn();
+    //itemPickUp();
 
     background(bg);
 
