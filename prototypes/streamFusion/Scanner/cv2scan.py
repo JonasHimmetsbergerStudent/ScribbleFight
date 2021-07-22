@@ -99,8 +99,8 @@ def getWrappedImg(img, snipset):
     heightImg, widthImg, chanel = img.shape
 
     pts1 = np.float32(snipset)  # PREPARE POINTS FOR WARP
-    pts2 = np.float32([[0, 0], [widthImg, 0], [0, heightImg], [
-        widthImg, heightImg]])  # PREPARE POINTS FOR WARP
+    pts2 = np.float32([[widthImg, 0], [0, 0],
+                       [0, heightImg], [widthImg, heightImg]])  # PREPARE POINTS FOR WARP
     matrix = cv2.getPerspectiveTransform(pts1, pts2)
     wrappedImg = cv2.warpPerspective(
         img, matrix, (widthImg, heightImg))
