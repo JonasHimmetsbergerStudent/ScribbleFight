@@ -1,5 +1,5 @@
 // it takes 10 seconds for a new item to spawn
-var timer = 5;
+var timer = 15;
 var spawning;
 var xCoordinates = [];
 var xCoordinatesUsed = [];
@@ -15,7 +15,7 @@ function spawn() {
     }
     if (timer == 0) {
         spawning = true;
-        timer = 5;
+        timer = 10;
     }
     if (spawning) {
         if(items.length < xCoordinates.length) {        
@@ -25,13 +25,11 @@ function spawn() {
             } 
             i = createSprite(x, 0, 50, 50);
             i.addImage(itemImg);
-            console.log(i.position.x);
             items.push(i);
             xCoordinatesUsed.push(x);
         }
     }
    itemPickUp();
-
 }
 
 function itemPickUp() {
@@ -48,10 +46,7 @@ function itemPickUp() {
                 player.item = new Item("bomb");
                 items.splice(items.indexOf(item),1);
                 xCoordinatesUsed.splice(xCoordinatesUsed.indexOf(item.position.x),1);
-                console.log(items);
-                console.log(xCoordinatesUsed);
                 item.remove();
-                
             }
         });
 
@@ -63,24 +58,28 @@ function getRandomInt(num) {
     return Math.floor(Math.random() * num + 1);
 }
 
-function removeA(arr) {
-    var what, a = arguments, L = a.length, ax;
-    while (L > 1 && arr.length) {
-        what = a[--L];
-        while ((ax= arr.indexOf(what)) !== -1) {
-            arr.splice(ax, 1);
-        }
-    }
-    return arr;
-}
-
 function getXCoordinates() {
+    let sprite;
     for (let i = 0; i < sprite_pixels.length; i++) {
         for (let j = 0; j < sprite_pixels[i].length; j++) {
-            if (sprite_pixels[i][j] !== undefined && sprite_pixels[i][j].overlapPoint(sprite_pixels[i][j].position.x - 25, sprite_pixels[i][j].position.y)) {
-                xCoordinates.push(j * 25 - sprite_pixels[i][j].width / 2);
+            sprite = sprite_pixels[i][j];
+            if (sprite !== undefined && sprite.width >= 100) {
+                    for (let index = 0; index < sprite.width / 2; index+=50) {
+                        if(sprite.position.x + index < sprite.position.x + sprite.width/2) {
+                            xCoordinates.push((sprite.position.x + index));                        
+                        }
+                    }
+                    for (let index = sprite.width; index > sprite.width / 2; index-=50) {
+                        if(sprite.position.x + index > sprite.position.x + sprite.width/2) {
+                            xCoordinates.push((sprite.position.x + index-sprite.width));                        
+                        }
+                    }
+                   
+                  
+                   
                 // doing this eliminates duplicates
                 xCoordinates = Array.from(new Set(xCoordinates));
+                console.log(xCoordinates);
             }
         }
     }
