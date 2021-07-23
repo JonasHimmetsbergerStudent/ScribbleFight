@@ -1,4 +1,4 @@
-// it takes 10 seconds for a new item to spawn
+// it takes 15 seconds for a new item to spawn
 var timer = 15;
 var spawning;
 var xCoordinates = [];
@@ -6,16 +6,21 @@ var xCoordinatesUsed = [];
 var items = [];
 var x;
 var i;
+var gameStart = true;
 
 
 function spawn() {
+    if(gameStart) {
+        timer = 3;
+        gameStart = false;
+    }
     spawning = false;
     if (frameCount % 60 == 0 && timer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
         timer--;
     }
     if (timer == 0) {
         spawning = true;
-        timer = 10;
+        timer = 15;
     }
     if (spawning) {
         if(items.length < xCoordinates.length) {        
@@ -73,13 +78,9 @@ function getXCoordinates() {
                         if(sprite.position.x + index > sprite.position.x + sprite.width/2) {
                             xCoordinates.push((sprite.position.x + index-sprite.width));                        
                         }
-                    }
-                   
-                  
-                   
+                    }   
                 // doing this eliminates duplicates
                 xCoordinates = Array.from(new Set(xCoordinates));
-                console.log(xCoordinates);
             }
         }
     }
