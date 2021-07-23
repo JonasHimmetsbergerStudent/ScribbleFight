@@ -48,6 +48,9 @@ function itemPickUp() {
             || item.overlapPixel(player.sprite.position.x - player_width / 2 ,player.sprite.position.y)
             || item.overlapPixel(player.sprite.position.x,player.sprite.position.y + player_height / 2)
             || item.overlapPixel(player.sprite.position.x,player.sprite.position.y - player_height / 2)) {
+                if(player.item != undefined && player.item.sprite != undefined) {
+                    player.item.sprite.remove();
+                }
                 player.item = new Item("bomb");
                 items.splice(items.indexOf(item),1);
                 xCoordinatesUsed.splice(xCoordinatesUsed.indexOf(item.position.x),1);

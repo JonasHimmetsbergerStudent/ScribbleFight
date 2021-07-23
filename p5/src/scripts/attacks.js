@@ -9,6 +9,7 @@ var timeFlying;
 var diffDirection = false;
 var testKnockback = 3;
 var projectileIndex;
+var stillAlive = false;
 
 function defaultAttack() {
 
@@ -83,7 +84,6 @@ function bombAttack() {
     if (player.item.sprite === undefined) {
       if (player_direction == "right") {
         player.item.sprite = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 100, 100);
-        console.log("skdjf");
       } else if (player_direction == "left") {
         player.item.sprite = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 100, 100);
       }
@@ -101,7 +101,8 @@ function bombAttack() {
 
 function bombPhysics() {
   diffDirection = false;
-  if (player.item !== undefined && player.item.sprite !== undefined && player.item.type == "bomb") {
+ 
+  if (player.item !== undefined && player.item.sprite !== undefined) {
     if (player.item.sprite.velocity.y <= 20) {
       player.item.sprite.velocity.y -= GRAVITY;
     }
