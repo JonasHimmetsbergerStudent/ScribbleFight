@@ -35,3 +35,22 @@ def getEdges(oldBiggest, biggest, contours, img, biggestChanged):
             oldBiggest = windowPoints
 
     return oldBiggest
+
+
+def reorder(myPoints):  # THE GIVEN ARRAY FROM OPEN-CV NEEDS TO BE REARRANGED
+
+    myPointsNew = np.zeros((4, 2))
+    myPointsNew[0] = myPoints[1]
+    myPointsNew[1] = myPoints[0]
+    myPointsNew[2] = myPoints[2]
+    myPointsNew[3] = myPoints[3]
+
+    myPointsNewNew = np.zeros((4, 2))
+    myPointsNewNew[0] = myPointsNew[0]
+    myPointsNewNew[1] = myPointsNew[1]
+    myPointsNewNew[2] = myPointsNew[2]
+    myPointsNewNew[3] = myPointsNew[3]
+
+    print(myPointsNewNew)
+
+    return myPointsNewNew

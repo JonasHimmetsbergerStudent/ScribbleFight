@@ -19,6 +19,14 @@ function b64(e) {
 
 
 $(document).ready(function () {
+    screen.lockOrientationUniversal = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation;
+    screen.orientation.lock("portrait")
+        .then(function () {
+            alert('Locked');
+        })
+        .catch(function (error) {
+            alert(error);
+        });
     let socket = io();
 
 
@@ -28,6 +36,7 @@ $(document).ready(function () {
 
 
     socket.on('edge array', function (data) {
+        if (interval == null || !interval) return;
         $("#draggable").attr("points", "");
         data = JSON.parse(data.edges);
         data = data.flat(1);
@@ -62,9 +71,12 @@ $(document).ready(function () {
             if (snap === null || polygon.points.length === 0) return;
             const base64 = snap.src.replace(/.*base64,/, '');
             let snipset = [];
+            let str = "";
             [...polygon.points].forEach(element => {
                 snipset.push([element.x, element.y]);
+                str += "[" + element.x + ", " + element.y + "]";
             });
+            alert(str);
             socket.emit('getDataFromImage', { img: base64, snipset: snipset });
             $('#log').css('display', 'block')
         }

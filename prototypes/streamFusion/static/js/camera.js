@@ -141,10 +141,10 @@ function sleep(ms) {
 }
 
 $('#snap').click(function () {
+    interval = window.clearInterval(interval);
     snap = takeSnapshot()
     $('#converted').append(snap.canvas);
     $('#converted').css('display', 'block')
-    window.clearInterval(interval);
     stopMediaTracks(stream);
     video.style.display = "none";
     draggablePolygon(polygon);
