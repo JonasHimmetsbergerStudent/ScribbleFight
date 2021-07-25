@@ -45,12 +45,6 @@ def reorder(myPoints):  # THE GIVEN ARRAY FROM OPEN-CV NEEDS TO BE REARRANGED
     myPointsNew[2] = myPoints[2]
     myPointsNew[3] = myPoints[3]
 
-    myPointsNewNew = np.zeros((4, 2))
-    myPointsNewNew[0] = myPointsNew[0]
-    myPointsNewNew[1] = myPointsNew[1]
-    myPointsNewNew[2] = myPointsNew[2]
-    myPointsNewNew[3] = myPointsNew[3]
-
-    print(myPointsNewNew)
+    myPointsNewNew = myPointsNew  # [::1]
 
     return myPointsNewNew

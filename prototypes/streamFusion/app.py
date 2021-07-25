@@ -69,6 +69,6 @@ if __name__ == '__main__':
     # Aufpassen, dass port nicht geblockt ist und IP passt
     # app.run(debug=True, host="192.168.0.21", port=443, ssl_context='adhoc')
     print('server running')
-    socketio.run(app, host="192.168.0.21", port=443, certfile="./cert/cert.pem",
+    socketio.run(app, host="192.168.0.4", port=443, certfile="./cert/cert.pem",
                  keyfile="./keys/key.pem")
     print('server stopped')

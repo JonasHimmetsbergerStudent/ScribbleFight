@@ -19,19 +19,11 @@ function b64(e) {
 
 
 $(document).ready(function () {
-    screen.lockOrientationUniversal = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation;
-    screen.orientation.lock("portrait")
-        .then(function () {
-            alert('Locked');
-        })
-        .catch(function (error) {
-            alert(error);
-        });
     let socket = io();
 
 
     socket.on('my response', function (msg) {
-        $('#log').append('<p>Received: ' + msg.data + '</p>');
+        console.log('Received: ' + msg.data);
     });
 
 
@@ -63,22 +55,22 @@ $(document).ready(function () {
     $('#convert').click(function (e) {
         if (!convertedOnce) {
             convertedOnce = true;
-            e.target.disabled = true;
             interval = window.setInterval(function () {
                 emitImage()
             }, 500);
+            $("#snap").css('visibility', 'visible')
+            $('#convert').css('visibility', 'hidden');
         } else {
             if (snap === null || polygon.points.length === 0) return;
             const base64 = snap.src.replace(/.*base64,/, '');
             let snipset = [];
-            let str = "";
             [...polygon.points].forEach(element => {
                 snipset.push([element.x, element.y]);
-                str += "[" + element.x + ", " + element.y + "]";
             });
-            alert(str);
             socket.emit('getDataFromImage', { img: base64, snipset: snipset });
-            $('#log').css('display', 'block')
+            $('main').css('display', 'none');
+            $('#log').css('visibility', 'visible')
+            $("div.ui-draggable").remove();
         }
     });
 
@@ -95,11 +87,11 @@ $(document).ready(function () {
 
 
 document.onkeypress = function (e) {
-    if ((e.keyCode || e.which) === 13) {
+    /*if ((e.keyCode || e.which) === 13) {
         e.preventDefault();
         window.clearInterval(interval);
-        $('#log').append('<p>Interval cleared</p>');
-    }
+        console.log('Interval cleared');
+    }*/
 };
 
 
