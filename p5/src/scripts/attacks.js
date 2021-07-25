@@ -13,7 +13,7 @@ var stillAlive = false;
 
 function defaultAttack() {
 
-  if (player_direction == "right") {
+  if (player.direction == "right") {
     projectile = createSprite(player.sprite.position.x, player.sprite.position.y, 20, 20);
   } else {
     projectile = createSprite(player.sprite.position.x, player.sprite.position.y, 20, 20);
@@ -82,17 +82,17 @@ function defaultAttackPhysics() {
 function bombAttack() {
   if (player.item !== undefined && player.item.type == "bomb" && player.item.ammo > 0) {
     if (player.item.sprite === undefined) {
-      if (player_direction == "right") {
+      if (player.direction == "right") {
         player.item.sprite = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 100, 100);
-      } else if (player_direction == "left") {
+      } else if (player.direction == "left") {
         player.item.sprite = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 100, 100);
       }
       player.item.ammo--;
       player.item.sprite.addImage(bombImg);
       player.item.sprite.life = 1000;
-      if (player_direction == "left") {
+      if (player.direction == "left") {
         player.item.sprite.velocity.x -= 5;
-      } else if (player_direction == "right") {
+      } else if (player.direction == "right") {
         player.item.sprite.velocity.x += 5;
       }
     }
