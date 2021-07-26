@@ -86,16 +86,12 @@ def squarify(myPoints):
     lenAngPt = np.array([[lenA, angleZA, pt_A], [lenB, angleZB, pt_B],
                          [lenC, angleZC, pt_C], [lenD, angleZD, pt_D]])
 
-    list1 = sorted(lenAngPt, key=lambda x: x[0])
-    print(list1)
+    list1 = sorted(lenAngPt, key=operator.itemgetter(0, 1))
 
     myPointsNew[0] = list1[0][2]
     myPointsNew[2] = list1[len(list1) - 1][2]
 
     list2 = sorted(lenAngPt, key=lambda x: x[1])
-    print(list2[0][2] in myPointsNew)
-    print(list2[0][2])
-    print(myPoints)
 
     if list2[0][2] not in myPointsNew:
         myPointsNew[1] = list2[0][2]
@@ -106,8 +102,6 @@ def squarify(myPoints):
         myPointsNew[3] = list2[len(list2) - 1][2]
     else:
         myPointsNew[3] = list2[len(list2) - 2][2]
-
-    print(myPointsNew)
 
     return myPointsNew
 

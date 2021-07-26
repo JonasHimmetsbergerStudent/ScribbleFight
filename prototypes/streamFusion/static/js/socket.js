@@ -46,6 +46,10 @@ $(document).ready(function () {
 
 
     socket.on('perspective transformed', function (msg) {
+        if (msg.error) {
+            alert(msg.error)
+            return;
+        }
         str = "data:image/png;base64," + msg.buffer;
         $("#img").attr("src", str);
         $("#img").attr("src", str);

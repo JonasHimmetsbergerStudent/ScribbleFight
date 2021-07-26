@@ -48,11 +48,14 @@ def test_message(message):
     base64_data = message['img']
     snipset = np.array(message['snipset'])
     img = convertB64ToCv2img(base64_data)  # COVERT B64 MESSAGE TO CV2 IMAGE
+    try:
+        wrapedImg = scanner.getWrappedImg(img, snipset)
+        json_str = convertCv2imgToB64(wrapedImg)
 
-    wrapedImg = scanner.getWrappedImg(img, snipset)
-    json_str = convertCv2imgToB64(wrapedImg)
-
-    emit('perspective transformed', {'buffer': json_str})
+        emit('perspective transformed', {'buffer': json_str})
+    except:
+        emit('perspective transformed', {
+             'error': 'Perspective transform didn\'t work'})
 
 
 @socketio.on('connect')
