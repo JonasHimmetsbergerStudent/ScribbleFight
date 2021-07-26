@@ -23,11 +23,12 @@ $(document).ready(function () {
 
 
     socket.on('my response', function (msg) {
-        $('#log').append('<p>Received: ' + msg.data + '</p>');
+        console.log('Received: ' + msg.data);
     });
 
 
     socket.on('edge array', function (data) {
+        if (interval == null || !interval) return;
         $("#draggable").attr("points", "");
         data = JSON.parse(data.edges);
         data = data.flat(1);
@@ -54,10 +55,11 @@ $(document).ready(function () {
     $('#convert').click(function (e) {
         if (!convertedOnce) {
             convertedOnce = true;
-            e.target.disabled = true;
             interval = window.setInterval(function () {
                 emitImage()
             }, 500);
+            $("#snap").css('visibility', 'visible')
+            $('#convert').css('visibility', 'hidden');
         } else {
             if (snap === null || polygon.points.length === 0) return;
             const base64 = snap.src.replace(/.*base64,/, '');
@@ -66,7 +68,9 @@ $(document).ready(function () {
                 snipset.push([element.x, element.y]);
             });
             socket.emit('getDataFromImage', { img: base64, snipset: snipset });
-            $('#log').css('display', 'block')
+            $('main').css('display', 'none');
+            $('#log').css('visibility', 'visible')
+            $("div.ui-draggable").remove();
         }
     });
 
@@ -83,11 +87,11 @@ $(document).ready(function () {
 
 
 document.onkeypress = function (e) {
-    if ((e.keyCode || e.which) === 13) {
+    /*if ((e.keyCode || e.which) === 13) {
         e.preventDefault();
         window.clearInterval(interval);
-        $('#log').append('<p>Interval cleared</p>');
-    }
+        console.log('Interval cleared');
+    }*/
 };
 
 

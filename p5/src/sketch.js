@@ -2,6 +2,7 @@
 var player;
 var sprite_pixels = [];
 var environment;
+var otherPlayers = [];
 
 //Variables
 var bg;
@@ -23,12 +24,12 @@ var itemImg;
 const GRAVITY = -1;
 const JUMP = 15;
 const SPEED = 5;
-var player_direction = "right";
 
 function setup() {
   createCanvas(1429, 830);
   background(51);
   player = new Player(createSprite(500, 200, player_width, player_height));
+  otherPlayers[0] = new Player(createSprite(800, 200, player_width, player_height));
   player.sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
   environment = new Group();
   player.sprite.addAnimation("normal", "../assets/amogus.png");
@@ -38,7 +39,7 @@ function setup() {
 
 function draw() {
   touches_side = false;
-  if (started) {
+  if (started && !youAreDead) {
     // max speed is 20 
     if (player.sprite.velocity.y <= 20 && !flying) {
       player.sprite.velocity.y -= GRAVITY;
@@ -58,6 +59,7 @@ function draw() {
       controls();
     }
     mirrorSprite();
+    deathCheck();
     drawSprites();
   }
 }
@@ -67,13 +69,13 @@ function mirrorSprite() {
   if (keyWentDown(65)) {
     if (player.sprite.mirrorX() === 1) {
       player.sprite.mirrorX(player.sprite.mirrorX() * -1);
-      player_direction = "left";
+      player.direction = "left";
     }
   }
   if (keyWentDown(68)) {
     if (player.sprite.mirrorX() === -1) {
       player.sprite.mirrorX(player.sprite.mirrorX() * -1);
-      player_direction = "right";
+      player.direction = "right";
     }
   }
 }

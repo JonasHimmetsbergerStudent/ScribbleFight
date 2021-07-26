@@ -10,7 +10,6 @@ function checkMobile() {
 }
 
 
-document.addEventListener('DOMContentLoaded', startCameraStream);
 const video = document.getElementById('video'),
     // button = document.getElementById('button'), select = document.getElementById('select'),
     flipBtn = document.getElementById('camera-facing-flip'),
@@ -104,10 +103,10 @@ function capture() {
 
             console.log(JSON.stringify(capabilities) + (_stream.getVideoTracks()));
 
+            $('#contr').css('visibility', 'visible')
             await sleep(1000);
             svg.style.width = video.offsetWidth // / video.videoWidth
             svg.style.height = video.offsetHeight // video.videoHeight
-
             // Check whether zoom is supported or not.
             if (!('zoom' in capabilities)) {
                 if (!error.innerHTML.includes(track.label)) error.innerHTML += 'Zoom is not supported by ' + track.label + '<br>';
@@ -141,14 +140,16 @@ function sleep(ms) {
 }
 
 $('#snap').click(function () {
+    interval = window.clearInterval(interval);
     snap = takeSnapshot()
     $('#converted').append(snap.canvas);
     $('#converted').css('display', 'block')
-    window.clearInterval(interval);
     stopMediaTracks(stream);
     video.style.display = "none";
     draggablePolygon(polygon);
     $('#convert').prop('disabled', false);
+    $('#convert').css('visibility', 'visible');
+    $('#snap').css('visibility', 'hidden');
 });
 
 function draggablePolygon(polygon) {

@@ -14,7 +14,7 @@ var stillAlive = false;
 
 function defaultAttack() {
 
-  if (player_direction == "right") {
+  if (player.direction == "right") {
     projectile = createSprite(player.sprite.position.x, player.sprite.position.y, 20, 20);
   } else {
     projectile = createSprite(player.sprite.position.x, player.sprite.position.y, 20, 20);
@@ -84,17 +84,17 @@ function bombAttack() {
   if (player.item["bomb"] !== undefined && player.item["bomb"].ammo > 0) {
     // man kann nur eine bombe gleichzeitig aussenden
     if (player.item["bomb"].sprite === undefined) {
-      if (player_direction == "right") {
+      if (player.direction == "right") {
         player.item["bomb"].sprite = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 100, 100);
-      } else if (player_direction == "left") {
+      } else if (player.direction == "left") {
         player.item["bomb"].sprite = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 100, 100);
       }
       player.item["bomb"].ammo--;
       player.item["bomb"].sprite.addImage(bombImg);
       player.item["bomb"].sprite.life = 1000;
-      if (player_direction == "left") {
+      if (player.direction == "left") {
         player.item["bomb"].sprite.velocity.x -= 5;
-      } else if (player_direction == "right") {
+      } else if (player.direction == "right") {
         player.item["bomb"].sprite.velocity.x += 5;
       }
       bombs.push(player.item["bomb"].sprite);
