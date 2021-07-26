@@ -81,7 +81,10 @@ video {
 }
 
 #log img {
-    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    border: solid red 1px;
+    box-sizing: border-box;
 }
 
 #contr {

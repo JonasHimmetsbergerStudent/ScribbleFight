@@ -5,8 +5,6 @@ from .utlis import *
 import cv2
 import numpy as np
 import imutils
-import math
-import scipy.spatial.distance
 
 
 def check(img):
@@ -98,97 +96,57 @@ def check(img):
 
 
 def getWrappedImg(img, snipset):
+    snipset = squarify(snipset)
 
     pt_A = snipset[0]
     pt_B = snipset[1]
     pt_C = snipset[2]
     pt_D = snipset[3]
 
+    lineAB = np.array([pt_A, pt_B])
+    lineBC = np.array([pt_B, pt_C])
+    lineCD = np.array([pt_C, pt_D])
+    lineDA = np.array([pt_D, pt_A])
+
     width_AD = np.sqrt(((pt_A[0] - pt_D[0]) ** 2) + ((pt_A[1] - pt_D[1]) ** 2))
     width_BC = np.sqrt(((pt_B[0] - pt_C[0]) ** 2) + ((pt_B[1] - pt_C[1]) ** 2))
-    # die maxHeight * 90 / abs(90-winkel zwischen zwei größten linien)
-
-    lineA = np.array([pt_A, pt_B])
-    lineB = np.array([pt_B, pt_C])
-    lineC = np.array([pt_C, pt_D])
-    lineD = np.array([pt_D, pt_A])
-
-    distLineA = ((((lineA[0][0] - lineA[0][1])**2) +
-                 ((lineA[1][0] - lineA[1][1])**2))**0.5)
-    distLineB = ((((lineB[0][0] - lineB[1][0])**2) +
-                 ((lineB[1][1] - lineB[0][1])**2))**0.5)
-    distLineC = ((((lineC[1][1] - lineC[0][1])**2) +
-                 ((lineC[0][0] - lineC[1][0])**2))**0.5)
-    distLineD = ((((lineD[0][0] - lineD[0][1])**2) +
-                 ((lineD[1][0] - lineD[1][1])**2))**0.5)
-
-    lineA = np.array([lineA, distLineA])
-    lineB = np.array([lineB, distLineB])
-    lineC = np.array([lineC, distLineC])
-    lineD = np.array([lineD, distLineD])
-
-    lines = [lineA, lineB, lineC, lineD]
-    orderedLines = sorted(lines, key=lambda x: x[1], reverse=True)
-
-    lineA, lineB, lineC = orderedLines[:3]
-    if lineA == lineB:
-        lineB = lineC
-
-    lineA = lineA[0]
-    lineB = lineB[0]
-
-    print(lineA)
-    print(lineB)
-
-    # TODO winkel zwischen linien
-    angle = ang(lineA, lineB)
-    print(angle)
-    if angle == 90:
-        factor = 1
+    maxHeight = max(int(width_AD), int(width_BC))
+    if maxHeight == width_AD:
+        lineA = lineDA
     else:
-        factor = 90 / abs(90 - angle)
-    maxWidth = max(int(width_AD), int(width_BC)) * factor
+        lineA = lineBC
 
     height_AB = np.sqrt(((pt_A[0] - pt_B[0]) ** 2) +
                         ((pt_A[1] - pt_B[1]) ** 2))
     height_CD = np.sqrt(((pt_C[0] - pt_D[0]) ** 2) +
                         ((pt_C[1] - pt_D[1]) ** 2))
-    maxHeight = max(int(height_AB), int(height_CD))
+    maxWidth = max(int(height_AB), int(height_CD))
+    if maxWidth == height_AB:
+        lineB = lineAB
+    else:
+        lineB = lineCD
 
-    input_pts = np.float32([pt_A, pt_B, pt_C, pt_D])
+    angle = ang(lineA, lineB)
+    if angle == 90:
+        factor = 1
+    if angle > 90:
+        factor = 90 / (180-angle)
+    if angle < 90:
+        factor = 90 / angle
+
+    maxHeight *= factor
+
+    m = np.array([pt_A, pt_B, pt_C, pt_D])
+    m = rotateCW(m)
+    input_pts = np.float32(m)
     output_pts = np.float32([[0, 0],
                             [0, maxHeight - 1],
                             [maxWidth - 1, maxHeight - 1],
                             [maxWidth - 1, 0]])
 
     M = cv2.getPerspectiveTransform(input_pts, output_pts)
-    dst = cv2.warpPerspective(img, M, (maxWidth, maxHeight))
+
+    dst = cv2.warpPerspective(
+        img, M, (int(maxWidth), int(maxHeight)), flags=cv2.INTER_LINEAR)
 
     return dst
-
-
-def dot(vA, vB):
-    return vA[0]*vB[0]+vA[1]*vB[1]
-
-
-def ang(lineA, lineB):
-    # Get nicer vector form
-    vA = [(lineA[0][0]-lineA[1][0]), (lineA[0][1]-lineA[1][1])]
-    vB = [(lineB[0][0]-lineB[1][0]), (lineB[0][1]-lineB[1][1])]
-    # Get dot prod
-    dot_prod = dot(vA, vB)
-    # Get magnitudes
-    magA = dot(vA, vA)**0.5
-    magB = dot(vB, vB)**0.5
-    # Get cosine value
-    cos_ = dot_prod/magA/magB
-    # Get angle in radians and then convert to degrees
-    angle = math.acos(dot_prod/magB/magA)
-    # Basically doing angle <- angle mod 360
-    ang_deg = math.degrees(angle) % 360
-
-    if ang_deg-180 >= 0:
-        # As in if statement
-        return 360 - ang_deg
-    else:
-        return ang_deg
