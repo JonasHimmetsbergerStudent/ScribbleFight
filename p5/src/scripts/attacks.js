@@ -1,5 +1,6 @@
 var projectile;
 var projectiles = [];
+var bombs = [];
 // is he flying?
 var flying = false;
 // how long is he flying away
@@ -80,67 +81,74 @@ function defaultAttackPhysics() {
 
 
 function bombAttack() {
-  if (player.item !== undefined && player.item.type == "bomb" && player.item.ammo > 0) {
-    if (player.item.sprite === undefined) {
+  if (player.item["bomb"] !== undefined && player.item["bomb"].ammo > 0) {
+    // man kann nur eine bombe gleichzeitig aussenden
+    if (player.item["bomb"].sprite === undefined) {
       if (player_direction == "right") {
-        player.item.sprite = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 100, 100);
+        player.item["bomb"].sprite = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 100, 100);
       } else if (player_direction == "left") {
-        player.item.sprite = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 100, 100);
+        player.item["bomb"].sprite = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 100, 100);
       }
-      player.item.ammo--;
-      player.item.sprite.addImage(bombImg);
-      player.item.sprite.life = 1000;
+      player.item["bomb"].ammo--;
+      player.item["bomb"].sprite.addImage(bombImg);
+      player.item["bomb"].sprite.life = 1000;
       if (player_direction == "left") {
-        player.item.sprite.velocity.x -= 5;
+        player.item["bomb"].sprite.velocity.x -= 5;
       } else if (player_direction == "right") {
-        player.item.sprite.velocity.x += 5;
+        player.item["bomb"].sprite.velocity.x += 5;
       }
+      bombs.push(player.item["bomb"].sprite);
     }
   }
 }
 
 function bombPhysics() {
   diffDirection = false;
- 
-  if (player.item !== undefined && player.item.sprite !== undefined) {
-    if (player.item.sprite.velocity.y <= 20) {
-      player.item.sprite.velocity.y -= GRAVITY;
-    }
-    player.item.sprite.bounce(environment);
-
-    if (player.item.sprite.collide(player.sprite)) {
-      if (player.sprite.velocity.x > 0 && player.item.sprite.velocity.x > 0 || player.sprite.velocity.x < 0 && player.item.sprite.velocity.x < 0) {
-        diffDirection = true;
-      } if (player.sprite.velocity.y < 2 && player.sprite.velocity.y != 1 && player.item.sprite.velocity.y <= 0) {
-        diffDirection = true;
+  if (bombs.length >= 1) {
+    bombs.forEach(bomb => {
+      if (bomb.velocity.y <= 20) {
+        bomb.velocity.y -= GRAVITY;
       }
-      if (!diffDirection) {
-        player.sprite.velocity.x = player.item.sprite.velocity.x * 100;
-        player.sprite.velocity.y = player.item.sprite.velocity.y * testKnockback * 100;
-      } else {
-        player.sprite.velocity.x = -player.item.sprite.velocity.x * 100;
-        player.sprite.velocity.y = -player.item.sprite.velocity.y * 100;
+      bomb.bounce(environment);
+
+      if (bomb.collide(player.sprite)) {
+        if (player.sprite.velocity.x > 0 && bomb.velocity.x > 0 || player.sprite.velocity.x < 0 && bomb.velocity.x < 0) {
+          diffDirection = true;
+        } if (player.sprite.velocity.y < 2 && player.sprite.velocity.y != 1 && bomb.velocity.y <= 0) {
+          diffDirection = true;
+        }
+        if (!diffDirection) {
+          player.sprite.velocity.x = bomb.velocity.x * 100;
+          player.sprite.velocity.y = bomb.velocity.y * testKnockback * 100;
+        } else {
+          player.sprite.velocity.x = -bomb.velocity.x * 100;
+          player.sprite.velocity.y = -bomb.velocity.y * 100;
+        }
+        player.sprite.limitSpeed(10 * testKnockback);
+
+        flying = true;
+        flyingDuration = 50;
+        timeFlying = flyingDuration;
+        bomb.remove();
+        // zum überprüfen ob man gerade eine bombe im einsatz hat
+        player.item["bomb"].sprite = undefined;
+        bombs.splice(bombs.indexOf(bomb), 1);
+        ammoCheck();
+
+      } else if (bomb.position.x > screenWidth || bomb.position.y > screenHeight || bomb.life == 0) {
+        bomb.remove();
+        // zum überprüfen ob man gerade eine bombe im einsatz hat
+        player.item["bomb"].sprite = undefined;
+        bombs.splice(bombs.indexOf(bomb), 1);
+        ammoCheck();
       }
-      player.sprite.limitSpeed(10 * testKnockback);
-
-      flying = true;
-      flyingDuration = 50;
-      timeFlying = flyingDuration;
-      player.item.sprite.remove();
-      player.item.sprite = undefined;
-      ammoCheck();
-
-    } else if (player.item.sprite.position.x > screenWidth || player.item.sprite.position.y > screenHeight || player.item.sprite.life == 0) {
-      player.item.sprite.remove();
-      player.item.sprite = undefined;
-      ammoCheck();
-    }
-    sendHimFlying();
+      sendHimFlying();
+    });
   }
-
-
-
 }
+
+
+
 
 function sendHimFlying() {
   if (flying) {
@@ -161,8 +169,8 @@ function sendHimFlying() {
 
 
 function ammoCheck() {
-  if(player.item.ammo==0) {
-    player.item = undefined;
+  if (player.item["bomb"].ammo == 0) {
+    player.item["bomb"] = undefined;
   }
 }
 
