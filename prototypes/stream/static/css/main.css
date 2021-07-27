@@ -50,9 +50,3 @@ video {
 #zoom-slider {
     display: none;
 }
-
-#error {
-    position: absolute;
-    display: none;
-    color: #ff3939;
-}

@@ -33,9 +33,8 @@ let currentStream,
 function startCameraStream() {
     if (checkMobile()) { // if app is used on mobile device then show video stream
         capture();
-        document.querySelector('#error').style.display = 'none';
     } else { // else: don't
-        document.querySelector('#error').style.display = 'block';
+        $('#loading h1').text('PLEASE USE A MOBILE DEVICE')
     }
 }
 
@@ -141,17 +140,22 @@ function sleep(ms) {
 
 $('#snap').click(function () {
     interval = window.clearInterval(interval);
+    $('#converted').css('width', video.offsetWidth);
+    $('#converted').css('height', video.offsetHeight);
     video.pause();
+    $('#snap').css('visibility', 'hidden');
+    $('#ping').css('display', 'none');
     snap = takeSnapshot(true)
     stopMediaTracks(stream);
 
     $('#converted').append(snap.canvas);
+    $('#converted *').css('width', video.offsetWidth);
+    $('#converted *').css('height', video.offsetHeight);
     $('#converted').css('display', 'block');
     video.style.display = "none";
     draggablePolygon(polygon);
     $('#convert').prop('disabled', false);
-    $('#convert').css('visibility', 'visible');
-    $('#snap').css('visibility', 'hidden');
+    $('#convert').css('display', 'block');
 });
 
 
@@ -178,7 +182,7 @@ function draggablePolygon(polygon) {
 
             $(handle).draggable({
                 scroll: false,
-                containment: "#boundingBox",
+                containment: "#converted canvas",
                 drag: function (event) {
                     point.x = parseInt(handle.style.left) - base.left;
                     point.y = parseInt(handle.style.top) - base.top;
@@ -191,8 +195,9 @@ function draggablePolygon(polygon) {
 
 function takeSnapshot(ori) {
     let context;
-    let width = video.offsetWidth,
-        height = video.offsetHeight;
+    let scale = video.offsetHeight / video.offsetWidth
+    let width = 500,
+        height = 500 * scale;
 
     if (ori) {
         width = video.videoWidth;
