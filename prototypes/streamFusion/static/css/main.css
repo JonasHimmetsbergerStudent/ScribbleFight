@@ -97,15 +97,25 @@ video {
     height: 93px;
     border-radius: 100%;
     box-shadow: 0 0 10px rgb(15, 15, 15);
+    cursor: pointer;
 }
 
-#convert {
+#convert, #back {
     padding: 15px 25px;
     border: solid white 2px;
     font-size: xx-large;
     text-transform: uppercase;
     background: transparent;
     color: white;
+    margin: 0 10px;
+    box-shadow: 0 0 10px rgb(15, 15, 15);
+    cursor: pointer;
+}
+
+#nav {
+    display: flex;
+    width: fit-content;
+    height: fit-content;
 }
 
 #converted {
@@ -144,6 +154,7 @@ video {
     background: transparent;
     font-size: xx-large;
     border: solid white 2px;
+    cursor: pointer;
 }
 
 #loading {

@@ -19,7 +19,7 @@ function b64(e) {
 
 $(document).ready(function () {
     $('#contr, #snap').css('visibility', 'hidden');
-    $('#log, #convert').css('display', 'none');
+    $('#log, #convert, #back').css('display', 'none');
     $("#start").on("click", function () {
         $("#startCover").css('display', 'none')
         screen.lockOrientationUniversal = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation;
@@ -81,9 +81,7 @@ $(document).ready(function () {
             alert(msg.error)
             return;
         }
-        $('#convert').css('display', 'none');
-        $("div.ui-draggable").remove();
-        $('main').css('display', 'none');
+        $('#convert, div.ui-draggable, main').css('display', 'none');
         $('#log').css('display', 'flex')
         str = "data:image/png;base64," + msg.buffer;
         $("#img").attr("src", str);
@@ -103,6 +101,30 @@ $(document).ready(function () {
         });
         socket.emit('getDataFromImage', { img: base64, snipset: snipset });
         $('#loading').css('display', 'flex');
+        converted = true;
+    });
+
+    $('#back').click(function (e) {
+        if (!converted) {
+            $('#loading').css('display', 'flex');
+            $("div.ui-draggable, #converted canvas").remove();
+            $('#snap').css('visibility', 'visible');
+            $('#ping').css('display', 'block');
+            $('#converted').css('display', 'none');
+            video.style.display = "flex";
+            $('#convert').prop('disabled', false);
+            $('#convert, #back').css('display', 'none');
+            $('#loading').css('display', 'flex')
+            startCameraStream();
+
+            interval = window.setInterval(function () {
+                emitImage()
+            }, 500);
+        } else {
+            converted = false;
+            $('#convert, div.ui-draggable, main').css('display', 'flex');
+            $('#log').css('display', 'none')
+        }
     });
 
     function emitImage() {

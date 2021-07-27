@@ -155,7 +155,7 @@ $('#snap').click(function () {
     video.style.display = "none";
     draggablePolygon(polygon);
     $('#convert').prop('disabled', false);
-    $('#convert').css('display', 'block');
+    $('#convert, #back').css('display', 'block');
 });
 
 
