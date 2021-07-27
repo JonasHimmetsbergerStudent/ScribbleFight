@@ -10,7 +10,6 @@ var timeFlying;
 var diffDirection = false;
 var testKnockback = 3;
 var projectileIndex;
-var stillAlive = false;
 
 function defaultAttack() {
 

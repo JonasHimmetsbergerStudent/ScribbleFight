@@ -4,9 +4,10 @@ var spawning;
 var xCoordinates = [];
 var xCoordinatesUsed = [];
 var items = [];
-var x;
+var xCoordinate;
 var i;
 var gameStart = true;
+var num;
 
 
 function spawn() {
@@ -24,17 +25,34 @@ function spawn() {
     }
     if (spawning) {
         if(items.length < xCoordinates.length) {        
-            x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)]; 
-           while(xCoordinatesUsed.includes(x)) {
-                x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
+            xCoordinate = xCoordinates[Math.floor(Math.random() * xCoordinates.length)]; 
+           while(xCoordinatesUsed.includes(xCoordinate)) {
+                xCoordinate = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
             } 
-            i = createSprite(x, 0, 50, 50);
-            i.addImage(itemImg);
-            items.push(i);
-            xCoordinatesUsed.push(x);
+            createItem(xCoordinate);
+            xCoordinatesUsed.push(xCoordinate);
         }
     }
    itemPickUp();
+}
+
+
+function createItem(x) {
+    num = getRandomInt(2);
+    switch(num) {
+        case 1: 
+        i = createSprite(x, 0, 50, 50);
+        i.type = "bomb";
+        i.addImage(itemImg);
+        items.push(i);
+        break;
+        case 2: 
+        i = createSprite(x, 0, 50, 50);
+        i.type = "black_hole";
+        i.addImage(itemImg);
+        items.push(i);
+        break;
+    }
 }
 
 function itemPickUp() {
@@ -51,7 +69,13 @@ function itemPickUp() {
                 if(player.item != undefined && player.item.sprite != undefined) {
                     player.item.sprite.remove();
                 }
-                player.item["bomb"] = new Item("bomb");
+                switch(item.type) {
+                    case "bomb":
+                        player.item["bomb"] = new Item("bomb");
+                        break;
+                    case "black_hole":
+                        player.item["black_hole"] = new Item("black_hole");
+                }
                 items.splice(items.indexOf(item),1);
                 xCoordinatesUsed.splice(xCoordinatesUsed.indexOf(item.position.x),1);
                 item.remove();
