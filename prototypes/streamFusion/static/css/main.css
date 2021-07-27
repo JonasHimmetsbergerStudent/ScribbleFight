@@ -114,6 +114,11 @@ video {
     display: none;
 }
 
+#converted * {
+    max-width: 100% !important;
+    max-height: 100% !important;
+}
+
 .handle {
     position: absolute;
     border: 0.1em solid black;

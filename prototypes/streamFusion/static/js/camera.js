@@ -141,16 +141,19 @@ function sleep(ms) {
 
 $('#snap').click(function () {
     interval = window.clearInterval(interval);
-    snap = takeSnapshot()
-    $('#converted').append(snap.canvas);
-    $('#converted').css('display', 'block')
+    video.pause();
+    snap = takeSnapshot(true)
     stopMediaTracks(stream);
+
+    $('#converted').append(snap.canvas);
+    $('#converted').css('display', 'block');
     video.style.display = "none";
     draggablePolygon(polygon);
     $('#convert').prop('disabled', false);
     $('#convert').css('visibility', 'visible');
     $('#snap').css('visibility', 'hidden');
 });
+
 
 function draggablePolygon(polygon) {
     var points = polygon.points;
@@ -183,4 +186,28 @@ function draggablePolygon(polygon) {
             });
         }(i));
     }
+}
+
+
+function takeSnapshot(ori) {
+    let context;
+    let width = video.offsetWidth,
+        height = video.offsetHeight;
+
+    if (ori) {
+        width = video.videoWidth;
+        height = video.videoHeight;
+    }
+
+
+    canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+
+    context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0, width, height);
+
+    src = canvas.toDataURL('image/png');
+
+    return { src: src, canvas: canvas };
 }

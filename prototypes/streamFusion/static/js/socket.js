@@ -46,12 +46,15 @@ $(document).ready(function () {
 
 
     socket.on('perspective transformed', function (msg) {
+        $('#convert').text('convert')
+        $('#convert').prop('disabled', false);
         if (msg.error) {
             alert(msg.error)
             return;
         }
+        $('main').css('display', 'none');
+        $('#log').css('visibility', 'visible')
         str = "data:image/png;base64," + msg.buffer;
-        $("#img").attr("src", str);
         $("#img").attr("src", str);
     });
 
@@ -67,13 +70,14 @@ $(document).ready(function () {
         } else {
             if (snap === null || polygon.points.length === 0) return;
             const base64 = snap.src.replace(/.*base64,/, '');
-            let snipset = [];
+            let snipset = [],
+                ratio = video.videoWidth / $('#converted').width();
             [...polygon.points].forEach(element => {
-                snipset.push([element.x, element.y]);
+                snipset.push([element.x * ratio, element.y * ratio]);
             });
             socket.emit('getDataFromImage', { img: base64, snipset: snipset });
-            $('main').css('display', 'none');
-            $('#log').css('visibility', 'visible')
+            $('#convert').text('converting...')
+            $('#convert').prop('disabled', true);
             $("div.ui-draggable").remove();
         }
     });
@@ -81,7 +85,7 @@ $(document).ready(function () {
     function emitImage() {
         if (typeof currentStream === 'undefined') return;
 
-        let src = takeSnapshot().src;
+        let src = takeSnapshot(false).src;
         const base64 = src.replace(/.*base64,/, '');
         socket.emit('my image', { data: base64 });
         ms = 0;
@@ -98,20 +102,3 @@ document.onkeypress = function (e) {
     }*/
 };
 
-
-function takeSnapshot() {
-    let context;
-    let width = video.offsetWidth,
-        height = video.offsetHeight;
-
-    canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-
-    context = canvas.getContext('2d');
-    context.drawImage(video, 0, 0, width, height);
-
-    src = canvas.toDataURL('image/png');
-
-    return { src: src, canvas: canvas };
-}
