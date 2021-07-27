@@ -61,7 +61,6 @@ def squarify(myPoints):
     myPointsNew = np.zeros((4, 2))
 
     # distanzen + winkel = reihung
-
     zero = [0, 0]
     pt_A = myPoints[0]
     pt_B = myPoints[1]
@@ -84,21 +83,22 @@ def squarify(myPoints):
     angleZD = ang(lineZD, np.array([zero, [1, 0]]))
 
     lenAngPt = np.array([[lenA, angleZA, pt_A], [lenB, angleZB, pt_B],
-                         [lenC, angleZC, pt_C], [lenD, angleZD, pt_D]])
+                         [lenC, angleZC, pt_C], [lenD, angleZD, pt_D]], dtype=object)
 
-    list1 = sorted(lenAngPt, key=operator.itemgetter(0, 1))
+    # TODO Fix this shit
+    list1 = sorted(lenAngPt, key=lambda x: (x[0], -x[1]))
 
     myPointsNew[0] = list1[0][2]
     myPointsNew[2] = list1[len(list1) - 1][2]
 
     list2 = sorted(lenAngPt, key=lambda x: x[1])
 
-    if list2[0][2] not in myPointsNew:
+    if True not in np.all(list2[0][2] == myPointsNew, 1):
         myPointsNew[1] = list2[0][2]
     else:
         myPointsNew[1] = list2[1][2]
 
-    if list2[len(list2) - 1][2] not in myPointsNew:
+    if True not in np.all(list2[len(list2) - 1][2] == myPointsNew, 1):
         myPointsNew[3] = list2[len(list2) - 1][2]
     else:
         myPointsNew[3] = list2[len(list2) - 2][2]
@@ -119,6 +119,7 @@ def ang(lineA, lineB):
     # Get magnitudes
     magA = dot(vA, vA)**0.5
     magB = dot(vB, vB)**0.5
+
     # Get cosine value
     cos_ = dot_prod/magA/magB
     # Get angle in radians and then convert to degrees

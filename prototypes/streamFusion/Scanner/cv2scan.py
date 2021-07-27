@@ -97,7 +97,8 @@ def check(img):
 
 def getWrappedImg(img, snipset):
     snipset = squarify(snipset)
-
+    print('squarify vv')
+    print(snipset)
     pt_A = snipset[0]
     pt_B = snipset[1]
     pt_C = snipset[2]
