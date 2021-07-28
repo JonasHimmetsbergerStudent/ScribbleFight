@@ -15,7 +15,7 @@ function controls() {
     //D
     if (keyIsDown(68)) {
         player.sprite.velocity.x = SPEED;
-    }
+    } 
     //S
     // if (keyIsDown(83)) {
     //  sprite.velocity.y -= GRAVITY;
@@ -35,6 +35,10 @@ function controls() {
         bombAttack();
     } 
 
+    // Q
+    if(keyWentDown(81)) {
+        blackHoleAttack();
+    } 
     
 
 }

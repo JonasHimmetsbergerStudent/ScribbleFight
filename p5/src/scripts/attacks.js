@@ -1,6 +1,7 @@
 var projectile;
 var projectiles = [];
 var bombs = [];
+var blackHoles = [];
 // is he flying?
 var flying = false;
 // how long is he flying away
@@ -85,17 +86,14 @@ function bombAttack() {
     if (player.item["bomb"].sprite === undefined) {
       if (player.direction == "right") {
         player.item["bomb"].sprite = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 100, 100);
+        player.item["bomb"].sprite.velocity.x += 5;
       } else if (player.direction == "left") {
         player.item["bomb"].sprite = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 100, 100);
+        player.item["bomb"].sprite.velocity.x -= 5;
       }
       player.item["bomb"].ammo--;
       player.item["bomb"].sprite.addImage(bombImg);
       player.item["bomb"].sprite.life = 1000;
-      if (player.direction == "left") {
-        player.item["bomb"].sprite.velocity.x -= 5;
-      } else if (player.direction == "right") {
-        player.item["bomb"].sprite.velocity.x += 5;
-      }
       bombs.push(player.item["bomb"].sprite);
     }
   }
@@ -139,9 +137,61 @@ function bombPhysics() {
         // zum überprüfen ob man gerade eine bombe im einsatz hat
         player.item["bomb"].sprite = undefined;
         bombs.splice(bombs.indexOf(bomb), 1);
-        ammoCheck();
+        ammoCheck("bomb");
       }
       sendHimFlying();
+    });
+  }
+}
+
+
+function blackHoleAttack() {
+  if (player.item["black_hole"] !== undefined && player.item["black_hole"].ammo > 0) {
+    if (player.item["black_hole"].sprite === undefined) {
+      if (player.direction == "right") {
+        player.item["black_hole"].sprite = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 100, 100);
+        player.item["black_hole"].sprite.velocity.x += 3;
+      } else if (player.direction == "left") {
+        player.item["black_hole"].sprite = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 100, 100);
+        player.item["black_hole"].sprite.velocity.x -= 3;
+      }
+      player.item["black_hole"].sprite.addImage(boogieBombImg);
+      player.item["black_hole"].sprite.life = 500;
+      player.item["black_hole"].sprite.debug = true;
+      blackHoles.push(player.item["black_hole"].sprite);
+    }
+  }
+}
+
+function radians_to_degrees(radians)
+{
+  var pi = Math.PI;
+  return radians * (180/pi);
+}
+
+function blackHolePhysics() {
+  if (blackHoles.length >= 1) {
+    blackHoles.forEach(b => {
+      console.log(player.sprite.velocity.x);
+      if (b.life <= 400) {
+        b.velocity.y = 0;
+        b.velocity.x = 0;
+        //attraction
+        var angle = atan2(player.sprite.position.y-b.position.y, player.sprite.position.x-b.position.x);
+        player.sprite.velocity.x -= cos(angle) * 0.5;
+        player.sprite.velocity.y -= sin(angle) * 0.5;
+      }
+      if (b.velocity.y <= 20 && b.life > 400) {
+        b.velocity.y -= GRAVITY;
+      }
+      b.bounce(environment);
+      if (b.position.x > screenWidth || b.position.y > screenHeight || b.life == 0) {
+        b.remove();
+        // zum überprüfen ob man gerade ein schwarzes loch im einsatz hat
+        player.item["black_hole"].sprite = undefined;
+        blackHoles.splice(blackHoles.indexOf(b), 1);
+        ammoCheck("black_hole");
+      }
     });
   }
 }
@@ -167,9 +217,9 @@ function sendHimFlying() {
 }
 
 
-function ammoCheck() {
-  if (player.item["bomb"].ammo == 0) {
-    player.item["bomb"] = undefined;
+function ammoCheck(weapon) {
+  if (player.item[weapon].ammo == 0) {
+    player.item[weapon] = undefined;
   }
 }
 

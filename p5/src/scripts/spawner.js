@@ -39,6 +39,7 @@ function spawn() {
 
 function createItem(x) {
     num = getRandomInt(2);
+    num = 2;
     switch(num) {
         case 1: 
         i = createSprite(x, 0, 50, 50);

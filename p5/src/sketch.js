@@ -17,6 +17,7 @@ const MAX_JUMP = 3;
 var touches_side;
 var bombImg;
 var itemImg;
+var boogieBombImg;
 
 
 
@@ -48,6 +49,7 @@ function draw() {
     }
     bombPhysics();
     defaultAttackPhysics();
+    blackHolePhysics();
     spawn();
 
     background(bg);
@@ -55,7 +57,7 @@ function draw() {
     checkForCollisions();
 
     if (!flying) {
-      player.sprite.velocity.x = 0;
+     //player.sprite.velocity.x = 0;
       controls();
     }
     mirrorSprite();
@@ -130,7 +132,11 @@ function init() {
           loadImage('../assets/item.png',img => {
             img.resize(50,0);
             itemImg = img;
-            started = true;
+            loadImage('../assets/boogieBomb.png',img => {
+              img.resize(50,0);
+              boogieBombImg = img;
+              started = true;
+            })
           })
         })
       })
