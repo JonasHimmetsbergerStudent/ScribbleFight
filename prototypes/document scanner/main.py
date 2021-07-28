@@ -274,19 +274,19 @@ while True:
     imgAdaptiveThre = cv2.medianBlur(imgAdaptiveThre, 3)
 
     # Image Array for Display
-    # imageArray = ([img, imgGray, imgThreshold, imgContours],
-    #               [imgBigContour, imgWarpColored, imgWarpGray, imgAdaptiveThre])
-    imageArray = ([imgContours, imgThreshold],
-                  [imgBigContour, imgWarpColored])
+    imageArray = ([img, imgGray, imgThreshold, imgContours],
+                  [imgBigContour, imgWarpColored, imgWarpGray, imgAdaptiveThre])
+    # imageArray = ([imgContours, imgThreshold],
+    #               [imgBigContour, imgWarpColored])
 
     # !SECTION
 
     # SECTION draw open-cv data
     # LABELS FOR DISPLAY
-    # lables = [["Original", "Gray", "Threshold", "Contours"],
-    #           ["Biggest Contour", "Warp Prespective", "Warp Gray", "Adaptive Threshold"]]
-    lables = [["Gray", "Threshold"],
-              ["Biggest Contour", "Warp Prespective"]]
+    lables = [["Original", "Gray", "Threshold", "Contours"],
+              ["Biggest Contour", "Warp Prespective", "Warp Gray", "Adaptive Threshold"]]
+    # lables = [["Gray", "Threshold"],
+    #           ["Biggest Contour", "Warp Prespective"]]
 
     stackedImage = utlis.stackImages(imageArray, 0.75, lables)
     cv2.imshow("Result", stackedImage)
