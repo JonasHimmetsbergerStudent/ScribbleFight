@@ -14,6 +14,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io-stream/0.9.1/socket.io-stream.min.js"
         integrity="sha512-LTN7WQKvmCiOWbwxE4XRu3NCRqLzkFo28vBDHVhAyKjhmorNGjtvFxQgbvAttO31Ij6An4AIXU4GVaYOC0eNpQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"
+        integrity="sha512-OqcrADJLG261FZjar4Z6c4CfLqd861A3yPNMb+vRQ2JwzFT49WT4lozrh3bcKxHxtDTgNiqgYbEUStzvZQRfgQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <base target="_blank">
     <title>(:</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" type="text/css">
@@ -29,7 +32,7 @@
 
     <main>
         <div class="controls">
-            <button id="camera-facing-flip">flipp</button>
+            <button id="camera-facing-flip">flip</button>
             <input type="range" min="0" max="100" id="zoom-slider" step="2" value="0">
         </div>
 
@@ -42,13 +45,20 @@
     </main>
     <div id="contr">
         <button id="snap"></button>
+        <div id="adjustment">
+            <button id="flip">⇆</button>
+            <button id="rotate">↻</button>
+            <button id="send">send</button>
+        </div>
         <div id="nav">
             <button id="back">&#xFE64;</button>
             <button id="convert">Convert &#xFE65;</button>
         </div>
     </div>
     <div id="log">
+        <!-- <div id="imgBounding"> -->
         <img id="img" src="" alt="output">
+        <!-- </div> -->
     </div>
 
     <div id="loading">

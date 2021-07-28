@@ -3,7 +3,8 @@ let interval = ping = null,
     ms = 0,
     svg = document.getElementById("boundingBox"),
     polygon = document.getElementById("draggable"),
-    drawOri = [];
+    drawOri = [],
+    converted = false;
 
 
 function b64(e) {
@@ -19,7 +20,7 @@ function b64(e) {
 
 $(document).ready(function () {
     $('#contr, #snap').css('visibility', 'hidden');
-    $('#log, #convert, #back').css('display', 'none');
+    $('#log, #convert, #back, #adjustment, #loading').css('display', 'none');
     $("#start").on("click", function () {
         $("#startCover").css('display', 'none')
         screen.lockOrientationUniversal = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation;
@@ -82,7 +83,7 @@ $(document).ready(function () {
             return;
         }
         $('#convert, div.ui-draggable, main').css('display', 'none');
-        $('#log').css('display', 'flex')
+        $('#log, #adjustment').css('display', 'flex')
         str = "data:image/png;base64," + msg.buffer;
         $("#img").attr("src", str);
     });
@@ -123,7 +124,7 @@ $(document).ready(function () {
         } else {
             converted = false;
             $('#convert, div.ui-draggable, main').css('display', 'flex');
-            $('#log').css('display', 'none')
+            $('#log, #adjustment').css('display', 'none')
         }
     });
 

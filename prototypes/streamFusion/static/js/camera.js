@@ -96,11 +96,11 @@ function capture() {
                 input = document.getElementById('zoom-slider'),
                 error = document.getElementById('error');
 
-            _stream.getVideoTracks().forEach(t => {
-                console.log(t.label);
-            })
+            // _stream.getVideoTracks().forEach(t => {
+            //     console.log(t.label);
+            // })
 
-            console.log(JSON.stringify(capabilities) + (_stream.getVideoTracks()));
+            // console.log(JSON.stringify(capabilities) + (_stream.getVideoTracks()));
 
             $('#contr').css('visibility', 'visible')
             await sleep(1000);
@@ -139,6 +139,7 @@ function sleep(ms) {
 }
 
 $('#snap').click(function () {
+    $('#loading').css('display', 'flex');
     interval = window.clearInterval(interval);
     $('#converted').css('width', video.offsetWidth);
     $('#converted').css('height', video.offsetHeight);
@@ -156,6 +157,7 @@ $('#snap').click(function () {
     draggablePolygon(polygon);
     $('#convert').prop('disabled', false);
     $('#convert, #back').css('display', 'block');
+    $('#loading').css('display', 'none');
 });
 
 
@@ -216,3 +218,26 @@ function takeSnapshot(ori) {
 
     return { src: src, canvas: canvas };
 }
+
+let rotation = 0,
+    scale = 1;
+$('#rotate').click(function (e) {
+    $('#img').css('transform', `rotate(${rotation = rotation == 270 ? 0 : rotation + 90}deg) scaleX(${scale})`)
+})
+$('#flip').click(function (e) {
+    $('#img').css('transform', `scaleX(${scale = scale == 1 ? -1 : 1}) rotate(${rotation}deg)`);
+})
+
+$('#send').click(function () {
+    let w = $('#img').get(0).getBoundingClientRect().width;
+    let h = $('#img').get(0).getBoundingClientRect().height;
+    $('#log').width(w).height(h)
+    html2canvas($('#log').get(0)).then(canvas => {
+        src = canvas.toDataURL('image/png');
+        $('#img').attr('src', src);
+    });
+    $('#log').width('100%').height('100%')
+    rotation = 0;
+    scale = 1;
+    $('#img').css('transform', `scaleX(${scale}) rotate(${rotation}deg)`);
+})
