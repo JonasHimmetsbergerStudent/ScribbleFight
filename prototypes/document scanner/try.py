@@ -77,35 +77,50 @@ tool.logDebug('Vertex sequence: {}'.format(p))
 import cv2
 import numpy as np
 import sys
+import math
+import base64
 from PIL import Image
 
 np.set_printoptions(threshold=sys.maxsize)
 
 
-img_file = 'Unbenannt_map.png'
+def perc(pixels):
+    a = 1
+    d = 50
+    S = 95-d
+    k = 0.00006
+
+    return (a*S)/(a+(S-a)*math.exp((-k)*(pixels-10000)))+d
+
+
+img_file = 'map.png'
 alpha_img = cv2.imread(img_file, cv2.IMREAD_UNCHANGED)  # rgba
 imgWarpGray = cv2.cvtColor(alpha_img, cv2.COLOR_BGR2GRAY)
 imgAdaptiveThre = cv2.adaptiveThreshold(imgWarpGray, 255, 1, 1, 7, 2)
 imgAdaptiveThre = cv2.bitwise_not(imgAdaptiveThre)
 imgAdaptiveThre = cv2.medianBlur(imgAdaptiveThre, 3)
-img = alpha_img
+img = cv2.cvtColor(imgAdaptiveThre, cv2.COLOR_BGR2BGRA)
+# cv2.imshow('image', imgAdaptiveThre)
 
 iar = np.asarray(img).tolist()
 
 rows = len(iar)
 columns = len(iar[0])
-n = 5
+
+meshes = 3000
+percent = perc(rows * columns)
+print(percent)
+n = math.ceil(np.sqrt(rows * columns / meshes))
+
 x = 0
 y = 0
 
 newImg = []
 
+
 while y < rows:
+    newImg.append([])
     while x < columns:
-        # array be like pixel[y][x][0] = blau
-        # array be like pixel[y][x][1] = grün
-        # array be like pixel[y][x][2] = rot
-        # array be like pixel[y][x][3] = opacity
         b = iar[y][x][0]
         g = iar[y][x][1]
         r = iar[y][x][2]
@@ -117,7 +132,7 @@ while y < rows:
         while i < n:
             while j < n:
                 if (y + j) < rows and (x + i) < columns:
-                    if np.all(iar[y + j][x + i] == [255, 255, 255], 0):
+                    if np.all(iar[y + j][x + i][:3] == [255, 255, 255], 0):
                         bg += 1
                 else:
                     bg += 1
@@ -125,19 +140,16 @@ while y < rows:
             j = 0
             i += 1
 
-        # noch richtig appenden und dann hot si de gschicht
-        if (bg > 0):
-            bgPercent = (n ** 2) / bg
-            if (bgPercent < 1):
-                newImg.append(iar[y][x])
-            else:
-                newImg.append([0, 0, 0, 0])
+        bgPercent = bg / (n**2)
+        if (bgPercent < (percent / 100)):
+            newImg[int(y / n)].append([0, 0, 0, 255])
         else:
-            newImg.append([0, 0, 0, 0])
+            newImg[int(y / n)].append([255, 255, 255, 0])
 
-        x += 5
+        x += n
     x = 0
-    y += 5
+    y += n
 
-pippoRGBA2 = Image.fromarray(np.array(iar).astype('uint8'), mode='RGBA')
+
+pippoRGBA2 = Image.fromarray(np.array(newImg).astype('uint8'), mode='RGBA')
 pippoRGBA2.show()
