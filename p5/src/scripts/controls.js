@@ -30,6 +30,9 @@ function controls() {
         hit = true;
     }*/
 
+    // mirrors the sprite 
+
+
     // E
     if(keyWentDown(69)) {
         bombAttack();
@@ -45,4 +48,19 @@ function controls() {
 
 function mouseClicked() {
     defaultAttack();
+  }
+
+  function mirrorSprite() {
+    if (keyWentDown(65)) {
+      if (player.sprite.mirrorX() === 1) {
+        player.sprite.mirrorX(player.sprite.mirrorX() * -1);
+        player.direction = "left";
+      }
+    }
+    if (keyWentDown(68)) {
+      if (player.sprite.mirrorX() === -1) {
+        player.sprite.mirrorX(player.sprite.mirrorX() * -1);
+        player.direction = "right";
+      }
+    }
   }

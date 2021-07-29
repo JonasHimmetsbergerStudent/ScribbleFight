@@ -8,6 +8,7 @@ var flying = false;
 var flyingDuration;
 // how long has he been flying
 var timeFlying;
+var noGravity = false;
 var diffDirection = false;
 var testKnockback = 3;
 var projectileIndex;
@@ -56,7 +57,6 @@ function defaultAttackPhysics() {
           } if (player.sprite.velocity.y < 2 && player.sprite.velocity.y != 1 && projectile.velocity.y <= 0) {
             diffDirection = true;
           }
-          console.log(diffDirection);
           if (!diffDirection) {
             player.sprite.velocity.x = projectile.velocity.x * 100;
             player.sprite.velocity.y = projectile.velocity.y * testKnockback * 100;
@@ -91,7 +91,6 @@ function bombAttack() {
         player.item["bomb"].sprite = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 100, 100);
         player.item["bomb"].sprite.velocity.x -= 5;
       }
-      player.item["bomb"].ammo--;
       player.item["bomb"].sprite.addImage(bombImg);
       player.item["bomb"].sprite.life = 1000;
       bombs.push(player.item["bomb"].sprite);
@@ -130,7 +129,7 @@ function bombPhysics() {
         // zum überprüfen ob man gerade eine bombe im einsatz hat
         player.item["bomb"].sprite = undefined;
         bombs.splice(bombs.indexOf(bomb), 1);
-        ammoCheck();
+        ammoCheck("bomb");
 
       } else if (bomb.position.x > screenWidth || bomb.position.y > screenHeight || bomb.life == 0) {
         bomb.remove();
@@ -163,28 +162,34 @@ function blackHoleAttack() {
   }
 }
 
-function radians_to_degrees(radians)
-{
-  var pi = Math.PI;
-  return radians * (180/pi);
+function attraction(b) {
+  if(player.sprite.overlap(b)) {
+    noGravity = true;
+    var angle = atan2(player.sprite.position.y-b.position.y, player.sprite.position.x-b.position.x);
+    player.sprite.velocity.x -= cos(angle);
+    player.sprite.velocity.y -= sin(angle);
+    console.log(player.sprite.velocity.x);
+    console.log(player.sprite.velocity.y);
+  }
 }
 
 function blackHolePhysics() {
+  noGravity = false;
   if (blackHoles.length >= 1) {
     blackHoles.forEach(b => {
-      console.log(player.sprite.velocity.x);
       if (b.life <= 400) {
+        b.setCollider("circle",0,0,175);
+        attraction(b);
         b.velocity.y = 0;
         b.velocity.x = 0;
-        //attraction
-        var angle = atan2(player.sprite.position.y-b.position.y, player.sprite.position.x-b.position.x);
-        player.sprite.velocity.x -= cos(angle) * 0.5;
-        player.sprite.velocity.y -= sin(angle) * 0.5;
       }
-      if (b.velocity.y <= 20 && b.life > 400) {
+      if (b.velocity.y <= 20 && b.life>400) {
         b.velocity.y -= GRAVITY;
       }
-      b.bounce(environment);
+      if(b.life>400) {
+        b.bounce(environment);
+      }
+      
       if (b.position.x > screenWidth || b.position.y > screenHeight || b.life == 0) {
         b.remove();
         // zum überprüfen ob man gerade ein schwarzes loch im einsatz hat
@@ -218,6 +223,8 @@ function sendHimFlying() {
 
 
 function ammoCheck(weapon) {
+  
+  player.item[weapon].ammo--;
   if (player.item[weapon].ammo == 0) {
     player.item[weapon] = undefined;
   }

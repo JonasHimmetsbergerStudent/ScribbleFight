@@ -17,6 +17,7 @@ const MAX_JUMP = 3;
 var touches_side;
 var bombImg;
 var itemImg;
+var itemImgBlue;
 var boogieBombImg;
 
 
@@ -42,7 +43,7 @@ function draw() {
   touches_side = false;
   if (started && !youAreDead) {
     // max speed is 20 
-    if (player.sprite.velocity.y <= 20 && !flying) {
+    if (player.sprite.velocity.y <= 20 && !flying && !noGravity) {
       player.sprite.velocity.y -= GRAVITY;
     } else if (flying) {
       player.sprite.velocity.y -= GRAVITY / 1.25;
@@ -56,31 +57,17 @@ function draw() {
 
     checkForCollisions();
 
-    if (!flying) {
-     //player.sprite.velocity.x = 0;
+    if (!flying && !noGravity) {
+      player.sprite.velocity.x = 0;
       controls();
     }
+   
     mirrorSprite();
     deathCheck();
     drawSprites();
   }
 }
 
-// mirrors the sprite 
-function mirrorSprite() {
-  if (keyWentDown(65)) {
-    if (player.sprite.mirrorX() === 1) {
-      player.sprite.mirrorX(player.sprite.mirrorX() * -1);
-      player.direction = "left";
-    }
-  }
-  if (keyWentDown(68)) {
-    if (player.sprite.mirrorX() === -1) {
-      player.sprite.mirrorX(player.sprite.mirrorX() * -1);
-      player.direction = "right";
-    }
-  }
-}
 
 function init() {
   loadImage('../assets/amogus.png', img => {
@@ -135,7 +122,11 @@ function init() {
             loadImage('../assets/boogieBomb.png',img => {
               img.resize(50,0);
               boogieBombImg = img;
-              started = true;
+              loadImage('../assets/item_blue.png',img => {
+                img.resize(50,0);
+                itemImgBlue = img;
+                started = true;
+              })
             })
           })
         })
@@ -154,9 +145,9 @@ function checkForCollisions() {
             if (player.sprite.touching.left || player.sprite.touching.right) {
               touches_side = true;
             }
-            if (touches_side) {
+            if (touches_side && !noGravity) {
               player.sprite.velocity.y = player.sprite.velocity.y + 5;
-            } else {
+            } else if(!noGravity) {
               player.sprite.velocity.y = 0;
             }
             if (!player.sprite.touching.top) {
@@ -167,7 +158,7 @@ function checkForCollisions() {
       }
 
     }
-  } else {
+  } else if(!noGravity) {
     player.sprite.bounce(environment);
   }
 }

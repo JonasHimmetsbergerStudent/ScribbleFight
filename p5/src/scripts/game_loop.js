@@ -12,6 +12,7 @@ function deathCheck() {
         } 
         if(spawnTimer==0) {
             player.life--;
+            console.log("now");
             player.sprite.position.x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
             player.sprite.position.y = 10;
             spawnTimer = 3;
