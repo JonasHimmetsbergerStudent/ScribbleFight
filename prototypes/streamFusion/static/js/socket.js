@@ -88,6 +88,15 @@ $(document).ready(function () {
         $("#img").attr("src", str);
     });
 
+    socket.on('playable map', function (msg) {
+        $('#loading').css('display', 'none');
+        if (msg.error) {
+            alert(msg.error)
+            return;
+        }
+        alert(msg.map)
+    });
+
 
     $('#convert').click(function (e) {
         if (snap === null || polygon.points.length === 0) {
@@ -127,6 +136,20 @@ $(document).ready(function () {
             $('#log, #adjustment').css('display', 'none')
         }
     });
+
+
+    $('#send').click(function () {
+        let w = $('#img').get(0).getBoundingClientRect().width;
+        let h = $('#img').get(0).getBoundingClientRect().height;
+        $('#log').width(w).height(h)
+        html2canvas($('#log').get(0)).then(canvas => {
+            src = canvas.toDataURL('image/png');
+            const base64 = src.replace(/.*base64,/, '');
+            socket.emit('convert img to map', { data: base64 });
+            $('#loading').css('display', 'flex');
+        });
+        $('#log').width('100%').height('100%')
+    })
 
     function emitImage() {
         if (typeof currentStream === 'undefined') return;

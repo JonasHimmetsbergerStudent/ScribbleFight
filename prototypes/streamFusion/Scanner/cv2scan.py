@@ -1,10 +1,11 @@
-# TODO
-# Remove stuff tat is sourrounded with contour  https://www.programmersought.com/article/58794301085/
-
 from .utlis import *
+from PIL import Image
+
 import cv2
 import numpy as np
 import imutils
+import sys
+import math
 
 
 def check(img):
@@ -150,3 +151,64 @@ def getWrappedImg(img, snipset):
         img, M, (int(maxWidth), int(maxHeight)), flags=cv2.INTER_LINEAR)
 
     return dst
+
+
+def getPlayableArray(img):
+    np.set_printoptions(threshold=sys.maxsize)
+
+    alpha_img = cv2.cvtColor(img, cv2.COLOR_BGR2BGRA)  # rgba
+    imgWarpGray = cv2.cvtColor(alpha_img, cv2.COLOR_BGR2GRAY)
+    imgAdaptiveThre = cv2.adaptiveThreshold(imgWarpGray, 255, 1, 1, 7, 2)
+    imgAdaptiveThre = cv2.bitwise_not(imgAdaptiveThre)
+    imgAdaptiveThre = cv2.medianBlur(imgAdaptiveThre, 3)
+    img = cv2.cvtColor(imgAdaptiveThre, cv2.COLOR_BGR2BGRA)
+    # cv2.imshow('image', imgAdaptiveThre)
+    # cv2.waitKey(0)
+
+    iar = np.asarray(img).tolist()
+
+    rows = len(iar)
+    columns = len(iar[0])
+
+    meshes = 3000
+    # percent = perc(rows * columns)
+    percent = 91.5
+    n = math.ceil(np.sqrt(rows * columns / meshes))
+
+    x = 0
+    y = 0
+
+    newImg = []
+
+    while y < rows:
+        newImg.append([])
+        while x < columns:
+
+            i = 0
+            j = 0
+            bg = 0
+            while i < n:
+                while j < n:
+                    if (y + j) < rows and (x + i) < columns:
+                        if np.all(iar[y + j][x + i][:3] == [255, 255, 255], 0):
+                            bg += 1
+                    else:
+                        bg += 1
+                    j += 1
+                j = 0
+                i += 1
+
+            bgPercent = bg / (n**2)
+            if (bgPercent < (percent / 100)):
+                newImg[int(y / n)].append([0, 0, 0, 255])
+            else:
+                newImg[int(y / n)].append([255, 255, 255, 255])
+
+            x += n
+        x = 0
+        y += n
+
+    pippoRGBA2 = Image.fromarray(np.array(newImg).astype('uint8'), mode='RGBA')
+    pippoRGBA2.show()
+
+    return newImg

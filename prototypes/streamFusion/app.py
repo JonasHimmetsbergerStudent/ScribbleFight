@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 import base64
 import json
+import math
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
@@ -16,7 +17,7 @@ def convertB64ToCv2img(messageStr):
     im_bytes = base64.b64decode(messageStr)
     # im_arr is one-dim Numpy array
     im_arr = np.frombuffer(im_bytes, dtype=np.uint8)
-    return cv2.imdecode(im_arr, flags=cv2.IMREAD_COLOR)
+    return cv2.imdecode(im_arr, flags=cv2.IMREAD_UNCHANGED)
 
 
 def convertCv2imgToB64(cv2img):
@@ -56,6 +57,20 @@ def test_message(message):
     except:
         emit('perspective transformed', {
              'error': 'Perspective transform didn\'t work'})
+
+
+@socketio.on('convert img to map')
+def test_message(message):
+    base64_data = message['data']
+    img = convertB64ToCv2img(base64_data)  # COVERT B64 MESSAGE TO CV2 IMAGE
+    heightImg, widthImg, chanel = img.shape
+    n = math.ceil(np.sqrt(heightImg * widthImg / 200000))
+    resized = cv2.resize(img, (int(widthImg / n), int(heightImg / n)))
+    playerMap = scanner.getPlayableArray(resized)
+
+    json_str = json.dumps(playerMap)
+
+    emit('playable map', {'map': json_str})
 
 
 @socketio.on('connect')

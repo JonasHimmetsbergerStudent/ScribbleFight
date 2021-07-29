@@ -130,7 +130,7 @@ function capture() {
             return navigator.mediaDevices.enumerateDevices();
         })
         .catch(error => {
-            console.error('Argh!', error.name || error)
+            alert('Argh! ' + error.name || error)
         });
 }
 
@@ -226,18 +226,4 @@ $('#rotate').click(function (e) {
 })
 $('#flip').click(function (e) {
     $('#img').css('transform', `scaleX(${scale = scale == 1 ? -1 : 1}) rotate(${rotation}deg)`);
-})
-
-$('#send').click(function () {
-    let w = $('#img').get(0).getBoundingClientRect().width;
-    let h = $('#img').get(0).getBoundingClientRect().height;
-    $('#log').width(w).height(h)
-    html2canvas($('#log').get(0)).then(canvas => {
-        src = canvas.toDataURL('image/png');
-        $('#img').attr('src', src);
-    });
-    $('#log').width('100%').height('100%')
-    rotation = 0;
-    scale = 1;
-    $('#img').css('transform', `scaleX(${scale}) rotate(${rotation}deg)`);
 })

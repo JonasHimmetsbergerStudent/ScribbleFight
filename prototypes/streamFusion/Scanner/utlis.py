@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 import math
-import operator
 
 
 def biggestContour(contours, accuracy, areaVal):  # FIND THE BIGGEST CONTOUR
@@ -132,3 +131,12 @@ def ang(lineA, lineB):
         return 360 - ang_deg
     else:
         return ang_deg
+
+
+def perc(pixels):
+    a = 1
+    d = 50
+    S = 90-d
+    k = 0.00006
+
+    return (a*S)/(a+(S-a)*math.exp((-k)*(pixels-50000)))+d
