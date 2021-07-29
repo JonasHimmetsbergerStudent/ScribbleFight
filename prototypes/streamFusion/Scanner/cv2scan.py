@@ -202,7 +202,7 @@ def getPlayableArray(img):
             if (bgPercent < (percent / 100)):
                 newImg[int(y / n)].append([0, 0, 0, 255])
             else:
-                newImg[int(y / n)].append([255, 255, 255, 255])
+                newImg[int(y / n)].append([255, 255, 255, 0])
 
             x += n
         x = 0
