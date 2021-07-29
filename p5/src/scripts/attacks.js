@@ -2,6 +2,7 @@ var projectile;
 var projectiles = [];
 var bombs = [];
 var blackHoles = [];
+var pianos = [];
 // is he flying?
 var flying = false;
 // how long is he flying away
@@ -157,16 +158,19 @@ function blackHoleAttack() {
       player.item["black_hole"].sprite.addImage(boogieBombImg);
       player.item["black_hole"].sprite.life = 500;
       player.item["black_hole"].sprite.debug = true;
+      player.item["black_hole"].sprite.maxSpeed = 20;
       blackHoles.push(player.item["black_hole"].sprite);
     }
   }
 }
 
 function attraction(b) {
-  if(player.sprite.overlap(b)) {
+  if (player.sprite.overlap(b)) {
     noGravity = true;
-    var angle = atan2(player.sprite.position.y-b.position.y, player.sprite.position.x-b.position.x);
-    player.sprite.velocity.x -= cos(angle);
+    var angle = atan2(player.sprite.position.y - b.position.y, player.sprite.position.x - b.position.x);
+    if (player.sprite.velocity.y >= -25 && player.sprite.velocity.y <= 25) {
+      player.sprite.velocity.x -= cos(angle);
+    }
     player.sprite.velocity.y -= sin(angle);
     console.log(player.sprite.velocity.x);
     console.log(player.sprite.velocity.y);
@@ -178,18 +182,17 @@ function blackHolePhysics() {
   if (blackHoles.length >= 1) {
     blackHoles.forEach(b => {
       if (b.life <= 400) {
-        b.setCollider("circle",0,0,175);
+        b.setCollider("circle", 0, 0, 175);
         attraction(b);
         b.velocity.y = 0;
         b.velocity.x = 0;
       }
-      if (b.velocity.y <= 20 && b.life>400) {
+
+      if (b.life > 400) {
         b.velocity.y -= GRAVITY;
-      }
-      if(b.life>400) {
         b.bounce(environment);
       }
-      
+
       if (b.position.x > screenWidth || b.position.y > screenHeight || b.life == 0) {
         b.remove();
         // zum überprüfen ob man gerade ein schwarzes loch im einsatz hat
@@ -197,6 +200,51 @@ function blackHolePhysics() {
         blackHoles.splice(blackHoles.indexOf(b), 1);
         ammoCheck("black_hole");
       }
+    });
+  }
+}
+
+
+function pianoTime() {
+  if (player.item["piano"] !== undefined && player.item["piano"].ammo > 0) {
+    if (player.item["piano"].sprite === undefined) {
+      let xPos = player.sprite.position.x;
+      setTimeout(function () {
+        player.item["piano"].sprite = createSprite(xPos, 10, 100, 100);
+        player.item["piano"].sprite.addImage(pianoImg);
+        player.item["piano"].sprite.setCollider("rectangle", 0, 0, 100, 100);
+        player.item["piano"].sprite.debug = true;
+        player.item["piano"].sprite.maxSpeed = 20;
+        player.item["piano"].sprite.rotation = getRandomInt(360);
+        pianos.push(player.item["piano"].sprite);
+      }, 500);
+    }
+  }
+}
+
+
+function pianoPhysics() {
+  console.log(frameCount);
+  if (pianos.length >= 1) {
+    pianos.forEach(p => {
+      p.rotation += 2;
+      if (p.collide(environment)) {
+        p.remove();
+        player.item["piano"].sprite = undefined;
+        pianos.splice(pianos.indexOf(p), 1);
+        ammoCheck("piano");
+      } else if (p.overlap(player.sprite)) {
+        if (p.position.x <= player.sprite.position.x) {
+          player.sprite.velocity.x += 2;
+        } else {
+          player.sprite.velocity.x -= 2;
+        }
+        flying = true;
+        flyingDuration = 20;
+        timeFlying = flyingDuration;
+        sendHimFlying();
+      }
+      p.velocity.y -= GRAVITY;
     });
   }
 }
@@ -223,7 +271,6 @@ function sendHimFlying() {
 
 
 function ammoCheck(weapon) {
-  
   player.item[weapon].ammo--;
   if (player.item[weapon].ammo == 0) {
     player.item[weapon] = undefined;

@@ -42,6 +42,11 @@ function controls() {
     if(keyWentDown(81)) {
         blackHoleAttack();
     } 
+
+    // R
+    if(keyWentDown(82)) {
+        pianoTime();
+    } 
     
 
 }
