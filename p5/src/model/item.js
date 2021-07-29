@@ -11,7 +11,7 @@ class Item {
                 this.ammo = 5;
             break;
             case "piano":
-                this.ammo = 15;
+                this.ammo = 10;
             break;
         }
     }

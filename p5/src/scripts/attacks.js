@@ -224,7 +224,6 @@ function pianoTime() {
 
 
 function pianoPhysics() {
-  console.log(frameCount);
   if (pianos.length >= 1) {
     pianos.forEach(p => {
       p.rotation += 2;

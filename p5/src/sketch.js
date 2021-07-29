@@ -33,7 +33,7 @@ function setup() {
   createCanvas(1429, 830);
   background(51);
   player = new Player(createSprite(500, 200, player_width, player_height));
-  player.maxSpeed = 20;
+  player.sprite.maxSpeed = 30;
   otherPlayers[0] = new Player(createSprite(800, 200, player_width, player_height));
   player.sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
   environment = new Group();
@@ -86,7 +86,7 @@ function init() {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
             sprite_pixels[i][j] = createSprite((j - ((same_x_counter - 1) / 2)) * 25, i * 25, 25 * (same_x_counter - 1), 25);
-            sprite_pixels[i][j].visible = false;
+           // sprite_pixels[i][j].visible = false;
             environment.add(sprite_pixels[i][j]);
             sprite_pixels[i][j].immovable = true;
             sprite_pixels[i][j - 1].remove();

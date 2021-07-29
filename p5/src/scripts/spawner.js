@@ -62,6 +62,7 @@ function createItem(x) {
 }
 
 function itemPickUp() {
+    console.log(player.sprite.velocity.y);
     if (items.length > 0) {
         items.forEach(item => {
             if (item.velocity.y <= 10) {
