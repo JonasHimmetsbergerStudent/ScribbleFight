@@ -172,7 +172,7 @@ def getPlayableArray(img):
 
     meshes = 3000
     # percent = perc(rows * columns)
-    percent = 91.5
+    percent = 93
     n = math.ceil(np.sqrt(rows * columns / meshes))
 
     x = 0
