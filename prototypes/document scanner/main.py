@@ -269,8 +269,16 @@ while True:
 
     # APPLY ADAPTIVE THRESHOLD
     imgWarpGray = cv2.cvtColor(imgWarpColored, cv2.COLOR_BGR2GRAY)
-    imgAdaptiveThre = cv2.adaptiveThreshold(imgWarpGray, 255, 1, 1, 7, 2)
+    blurred = cv2.GaussianBlur(imgWarpGray, (7, 7), 0)
+
+    lum = cv2.cvtColor(imgWarpColored, cv2.COLOR_BGR2HSV)[..., 2]
+    print(np.average(np.array(lum)))
+
+    imgAdaptiveThre = cv2.adaptiveThreshold(
+        blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 13, 2)
     imgAdaptiveThre = cv2.bitwise_not(imgAdaptiveThre)
+    # imgAdaptiveThre = cv2.adaptiveThreshold(imgWarpGray, 255, 1, 1, 7, 2)
+    # imgAdaptiveThre = cv2.bitwise_not(imgAdaptiveThre)
     imgAdaptiveThre = cv2.medianBlur(imgAdaptiveThre, 3)
 
     # Image Array for Display
