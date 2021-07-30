@@ -21,6 +21,7 @@ var bombImg;
 var itemImg;
 var itemImgBlue;
 var itemImgYellow;
+var itemImgOrange;
 var boogieBombImg;
 var pianoImg;
 
@@ -86,7 +87,7 @@ function init() {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
             sprite_pixels[i][j] = createSprite((j - ((same_x_counter - 1) / 2)) * 25, i * 25, 25 * (same_x_counter - 1), 25);
-           // sprite_pixels[i][j].visible = false;
+            sprite_pixels[i][j].visible = false;
             environment.add(sprite_pixels[i][j]);
             sprite_pixels[i][j].immovable = true;
             sprite_pixels[i][j - 1].remove();
@@ -135,7 +136,11 @@ function init() {
                   loadImage('../assets/item_yellow.png',img => {
                     img.resize(50,0);
                     itemImgYellow = img;
-                    started = true;
+                    loadImage('../assets/item_orange.png',img => {
+                      img.resize(50,0);
+                      itemImgOrange = img;
+                      started = true;
+                    })
                   })
                 })
               })
@@ -170,7 +175,7 @@ function checkForCollisions() {
       }
 
     }
-  } else if(!noGravity) {
+  } else {
     player.sprite.bounce(environment);
   }
 }

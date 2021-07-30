@@ -209,7 +209,6 @@ function pianoTime() {
   if (player.item["piano"] !== undefined && player.item["piano"].ammo > 0) {
     if (player.item["piano"].sprite === undefined) {
       let xPos = player.sprite.position.x;
-      setTimeout(function () {
         player.item["piano"].sprite = createSprite(xPos, 10, 100, 100);
         player.item["piano"].sprite.addImage(pianoImg);
         player.item["piano"].sprite.setCollider("rectangle", 0, 0, 100, 100);
@@ -217,7 +216,6 @@ function pianoTime() {
         player.item["piano"].sprite.maxSpeed = 20;
         player.item["piano"].sprite.rotation = getRandomInt(360);
         pianos.push(player.item["piano"].sprite);
-      }, 500);
     }
   }
 }

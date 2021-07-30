@@ -38,7 +38,7 @@ function spawn() {
 
 
 function createItem(x) {
-    num = getRandomInt(3);
+    num = getRandomInt(4);
     switch (num) {
         case 1:
             i = createSprite(x, 0, 50, 50);
@@ -58,11 +58,16 @@ function createItem(x) {
             i.addImage(itemImgYellow);
             items.push(i);
             break;
+        case 4:
+            i = createSprite(x, 0, 50, 50);
+            i.type = "mine";
+            i.addImage(itemImgOrange);
+            items.push(i);
+            break;
     }
 }
 
 function itemPickUp() {
-    console.log(player.sprite.velocity.y);
     if (items.length > 0) {
         items.forEach(item => {
             if (item.velocity.y <= 10) {
@@ -73,9 +78,6 @@ function itemPickUp() {
                 || item.overlapPixel(player.sprite.position.x - player_width / 2, player.sprite.position.y)
                 || item.overlapPixel(player.sprite.position.x, player.sprite.position.y + player_height / 2)
                 || item.overlapPixel(player.sprite.position.x, player.sprite.position.y - player_height / 2)) {
-                if (player.item != undefined && player.item.sprite != undefined) {
-                    player.item.sprite.remove();
-                }
                 switch (item.type) {
                     case "bomb":
                         player.item["bomb"] = new Item("bomb");
@@ -85,6 +87,9 @@ function itemPickUp() {
                         break;
                     case "piano":
                         player.item["piano"] = new Item("piano");
+                        break;
+                    case "mine":
+                        player.item["mine"] = new Item("mine");
                         break;
                 }
                 items.splice(items.indexOf(item), 1);
