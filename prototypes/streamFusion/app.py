@@ -61,16 +61,21 @@ def test_message(message):
 
 @socketio.on('convert img to map')
 def test_message(message):
-    base64_data = message['data']
-    img = convertB64ToCv2img(base64_data)  # COVERT B64 MESSAGE TO CV2 IMAGE
-    heightImg, widthImg, chanel = img.shape
-    n = math.ceil(np.sqrt(heightImg * widthImg / 200000))
-    resized = cv2.resize(img, (int(widthImg / n), int(heightImg / n)))
-    playerMap = scanner.getPlayableArray(resized)
+    try:
+        base64_data = message['data']
+        # COVERT B64 MESSAGE TO CV2 IMAGE
+        img = convertB64ToCv2img(base64_data)
+        heightImg, widthImg, chanel = img.shape
+        n = math.ceil(np.sqrt(heightImg * widthImg / 200000))
+        resized = cv2.resize(img, (int(widthImg / n), int(heightImg / n)))
+        playerMap = scanner.getPlayableArray(resized)
 
-    json_str = json.dumps(playerMap)
+        json_str = json.dumps(playerMap)
 
-    emit('playable map', {'map': json_str})
+        emit('playable map', {'map': json_str})
+    except:
+        emit('playable map', {
+             'error': 'convert img to map didn\'t work'})
 
 
 @socketio.on('connect')
@@ -87,6 +92,6 @@ if __name__ == '__main__':
     # Aufpassen, dass port nicht geblockt ist und IP passt
     # app.run(debug=True, host="192.168.0.21", port=443, ssl_context='adhoc')
     print('server running')
-    socketio.run(app, host="192.168.0.5", port=443, certfile="./cert/cert.pem",
+    socketio.run(app, host="192.168.0.8", port=443, certfile="./cert/cert.pem",
                  keyfile="./keys/key.pem")
     print('server stopped')

@@ -158,12 +158,15 @@ def getPlayableArray(img):
 
     alpha_img = cv2.cvtColor(img, cv2.COLOR_BGR2BGRA)  # rgba
     imgWarpGray = cv2.cvtColor(alpha_img, cv2.COLOR_BGR2GRAY)
-    imgAdaptiveThre = cv2.adaptiveThreshold(imgWarpGray, 255, 1, 1, 7, 2)
+    blurred = cv2.GaussianBlur(imgWarpGray, (7, 7), 0)
+    imgAdaptiveThre = cv2.adaptiveThreshold(
+        blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 7, 2)
     imgAdaptiveThre = cv2.bitwise_not(imgAdaptiveThre)
     imgAdaptiveThre = cv2.medianBlur(imgAdaptiveThre, 3)
     img = cv2.cvtColor(imgAdaptiveThre, cv2.COLOR_BGR2BGRA)
-    # cv2.imshow('image', imgAdaptiveThre)
-    # cv2.waitKey(0)
+
+    pippoRGBA2 = Image.fromarray(np.array(img).astype('uint8'), mode='RGBA')
+    pippoRGBA2.show()
 
     iar = np.asarray(img).tolist()
 
@@ -172,7 +175,7 @@ def getPlayableArray(img):
 
     meshes = 3000
     # percent = perc(rows * columns)
-    percent = 93
+    percent = 95
     n = math.ceil(np.sqrt(rows * columns / meshes))
 
     x = 0
