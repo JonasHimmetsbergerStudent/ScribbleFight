@@ -44,40 +44,33 @@ function createItem(x) {
             i = createSprite(x, 0, 50, 50);
             i.type = "bomb";
             i.addImage(itemImg);
-            items.push(i);
             break;
         case 2:
             i = createSprite(x, 0, 50, 50);
             i.type = "black_hole";
             i.addImage(itemImgBlue);
-            items.push(i);
             break;
         case 3:
             i = createSprite(x, 0, 50, 50);
             i.type = "piano";
             i.addImage(itemImgYellow);
-            items.push(i);
             break;
         case 4:
             i = createSprite(x, 0, 50, 50);
             i.type = "mine";
             i.addImage(itemImgOrange);
-            items.push(i);
             break;
     }
+    i.maxSpeed = 10;
+    items.push(i);
 }
 
 function itemPickUp() {
     if (items.length > 0) {
         items.forEach(item => {
-            if (item.velocity.y <= 10) {
-                item.velocity.y -= GRAVITY;
-            }
+            item.velocity.y -= GRAVITY;
             item.collide(environment);
-            if (item.overlapPixel(player.sprite.position.x + player_width / 2, player.sprite.position.y)
-                || item.overlapPixel(player.sprite.position.x - player_width / 2, player.sprite.position.y)
-                || item.overlapPixel(player.sprite.position.x, player.sprite.position.y + player_height / 2)
-                || item.overlapPixel(player.sprite.position.x, player.sprite.position.y - player_height / 2)) {
+            if (item.overlap(player.sprite)) {
                 switch (item.type) {
                     case "bomb":
                         player.item["bomb"] = new Item("bomb");
