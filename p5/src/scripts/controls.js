@@ -47,6 +47,11 @@ function controls() {
     if(keyWentDown(82)) {
         setTimeout(function(){ pianoTime() }, 500);
     } 
+
+    // C
+    if(keyWentDown(67)) {
+        placeMine();
+    }
     
 
 }

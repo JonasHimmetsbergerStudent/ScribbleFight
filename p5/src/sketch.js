@@ -24,6 +24,7 @@ var itemImgYellow;
 var itemImgOrange;
 var boogieBombImg;
 var pianoImg;
+var mineImg;
 
 //Forces
 const GRAVITY = -1;
@@ -56,6 +57,7 @@ function draw() {
     defaultAttackPhysics();
     blackHolePhysics();
     pianoPhysics();
+    minePhysics();
     spawn();
 
     background(bg);
@@ -139,7 +141,11 @@ function init() {
                     loadImage('../assets/item_orange.png',img => {
                       img.resize(50,0);
                       itemImgOrange = img;
-                      started = true;
+                      loadImage('../assets/mine.png',img => {
+                        img.resize(50,0);
+                        mineImg= img;
+                        started = true;
+                      })
                     })
                   })
                 })

@@ -3,6 +3,7 @@ var projectiles = [];
 var bombs = [];
 var blackHoles = [];
 var pianos = [];
+var mines = [];
 // is he flying?
 var flying = false;
 // how long is he flying away
@@ -254,6 +255,54 @@ function pianoPhysics() {
     });
   }
 }
+
+function placeMine() {
+  if (player.item["mine"] != undefined && player.item["mine"].ammo > 0) {
+    let mine;
+    if (player.direction == "right") {
+      mine = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 50, 50);
+    } else {
+      mine = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 50, 50);
+    }
+
+    mine.addImage(mineImg);
+    mine.maxSpeed = 5;
+    mine.debug = true;
+    mine.me = true;
+    player.item["mine"].sprite.push(mine);
+    mines.push(mine);
+    ammoCheck("mine");
+  }
+}
+
+function minePhysics() {
+  if(player.item["mine"]!=undefined) {
+    console.log(player.item["mine"].sprite.length);
+  }
+  if (mines.length >= 1) {
+    mines.forEach(m => {
+      if (m.collide(environment) && m.touching.bottom) {
+        m.set = true;
+      }
+      if (m.overlap(player.sprite) && m.set) {
+        player.sprite.velocity.y = -30;
+        player.sprite.velocity.x *= -1;
+        flying = true;
+        flyingDuration = 25;
+        timeFlying = flyingDuration;
+        mines.splice(mines.indexOf(m), 1);
+        m.remove();
+        if (m.me && player.item["mine"]!= undefined) {
+          player.item["mine"].sprite.splice(player.item["mine"].sprite.indexOf(m), 1);
+        }
+      }
+      m.velocity.y -= GRAVITY;
+      sendHimFlying();
+    });
+  }
+}
+
+
 
 
 
