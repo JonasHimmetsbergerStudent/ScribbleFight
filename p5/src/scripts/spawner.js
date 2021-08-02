@@ -38,8 +38,7 @@ function spawn() {
 
 
 function createItem(x) {
-    num = getRandomInt(4);
-    num = 4;
+    num = getRandomInt(5);
     switch (num) {
         case 1:
             i = createSprite(x, 0, 50, 50);
@@ -60,6 +59,11 @@ function createItem(x) {
             i = createSprite(x, 0, 50, 50);
             i.type = "mine";
             i.addImage(itemImgOrange);
+            break;
+        case 5:
+            i = createSprite(x, 0, 50, 50);
+            i.type = "small";
+            i.addImage(itemImgGreen);
             break;
     }
     i.maxSpeed = 10;
@@ -84,6 +88,9 @@ function itemPickUp() {
                         break;
                     case "mine":
                         player.item["mine"] = new Item("mine");
+                        break;
+                    case "small":
+                        player.item["small"] = new Item("small");
                         break;
                 }
                 items.splice(items.indexOf(item), 1);

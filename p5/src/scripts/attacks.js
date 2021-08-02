@@ -276,9 +276,6 @@ function placeMine() {
 }
 
 function minePhysics() {
-  if(player.item["mine"]!=undefined) {
-    console.log(player.item["mine"].sprite.length);
-  }
   if (mines.length >= 1) {
     mines.forEach(m => {
       if (m.collide(environment) && m.touching.bottom) {
@@ -292,7 +289,7 @@ function minePhysics() {
         timeFlying = flyingDuration;
         mines.splice(mines.indexOf(m), 1);
         m.remove();
-        if (m.me && player.item["mine"]!= undefined) {
+        if (m.me && player.item["mine"] != undefined) {
           player.item["mine"].sprite.splice(player.item["mine"].sprite.indexOf(m), 1);
         }
       }
@@ -300,6 +297,38 @@ function minePhysics() {
       sendHimFlying();
     });
   }
+}
+
+
+let imSmall;
+let smallTimer;
+function makeMeSmall() {
+  if (player.item["small"] != undefined) {
+    imSmall = true;
+    smallTimer = 10;
+  }
+}
+
+
+function smallChecker() {
+  if (imSmall) {
+    if (smallTimer == 10) {
+      player.sprite.addImage(amogus_supreme);
+      player.sprite.setCollider("rectangle", 0, 0, player_width / 2 - 15, player_height / 2);
+    }
+
+    if (frameCount % 60 == 0 && smallTimer > 0) {
+      smallTimer--;
+    }
+    if (smallTimer == 0) {
+      player.sprite.addImage(amogus);
+      player.sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
+      smallTimer = 10;
+      player.item["small"] = undefined;
+      imSmall = false;
+    }
+  }
+
 }
 
 

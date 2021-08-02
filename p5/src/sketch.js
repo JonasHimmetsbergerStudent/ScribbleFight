@@ -17,14 +17,17 @@ const MAX_JUMP = 3;
 var touches_side;
 
 // Images
+var amogus;
 var bombImg;
 var itemImg;
 var itemImgBlue;
 var itemImgYellow;
 var itemImgOrange;
+var itemImgGreen;
 var boogieBombImg;
 var pianoImg;
 var mineImg;
+var amogus_supreme;
 
 //Forces
 const GRAVITY = -1;
@@ -34,14 +37,15 @@ const SPEED = 5;
 function setup() {
   createCanvas(1429, 830);
   background(51);
+  init();
   player = new Player(createSprite(500, 200, player_width, player_height));
   player.sprite.maxSpeed = 30;
   otherPlayers[0] = new Player(createSprite(800, 200, player_width, player_height));
   player.sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
   environment = new Group();
-  player.sprite.addAnimation("normal", "../assets/amogus.png");
+
   player.sprite.debug = true;
-  init();
+  
 }
 
 function draw() {
@@ -58,7 +62,9 @@ function draw() {
     blackHolePhysics();
     pianoPhysics();
     minePhysics();
+    smallChecker();
     spawn();
+    
 
     background(bg);
 
@@ -79,7 +85,8 @@ function draw() {
 function init() {
   loadImage('../assets/amogus.png', img => {
     img.resize(100, 0);
-    player.sprite.addImage(img);
+    amogus = img;
+    player.sprite.addImage(amogus);
 
     //initialising the pixel sprites for the playing environment
     for (let i = 0; i < pixel_clumps.length; i++) {
@@ -116,8 +123,7 @@ function init() {
           }
         } */
 
-    loadImage('../assets/amogus.png', img => {
-      img.resize(100, 0);
+   
       loadImage('../assets/smiley_bg.png', img => {
         bg = img;
         loadImage('../assets/bomb.png', img => {
@@ -144,7 +150,15 @@ function init() {
                       loadImage('../assets/mine.png',img => {
                         img.resize(50,0);
                         mineImg= img;
-                        started = true;
+                        loadImage('../assets/item_green.png',img => {
+                          img.resize(50,0);
+                          itemImgGreen= img;
+                          loadImage('../assets/amogus_supreme.png',img => {
+                            img.resize(50,0);
+                            amogus_supreme= img;
+                            started = true;
+                          })
+                        })
                       })
                     })
                   })
@@ -154,7 +168,6 @@ function init() {
           })
         })
       })
-    })
   });
 }
 

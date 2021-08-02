@@ -15,7 +15,7 @@ function controls() {
     //D
     if (keyIsDown(68)) {
         player.sprite.velocity.x = SPEED;
-    } 
+    }
     //S
     // if (keyIsDown(83)) {
     //  sprite.velocity.y -= GRAVITY;
@@ -34,43 +34,47 @@ function controls() {
 
 
     // E
-    if(keyWentDown(69)) {
+    if (keyWentDown(69)) {
         bombAttack();
-    } 
+    }
 
     // Q
-    if(keyWentDown(81)) {
+    if (keyWentDown(81)) {
         blackHoleAttack();
-    } 
+    }
 
     // R
-    if(keyWentDown(82)) {
-        setTimeout(function(){ pianoTime() }, 500);
-    } 
+    if (keyWentDown(82)) {
+        setTimeout(function () { pianoTime() }, 500);
+    }
 
     // C
-    if(keyWentDown(67)) {
+    if (keyWentDown(67)) {
         placeMine();
     }
-    
+    // F
+    if (keyWentDown(70)) {
+        makeMeSmall();
+    }
+
 
 }
 
 function mouseClicked() {
     defaultAttack();
-  }
+}
 
-  function mirrorSprite() {
+function mirrorSprite() {
     if (keyWentDown(65)) {
-      if (player.sprite.mirrorX() === 1) {
-        player.sprite.mirrorX(player.sprite.mirrorX() * -1);
-        player.direction = "left";
-      }
+        if (player.sprite.mirrorX() === 1) {
+            player.sprite.mirrorX(player.sprite.mirrorX() * -1);
+            player.direction = "left";
+        }
     }
     if (keyWentDown(68)) {
-      if (player.sprite.mirrorX() === -1) {
-        player.sprite.mirrorX(player.sprite.mirrorX() * -1);
-        player.direction = "right";
-      }
+        if (player.sprite.mirrorX() === -1) {
+            player.sprite.mirrorX(player.sprite.mirrorX() * -1);
+            player.direction = "right";
+        }
     }
-  }
+}
