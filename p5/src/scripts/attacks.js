@@ -213,19 +213,21 @@ function blackHolePhysics() {
 
 
 function pianoTime() {
-  if (player.item["piano"] !== undefined && player.item["piano"].ammo > 0) {
-    if (player.item["piano"].sprite === undefined) {
-      let xPos = player.sprite.position.x;
-      player.item["piano"].sprite = createSprite(xPos, 10, 100, 100);
-      player.item["piano"].sprite.addImage(pianoImg);
-      player.item["piano"].sprite.setCollider("rectangle", 0, 0, 100, 100);
-      player.item["piano"].sprite.debug = true;
-      player.item["piano"].sprite.maxSpeed = 20;
-      player.item["piano"].sprite.rotation = getRandomInt(360);
-      player.item["piano"].sprite.me = true;
-      pianos.push(player.item["piano"].sprite);
+  let xPos = player.sprite.position.x;
+  setTimeout(() => {
+    if (player.item["piano"] !== undefined && player.item["piano"].ammo > 0) {
+      if (player.item["piano"].sprite === undefined) {
+        player.item["piano"].sprite = createSprite(xPos, 10, 100, 100);
+        player.item["piano"].sprite.addImage(pianoImg);
+        player.item["piano"].sprite.setCollider("rectangle", 0, 0, 100, 100);
+        player.item["piano"].sprite.debug = true;
+        player.item["piano"].sprite.maxSpeed = 20;
+        player.item["piano"].sprite.rotation = getRandomInt(360);
+        player.item["piano"].sprite.me = true;
+        pianos.push(player.item["piano"].sprite);
+      }
     }
-  }
+  }, 500);
 }
 
 
@@ -241,10 +243,16 @@ function pianoPhysics() {
         pianos.splice(pianos.indexOf(p), 1);
         ammoCheck("piano");
       } else if (p.overlap(player.sprite)) {
+        p.remove();
+        if (p.me) {
+          player.item["piano"].sprite = undefined;
+        }
+        pianos.splice(pianos.indexOf(p), 1);
+        ammoCheck("piano");
         if (p.position.x <= player.sprite.position.x) {
-          player.sprite.velocity.x += 2;
+          player.sprite.velocity.x += 5;
         } else {
-          player.sprite.velocity.x -= 2;
+          player.sprite.velocity.x -= 5;
         }
         flying = true;
         flyingDuration = 20;

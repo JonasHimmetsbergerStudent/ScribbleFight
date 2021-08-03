@@ -45,7 +45,7 @@ function controls() {
 
     // R
     if (keyWentDown(82)) {
-        setTimeout(function () { pianoTime() }, 500);
+         pianoTime();
     }
 
     // C
