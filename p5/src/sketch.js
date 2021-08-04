@@ -49,6 +49,7 @@ function setup() {
 }
 
 function draw() {
+  console.log(player.sprite.velocity.y);
   touches_side = false;
   if (started && !youAreDead) {
     // max speed is 20 
@@ -182,8 +183,8 @@ function checkForCollisions() {
               touches_side = true;
             }
             if (touches_side && !noGravity) {
-              player.sprite.velocity.y = player.sprite.velocity.y + 5;
-            } else if(!noGravity) {
+              player.sprite.velocity.y = -5;
+            } else if(!noGravity && !player.sprite.touching.top) {
               player.sprite.velocity.y = 0;
             }
             if (!player.sprite.touching.top) {
