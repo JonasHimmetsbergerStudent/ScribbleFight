@@ -49,7 +49,6 @@ function setup() {
 }
 
 function draw() {
-  console.log(player.sprite.velocity.y);
   touches_side = false;
   if (started && !youAreDead) {
     // max speed is 20 
@@ -97,7 +96,8 @@ function init() {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
             sprite_pixels[i][j] = createSprite((j - ((same_x_counter - 1) / 2)) * 25, i * 25, 25 * (same_x_counter - 1), 25);
-            sprite_pixels[i][j].visible = false;
+            //sprite_pixels[i][j].visible = false;
+            sprite_pixels[i][j].debug = true;
             environment.add(sprite_pixels[i][j]);
             sprite_pixels[i][j].immovable = true;
             sprite_pixels[i][j - 1].remove();

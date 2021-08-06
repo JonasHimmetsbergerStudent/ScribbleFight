@@ -87,12 +87,20 @@ function bombAttack() {
     // man kann nur eine bombe gleichzeitig aussenden
     if (player.item["bomb"].sprite === undefined) {
       if (player.direction == "right") {
-        player.item["bomb"].sprite = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 100, 100);
-        player.item["bomb"].sprite.velocity.x += 5;
-      } else if (player.direction == "left") {
-        player.item["bomb"].sprite = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 100, 100);
+          player.item["bomb"].sprite = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 50, 50);
+          player.item["bomb"].sprite.velocity.x += 5;
+          while((environment.overlap(player.item["bomb"].sprite))) {
+            player.item["bomb"].sprite.position.x -=1;
+          } 
+        
+      }if (player.direction == "left") {
+        player.item["bomb"].sprite = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 50, 50);
         player.item["bomb"].sprite.velocity.x -= 5;
+        while((environment.overlap(player.item["bomb"].sprite))) {
+          player.item["bomb"].sprite.position.x +=1;
+        } 
       }
+     
       player.item["bomb"].sprite.addImage(bombImg);
       player.item["bomb"].sprite.life = 1000;
       player.item["bomb"].sprite.me = true;
