@@ -163,16 +163,17 @@ function blackHoleAttack() {
   if (player.item["black_hole"] !== undefined && player.item["black_hole"].ammo > 0) {
     if (player.item["black_hole"].sprite === undefined) {
       if (player.direction == "right") {
-        player.item["black_hole"].sprite = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 100, 100);
+        player.item["black_hole"].sprite = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 50, 50);
         player.item["black_hole"].sprite.velocity.x += 3;
         while ((environment.overlap(player.item["black_hole"].sprite))) {
-          player.item["black_hole"].sprite.position.x -= 1;
+          player.item["black_hole"].sprite.position.x -= 1;console.log("r");
         }
       } else if (player.direction == "left") {
-        player.item["black_hole"].sprite = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 100, 100);
+        player.item["black_hole"].sprite = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 50, 50);
         player.item["black_hole"].sprite.velocity.x -= 3;
         while ((environment.overlap(player.item["black_hole"].sprite))) {
           player.item["black_hole"].sprite.position.x += 1;
+          console.log("l");
         }
       }
       player.item["black_hole"].sprite.addImage(boogieBombImg);

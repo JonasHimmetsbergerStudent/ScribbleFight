@@ -30,9 +30,11 @@ var mineImg;
 var amogus_supreme;
 
 //Forces
-const GRAVITY = -1;
-const JUMP = 15;
-const SPEED = 5;
+const GAMESPEED = 1;
+const GRAVITY = -1 * GAMESPEED;
+const JUMP = 15 * GAMESPEED;
+const SPEED = 5 * GAMESPEED;
+const CLIMBINGSPEED = -5 * GAMESPEED;
 
 function setup() {
   createCanvas(1429, 830);
@@ -49,10 +51,10 @@ function setup() {
 }
 
 function draw() {
+  console.log(player.sprite.velocity.y);
   touches_side = false;
   if (started && !youAreDead) {
-    // max speed is 20 
-    if (player.sprite.velocity.y <= 20 && !flying && !noGravity) {
+    if (!flying && !noGravity) {
       player.sprite.velocity.y -= GRAVITY;
     } else if (flying) {
       player.sprite.velocity.y -= GRAVITY / 1.25;
@@ -96,7 +98,7 @@ function init() {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
             sprite_pixels[i][j] = createSprite((j - ((same_x_counter - 1) / 2)) * 25, i * 25, 25 * (same_x_counter - 1), 25);
-            //sprite_pixels[i][j].visible = false;
+            sprite_pixels[i][j].visible = false;
             sprite_pixels[i][j].debug = true;
             environment.add(sprite_pixels[i][j]);
             sprite_pixels[i][j].immovable = true;
@@ -183,7 +185,7 @@ function checkForCollisions() {
               touches_side = true;
             }
             if (touches_side && !noGravity) {
-              player.sprite.velocity.y = -5;
+              player.sprite.velocity.y = CLIMBINGSPEED;
             } else if(!noGravity && !player.sprite.touching.top) {
               player.sprite.velocity.y = 0;
             }
