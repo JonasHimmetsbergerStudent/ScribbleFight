@@ -272,7 +272,6 @@ while True:
     blurred = cv2.GaussianBlur(imgWarpGray, (7, 7), 0)
 
     lum = cv2.cvtColor(imgWarpColored, cv2.COLOR_BGR2HSV)[..., 2]
-    print(np.average(np.array(lum)))
 
     imgAdaptiveThre = cv2.adaptiveThreshold(
         blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 13, 2)
@@ -280,21 +279,24 @@ while True:
     # imgAdaptiveThre = cv2.adaptiveThreshold(imgWarpGray, 255, 1, 1, 7, 2)
     # imgAdaptiveThre = cv2.bitwise_not(imgAdaptiveThre)
     imgAdaptiveThre = cv2.medianBlur(imgAdaptiveThre, 3)
+    # cunt, _ = cv2.findContours(
+    #     imgAdaptiveThre, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)  # FIND ALL CONTOURS
+    # cv2.drawContours(imgAdaptiveThre, cunt, -1, borderColor, 2)
 
     # Image Array for Display
-    imageArray = ([img, imgGray, imgThreshold, imgContours],
-                  [imgBigContour, imgWarpColored, imgWarpGray, imgAdaptiveThre])
-    # imageArray = ([imgContours, imgThreshold],
-    #               [imgBigContour, imgWarpColored])
+    # imageArray = ([img, imgGray, imgThreshold, imgContours],
+    #               [imgBigContour, imgWarpColored, imgWarpGray, imgAdaptiveThre])
+    imageArray = ([imgContours, imgThreshold],
+                  [imgBigContour, imgAdaptiveThre])
 
     # !SECTION
 
     # SECTION draw open-cv data
     # LABELS FOR DISPLAY
-    lables = [["Original", "Gray", "Threshold", "Contours"],
-              ["Biggest Contour", "Warp Prespective", "Warp Gray", "Adaptive Threshold"]]
-    # lables = [["Gray", "Threshold"],
-    #           ["Biggest Contour", "Warp Prespective"]]
+    # lables = [["Original", "Gray", "Threshold", "Contours"],
+    #           ["Biggest Contour", "Warp Prespective", "Warp Gray", "Adaptive Threshold"]]
+    lables = [["Gray", "Threshold"],
+              ["Biggest Contour", "Warp Prespective"]]
 
     stackedImage = utlis.stackImages(imageArray, 0.75, lables)
     cv2.imshow("Result", stackedImage)
