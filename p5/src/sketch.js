@@ -33,6 +33,9 @@ var amogus_supreme;
 const GRAVITY = -1;
 const JUMP = 15;
 const SPEED = 5;
+const GAMESPEED = 1;
+
+
 
 function setup() {
   createCanvas(1429, 830);
@@ -96,7 +99,7 @@ function init() {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
             sprite_pixels[i][j] = createSprite((j - ((same_x_counter - 1) / 2)) * 25, i * 25, 25 * (same_x_counter - 1), 25);
-            //sprite_pixels[i][j].visible = false;
+            sprite_pixels[i][j].visible = false;
             sprite_pixels[i][j].debug = true;
             environment.add(sprite_pixels[i][j]);
             sprite_pixels[i][j].immovable = true;
