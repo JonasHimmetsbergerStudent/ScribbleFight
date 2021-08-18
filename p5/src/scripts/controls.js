@@ -3,7 +3,7 @@ function controls() {
     //Spacebar
     if (keyWentDown(32)) {
         if (!(JUMP_COUNT >= MAX_JUMP)) {
-            player.sprite.velocity.y = -JUMP;
+            player.sprite.velocity.y =  -JUMP;
             JUMP_COUNT++;
         }
     }
