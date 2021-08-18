@@ -30,9 +30,12 @@ var mineImg;
 var amogus_supreme;
 
 //Forces
-const GAMESPEED = 2;
+const GAMESPEED = 1;
 const GRAVITY = -1 * GAMESPEED;
-const JUMP = 15 * GAMESPEED / 1.435;
+var JUMP = 15;
+if(GAMESPEED > 1) {
+  JUMP = 15 * GAMESPEED / 1.435;
+}
 const SPEED = 5 * GAMESPEED;
 const CLIMBINGSPEED = -5 * GAMESPEED;
 
@@ -41,7 +44,7 @@ function setup() {
   background(51);
   init();
   player = new Player(createSprite(450, 100, player_width, player_height));
-  player.sprite.maxSpeed = 30 * GAMESPEED;
+  player.sprite.maxSpeed = 30;
   otherPlayers[0] = new Player(createSprite(800, 200, player_width, player_height));
   player.sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
   environment = new Group();

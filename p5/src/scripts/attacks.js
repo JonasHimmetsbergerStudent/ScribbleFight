@@ -88,14 +88,14 @@ function bombAttack() {
     if (player.item["bomb"].sprite === undefined) {
       if (player.direction == "right") {
         player.item["bomb"].sprite = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 50, 50);
-        player.item["bomb"].sprite.velocity.x += 5;
+        player.item["bomb"].sprite.velocity.x += 5 * GAMESPEED;
         while ((environment.overlap(player.item["bomb"].sprite))) {
           player.item["bomb"].sprite.position.x -= 1;
         }
 
       } if (player.direction == "left") {
         player.item["bomb"].sprite = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 50, 50);
-        player.item["bomb"].sprite.velocity.x -= 5;
+        player.item["bomb"].sprite.velocity.x -= 5 * GAMESPEED;
         while ((environment.overlap(player.item["bomb"].sprite))) {
           player.item["bomb"].sprite.position.x += 1;
         }
@@ -114,7 +114,7 @@ function bombPhysics() {
   if (bombs.length >= 1) {
     bombs.forEach(bomb => {
       if (bomb.velocity.y <= 20) {
-        bomb.velocity.y -= GRAVITY;
+        bomb.velocity.y -= GRAVITY * GAMESPEED;
       }
       bomb.bounce(environment);
 
@@ -131,10 +131,10 @@ function bombPhysics() {
           player.sprite.velocity.x = -bomb.velocity.x * 100;
           player.sprite.velocity.y = -bomb.velocity.y * 100;
         }
-        player.sprite.limitSpeed(10 * testKnockback);
+        player.sprite.limitSpeed(30 * GAMESPEED);
 
         flying = true;
-        flyingDuration = 50;
+        flyingDuration = 50 / GAMESPEED;
         timeFlying = flyingDuration;
         bomb.remove();
         // zum überprüfen ob man gerade eine bombe im einsatz hat
@@ -164,13 +164,13 @@ function blackHoleAttack() {
     if (player.item["black_hole"].sprite === undefined) {
       if (player.direction == "right") {
         player.item["black_hole"].sprite = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 50, 50);
-        player.item["black_hole"].sprite.velocity.x += 3;
+        player.item["black_hole"].sprite.velocity.x += 3 * GAMESPEED;
         while ((environment.overlap(player.item["black_hole"].sprite))) {
           player.item["black_hole"].sprite.position.x -= 1;console.log("r");
         }
       } else if (player.direction == "left") {
         player.item["black_hole"].sprite = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 50, 50);
-        player.item["black_hole"].sprite.velocity.x -= 3;
+        player.item["black_hole"].sprite.velocity.x -= 3 * GAMESPEED;
         while ((environment.overlap(player.item["black_hole"].sprite))) {
           player.item["black_hole"].sprite.position.x += 1;
           console.log("l");
