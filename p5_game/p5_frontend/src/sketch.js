@@ -3,6 +3,7 @@ var player;
 var sprite_pixels = [];
 var environment;
 var otherPlayers = [];
+var socket;
 
 //Variables
 var bg;
@@ -42,6 +43,11 @@ const CLIMBINGSPEED = -5 * GAMESPEED;
 function setup() {
   createCanvas(1429, 830);
   background(51);
+
+  socket = io.connect('http://localhost:3000');
+  socket.on('update',updatePosition);
+
+
   init();
   player = new Player(createSprite(450, 100, player_width, player_height));
   player.sprite.maxSpeed = 30;
@@ -53,8 +59,12 @@ function setup() {
   
 }
 
+function updatePosition(data) {
+  otherPlayers[0].sprite.position.x = data.x;
+  otherPlayers[0].sprite.position.y = data.y;
+}
+
 function draw() {
-  console.log(player.sprite.position.y);
   touches_side = false;
   if (started && !youAreDead) {
     if (!flying && !noGravity) {
@@ -83,6 +93,11 @@ function draw() {
     mirrorSprite();
     deathCheck();
     drawSprites();
+    var data = {
+      x: player.sprite.position.x,
+      y: player.sprite.position.y
+    }
+    socket.emit('update',data);
   }
 }
 
