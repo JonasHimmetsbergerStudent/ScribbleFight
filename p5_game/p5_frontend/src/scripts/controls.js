@@ -3,18 +3,18 @@ function controls() {
     //Spacebar
     if (keyWentDown(32)) {
         if (!(JUMP_COUNT >= MAX_JUMP)) {
-            player.sprite.velocity.y =  -JUMP;
+            players[socket.id].sprite.velocity.y =  -JUMP;
             JUMP_COUNT++;
         }
     }
     //A
     if (keyIsDown(65)) {
-        player.sprite.velocity.x = -SPEED;
+        players[socket.id].sprite.velocity.x = -SPEED;
 
     }
     //D
     if (keyIsDown(68)) {
-        player.sprite.velocity.x = SPEED;
+        players[socket.id].sprite.velocity.x = SPEED;
     }
     //S
     // if (keyIsDown(83)) {
@@ -66,15 +66,15 @@ function mouseClicked() {
 
 function mirrorSprite() {
     if (keyWentDown(65)) {
-        if (player.sprite.mirrorX() === 1) {
-            player.sprite.mirrorX(player.sprite.mirrorX() * -1);
-            player.direction = "left";
+        if (players[socket.id].sprite.mirrorX() === 1) {
+            players[socket.id].sprite.mirrorX(players[socket.id].sprite.mirrorX() * -1);
+            players[socket.id].direction = "left";
         }
     }
     if (keyWentDown(68)) {
-        if (player.sprite.mirrorX() === -1) {
-            player.sprite.mirrorX(player.sprite.mirrorX() * -1);
-            player.direction = "right";
+        if (players[socket.id].sprite.mirrorX() === -1) {
+            players[socket.id].sprite.mirrorX(players[socket.id].sprite.mirrorX() * -1);
+            players[socket.id].direction = "right";
         }
     }
 }

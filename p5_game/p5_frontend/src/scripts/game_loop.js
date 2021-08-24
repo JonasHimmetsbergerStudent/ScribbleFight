@@ -3,25 +3,25 @@ let youAreDead = false;
 let gameOver;
 let alivePlayerCount = 0;
 function deathCheck() {
-    if (player.sprite.position.x > screenWidth || player.sprite.position.y > screenHeight) {
-        if(player.item != undefined && player.item.sprite != undefined) {
-            player.item.sprite = undefined;
+    if (players[socket.id].sprite.position.x > screenWidth || players[socket.id].sprite.position.y > screenHeight) {
+        if(players[socket.id].item != undefined && players[socket.id].item.sprite != undefined) {
+            players[socket.id].item.sprite = undefined;
         }
         if (frameCount % 60 == 0 && spawnTimer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
             spawnTimer--;
         } 
         if(spawnTimer==0) {
-            player.life--;
+            players[socket.id].life--;
             console.log("now");
-            player.sprite.position.x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
-            player.sprite.position.y = 10;
+            players[socket.id].sprite.position.x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
+            players[socket.id].sprite.position.y = 10;
             spawnTimer = 3;
         }
     }
-    if(player.life==0){
+    if(players[socket.id].life==0){
         youAreDead = true;
         alert("You died!");
-        player.sprite.remove();
+        players[socket.id].sprite.remove();
         otherPlayers.forEach(p => {
             if(p.life>0) {
                alivePlayerCount++;

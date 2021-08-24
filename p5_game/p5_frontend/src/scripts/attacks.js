@@ -17,17 +17,17 @@ var projectileIndex;
 
 function defaultAttack() {
 
-  if (player.direction == "right") {
-    projectile = createSprite(player.sprite.position.x, player.sprite.position.y, 20, 20);
+  if (players[socket.id].direction == "right") {
+    projectile = createSprite(players[socket.id].sprite.position.x, players[socket.id].sprite.position.y, 20, 20);
   } else {
-    projectile = createSprite(player.sprite.position.x, player.sprite.position.y, 20, 20);
+    projectile = createSprite(players[socket.id].sprite.position.x, players[socket.id].sprite.position.y, 20, 20);
   }
 
 
   projectile.mass = 10;
   projectile.life = 100;
-  projectile.velocity.x = (camera.mouseX - player.sprite.position.x) * 100;
-  projectile.velocity.y = (camera.mouseY - player.sprite.position.y) * 100;
+  projectile.velocity.x = (camera.mouseX - players[socket.id].sprite.position.x) * 100;
+  projectile.velocity.y = (camera.mouseY - players[socket.id].sprite.position.y) * 100;
   projectile.limitSpeed(25);
   projectiles.push(projectile);
 
@@ -53,20 +53,20 @@ function defaultAttackPhysics() {
       }
       // if you shoot the projectile, it needs about 5 frames to be outside of your own hitbox
       if (projectile.life <= 95) {
-        if (projectile.collide(player.sprite)) {
-          if (player.sprite.velocity.x > 0 && projectile.velocity.x > 0 || player.sprite.velocity.x < 0 && projectile.velocity.x < 0) {
+        if (projectile.collide(players[socket.id].sprite)) {
+          if (players[socket.id].sprite.velocity.x > 0 && projectile.velocity.x > 0 || players[socket.id].sprite.velocity.x < 0 && projectile.velocity.x < 0) {
             diffDirection = true;
-          } if (player.sprite.velocity.y < 2 && player.sprite.velocity.y != 1 && projectile.velocity.y <= 0) {
+          } if (players[socket.id].sprite.velocity.y < 2 && players[socket.id].sprite.velocity.y != 1 && projectile.velocity.y <= 0) {
             diffDirection = true;
           }
           if (!diffDirection) {
-            player.sprite.velocity.x = projectile.velocity.x * 100;
-            player.sprite.velocity.y = projectile.velocity.y * testKnockback * 100;
+            players[socket.id].sprite.velocity.x = projectile.velocity.x * 100;
+            players[socket.id].sprite.velocity.y = projectile.velocity.y * testKnockback * 100;
           } else {
-            player.sprite.velocity.x = -projectile.velocity.x * 100;
-            player.sprite.velocity.y = -projectile.velocity.y * 100;
+            players[socket.id].sprite.velocity.x = -projectile.velocity.x * 100;
+            players[socket.id].sprite.velocity.y = -projectile.velocity.y * 100;
           }
-          player.sprite.limitSpeed(2 * testKnockback);
+          players[socket.id].sprite.limitSpeed(2 * testKnockback);
 
           flying = true;
           flyingDuration = 10;
@@ -83,28 +83,28 @@ function defaultAttackPhysics() {
 
 
 function bombAttack() {
-  if (player.item["bomb"] !== undefined && player.item["bomb"].ammo > 0) {
+  if (players[socket.id].item["bomb"] !== undefined && players[socket.id].item["bomb"].ammo > 0) {
     // man kann nur eine bombe gleichzeitig aussenden
-    if (player.item["bomb"].sprite === undefined) {
-      if (player.direction == "right") {
-        player.item["bomb"].sprite = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 50, 50);
-        player.item["bomb"].sprite.velocity.x += 5 * GAMESPEED;
-        while ((environment.overlap(player.item["bomb"].sprite))) {
-          player.item["bomb"].sprite.position.x -= 1;
+    if (players[socket.id].item["bomb"].sprite === undefined) {
+      if (players[socket.id].direction == "right") {
+        players[socket.id].item["bomb"].sprite = createSprite(players[socket.id].sprite.position.x + player_width, players[socket.id].sprite.position.y, 50, 50);
+        players[socket.id].item["bomb"].sprite.velocity.x += 5 * GAMESPEED;
+        while ((environment.overlap(players[socket.id].item["bomb"].sprite))) {
+          players[socket.id].item["bomb"].sprite.position.x -= 1;
         }
 
-      } if (player.direction == "left") {
-        player.item["bomb"].sprite = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 50, 50);
-        player.item["bomb"].sprite.velocity.x -= 5 * GAMESPEED;
-        while ((environment.overlap(player.item["bomb"].sprite))) {
-          player.item["bomb"].sprite.position.x += 1;
+      } if (players[socket.id].direction == "left") {
+        players[socket.id].item["bomb"].sprite = createSprite(players[socket.id].sprite.position.x - player_width, players[socket.id].sprite.position.y, 50, 50);
+        players[socket.id].item["bomb"].sprite.velocity.x -= 5 * GAMESPEED;
+        while ((environment.overlap(players[socket.id].item["bomb"].sprite))) {
+          players[socket.id].item["bomb"].sprite.position.x += 1;
         }
       }
 
-      player.item["bomb"].sprite.addImage(bombImg);
-      player.item["bomb"].sprite.life = 1000;
-      player.item["bomb"].sprite.me = true;
-      bombs.push(player.item["bomb"].sprite);
+      players[socket.id].item["bomb"].sprite.addImage(bombImg);
+      players[socket.id].item["bomb"].sprite.life = 1000;
+      players[socket.id].item["bomb"].sprite.me = true;
+      bombs.push(players[socket.id].item["bomb"].sprite);
     }
   }
 }
@@ -118,20 +118,20 @@ function bombPhysics() {
       }
       bomb.bounce(environment);
 
-      if (bomb.collide(player.sprite)) {
-        if (player.sprite.velocity.x > 0 && bomb.velocity.x > 0 || player.sprite.velocity.x < 0 && bomb.velocity.x < 0) {
+      if (bomb.collide(players[socket.id].sprite)) {
+        if (players[socket.id].sprite.velocity.x > 0 && bomb.velocity.x > 0 || players[socket.id].sprite.velocity.x < 0 && bomb.velocity.x < 0) {
           diffDirection = true;
-        } if (player.sprite.velocity.y < 2 && player.sprite.velocity.y != 1 && bomb.velocity.y <= 0) {
+        } if (players[socket.id].sprite.velocity.y < 2 && players[socket.id].sprite.velocity.y != 1 && bomb.velocity.y <= 0) {
           diffDirection = true;
         }
         if (!diffDirection) {
-          player.sprite.velocity.x = bomb.velocity.x * 100;
-          player.sprite.velocity.y = bomb.velocity.y * testKnockback * 100;
+          players[socket.id].sprite.velocity.x = bomb.velocity.x * 100;
+          players[socket.id].sprite.velocity.y = bomb.velocity.y * testKnockback * 100;
         } else {
-          player.sprite.velocity.x = -bomb.velocity.x * 100;
-          player.sprite.velocity.y = -bomb.velocity.y * 100;
+          players[socket.id].sprite.velocity.x = -bomb.velocity.x * 100;
+          players[socket.id].sprite.velocity.y = -bomb.velocity.y * 100;
         }
-        player.sprite.limitSpeed(30 * GAMESPEED);
+        players[socket.id].sprite.limitSpeed(30 * GAMESPEED);
 
         flying = true;
         flyingDuration = 50 / GAMESPEED;
@@ -139,7 +139,7 @@ function bombPhysics() {
         bomb.remove();
         // zum überprüfen ob man gerade eine bombe im einsatz hat
         if (bomb.me) {
-          player.item["bomb"].sprite = undefined;
+          players[socket.id].item["bomb"].sprite = undefined;
         }
         bombs.splice(bombs.indexOf(bomb), 1);
         ammoCheck("bomb");
@@ -148,7 +148,7 @@ function bombPhysics() {
         bomb.remove();
         // zum überprüfen ob man gerade eine bombe im einsatz hat
         if (bomb.me) {
-          player.item["bomb"].sprite = undefined;
+          players[socket.id].item["bomb"].sprite = undefined;
         }
         bombs.splice(bombs.indexOf(bomb), 1);
         ammoCheck("bomb");
@@ -160,40 +160,40 @@ function bombPhysics() {
 
 
 function blackHoleAttack() {
-  if (player.item["black_hole"] !== undefined && player.item["black_hole"].ammo > 0) {
-    if (player.item["black_hole"].sprite === undefined) {
-      if (player.direction == "right") {
-        player.item["black_hole"].sprite = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 50, 50);
-        player.item["black_hole"].sprite.velocity.x += 3 * GAMESPEED;
-        while ((environment.overlap(player.item["black_hole"].sprite))) {
-          player.item["black_hole"].sprite.position.x -= 1;console.log("r");
+  if (players[socket.id].item["black_hole"] !== undefined && players[socket.id].item["black_hole"].ammo > 0) {
+    if (players[socket.id].item["black_hole"].sprite === undefined) {
+      if (players[socket.id].direction == "right") {
+        players[socket.id].item["black_hole"].sprite = createSprite(players[socket.id].sprite.position.x + player_width, players[socket.id].sprite.position.y, 50, 50);
+        players[socket.id].item["black_hole"].sprite.velocity.x += 3 * GAMESPEED;
+        while ((environment.overlap(players[socket.id].item["black_hole"].sprite))) {
+          players[socket.id].item["black_hole"].sprite.position.x -= 1;console.log("r");
         }
-      } else if (player.direction == "left") {
-        player.item["black_hole"].sprite = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 50, 50);
-        player.item["black_hole"].sprite.velocity.x -= 3 * GAMESPEED;
-        while ((environment.overlap(player.item["black_hole"].sprite))) {
-          player.item["black_hole"].sprite.position.x += 1;
+      } else if (players[socket.id].direction == "left") {
+        players[socket.id].item["black_hole"].sprite = createSprite(players[socket.id].sprite.position.x - player_width, players[socket.id].sprite.position.y, 50, 50);
+        players[socket.id].item["black_hole"].sprite.velocity.x -= 3 * GAMESPEED;
+        while ((environment.overlap(players[socket.id].item["black_hole"].sprite))) {
+          players[socket.id].item["black_hole"].sprite.position.x += 1;
           console.log("l");
         }
       }
-      player.item["black_hole"].sprite.addImage(boogieBombImg);
-      player.item["black_hole"].sprite.life = 500;
-      player.item["black_hole"].sprite.debug = true;
-      player.item["black_hole"].sprite.maxSpeed = 20;
-      player.item["black_hole"].sprite.me = true;
-      blackHoles.push(player.item["black_hole"].sprite);
+      players[socket.id].item["black_hole"].sprite.addImage(boogieBombImg);
+      players[socket.id].item["black_hole"].sprite.life = 500;
+      players[socket.id].item["black_hole"].sprite.debug = true;
+      players[socket.id].item["black_hole"].sprite.maxSpeed = 20;
+      players[socket.id].item["black_hole"].sprite.me = true;
+      blackHoles.push(players[socket.id].item["black_hole"].sprite);
     }
   }
 }
 
 function attraction(b) {
-  if (player.sprite.overlap(b)) {
+  if (players[socket.id].sprite.overlap(b)) {
     noGravity = true;
-    var angle = atan2(player.sprite.position.y - b.position.y, player.sprite.position.x - b.position.x);
-    if (player.sprite.velocity.y >= -25 && player.sprite.velocity.y <= 25) {
-      player.sprite.velocity.x -= cos(angle);
+    var angle = atan2(players[socket.id].sprite.position.y - b.position.y, players[socket.id].sprite.position.x - b.position.x);
+    if (players[socket.id].sprite.velocity.y >= -25 && players[socket.id].sprite.velocity.y <= 25) {
+      players[socket.id].sprite.velocity.x -= cos(angle);
     }
-    player.sprite.velocity.y -= sin(angle);
+    players[socket.id].sprite.velocity.y -= sin(angle);
   }
 }
 
@@ -217,7 +217,7 @@ function blackHolePhysics() {
         b.remove();
         // zum überprüfen ob man gerade ein schwarzes loch im einsatz hat
         if (b.me) {
-          player.item["black_hole"].sprite = undefined;
+          players[socket.id].item["black_hole"].sprite = undefined;
         }
         blackHoles.splice(blackHoles.indexOf(b), 1);
         ammoCheck("black_hole");
@@ -228,18 +228,18 @@ function blackHolePhysics() {
 
 
 function pianoTime() {
-  let xPos = player.sprite.position.x;
+  let xPos = players[socket.id].sprite.position.x;
   setTimeout(() => {
-    if (player.item["piano"] !== undefined && player.item["piano"].ammo > 0) {
-      if (player.item["piano"].sprite === undefined) {
-        player.item["piano"].sprite = createSprite(xPos, 10, 100, 100);
-        player.item["piano"].sprite.addImage(pianoImg);
-        player.item["piano"].sprite.setCollider("rectangle", 0, 0, 100, 100);
-        player.item["piano"].sprite.debug = true;
-        player.item["piano"].sprite.maxSpeed = 20;
-        player.item["piano"].sprite.rotation = getRandomInt(360);
-        player.item["piano"].sprite.me = true;
-        pianos.push(player.item["piano"].sprite);
+    if (players[socket.id].item["piano"] !== undefined && players[socket.id].item["piano"].ammo > 0) {
+      if (players[socket.id].item["piano"].sprite === undefined) {
+        players[socket.id].item["piano"].sprite = createSprite(xPos, 10, 100, 100);
+        players[socket.id].item["piano"].sprite.addImage(pianoImg);
+        players[socket.id].item["piano"].sprite.setCollider("rectangle", 0, 0, 100, 100);
+        players[socket.id].item["piano"].sprite.debug = true;
+        players[socket.id].item["piano"].sprite.maxSpeed = 20;
+        players[socket.id].item["piano"].sprite.rotation = getRandomInt(360);
+        players[socket.id].item["piano"].sprite.me = true;
+        pianos.push(players[socket.id].item["piano"].sprite);
       }
     }
   }, 500);
@@ -253,21 +253,21 @@ function pianoPhysics() {
       if (p.collide(environment)) {
         p.remove();
         if (p.me) {
-          player.item["piano"].sprite = undefined;
+          players[socket.id].item["piano"].sprite = undefined;
         }
         pianos.splice(pianos.indexOf(p), 1);
         ammoCheck("piano");
-      } else if (p.overlap(player.sprite)) {
+      } else if (p.overlap(players[socket.id].sprite)) {
         p.remove();
         if (p.me) {
-          player.item["piano"].sprite = undefined;
+          players[socket.id].item["piano"].sprite = undefined;
         }
         pianos.splice(pianos.indexOf(p), 1);
         ammoCheck("piano");
-        if (p.position.x <= player.sprite.position.x) {
-          player.sprite.velocity.x += 5;
+        if (p.position.x <= players[socket.id].sprite.position.x) {
+          players[socket.id].sprite.velocity.x += 5;
         } else {
-          player.sprite.velocity.x -= 5;
+          players[socket.id].sprite.velocity.x -= 5;
         }
         flying = true;
         flyingDuration = 20;
@@ -280,19 +280,19 @@ function pianoPhysics() {
 }
 
 function placeMine() {
-  if (player.item["mine"] != undefined && player.item["mine"].ammo > 0) {
+  if (players[socket.id].item["mine"] != undefined && players[socket.id].item["mine"].ammo > 0) {
     let mine;
-    if (player.direction == "right") {
-      mine = createSprite(player.sprite.position.x - player_width, player.sprite.position.y, 50, 50);
+    if (players[socket.id].direction == "right") {
+      mine = createSprite(players[socket.id].sprite.position.x - player_width, players[socket.id].sprite.position.y, 50, 50);
     } else {
-      mine = createSprite(player.sprite.position.x + player_width, player.sprite.position.y, 50, 50);
+      mine = createSprite(players[socket.id].sprite.position.x + player_width, players[socket.id].sprite.position.y, 50, 50);
     }
 
     mine.addImage(mineImg);
     mine.maxSpeed = 5;
     mine.debug = true;
     mine.me = true;
-    player.item["mine"].sprite.push(mine);
+    players[socket.id].item["mine"].sprite.push(mine);
     mines.push(mine);
     ammoCheck("mine");
   }
@@ -304,16 +304,16 @@ function minePhysics() {
       if (m.collide(environment) && m.touching.bottom) {
         m.set = true;
       }
-      if (m.overlap(player.sprite) && m.set) {
-        player.sprite.velocity.y = -30;
-        player.sprite.velocity.x *= -1;
+      if (m.overlap(players[socket.id].sprite) && m.set) {
+        players[socket.id].sprite.velocity.y = -30;
+        players[socket.id].sprite.velocity.x *= -1;
         flying = true;
         flyingDuration = 25;
         timeFlying = flyingDuration;
         mines.splice(mines.indexOf(m), 1);
         m.remove();
-        if (m.me && player.item["mine"] != undefined) {
-          player.item["mine"].sprite.splice(player.item["mine"].sprite.indexOf(m), 1);
+        if (m.me && players[socket.id].item["mine"] != undefined) {
+          players[socket.id].item["mine"].sprite.splice(players[socket.id].item["mine"].sprite.indexOf(m), 1);
         }
       }
       m.velocity.y -= GRAVITY;
@@ -326,7 +326,7 @@ function minePhysics() {
 let imSmall;
 let smallTimer;
 function makeMeSmall() {
-  if (player.item["small"] != undefined) {
+  if (players[socket.id].item["small"] != undefined) {
     imSmall = true;
     smallTimer = 10;
   }
@@ -336,18 +336,18 @@ function makeMeSmall() {
 function smallChecker() {
   if (imSmall) {
     if (smallTimer == 10) {
-      player.sprite.addImage(amogus_supreme);
-      player.sprite.setCollider("rectangle", 0, 0, player_width / 2 - 15, player_height / 2);
+      players[socket.id].sprite.addImage(amogus_supreme);
+      players[socket.id].sprite.setCollider("rectangle", 0, 0, player_width / 2 - 15, player_height / 2);
     }
 
     if (frameCount % 60 == 0 && smallTimer > 0) {
       smallTimer--;
     }
     if (smallTimer == 0) {
-      player.sprite.addImage(amogus);
-      player.sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
+      players[socket.id].sprite.addImage(amogus);
+      players[socket.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
       smallTimer = 10;
-      player.item["small"] = undefined;
+      players[socket.id].item["small"] = undefined;
       imSmall = false;
     }
   }
@@ -364,10 +364,10 @@ function sendHimFlying() {
     timeFlying--;
     //slowdown 
     if (timeFlying <= flyingDuration / 2 && timeFlying > 0) {
-      if (player.sprite.velocity.x > 0) { player.sprite.velocity.x -= 0.3; }
-      if (player.sprite.velocity.x < 0) { player.sprite.velocity.x += 0.3; }
-      if (player.sprite.velocity.y > 0) { player.sprite.velocity.y -= 0.3; }
-      if (player.sprite.velocity.y < 0) { player.sprite.velocity.y += 0.3; }
+      if (players[socket.id].sprite.velocity.x > 0) { players[socket.id].sprite.velocity.x -= 0.3; }
+      if (players[socket.id].sprite.velocity.x < 0) { players[socket.id].sprite.velocity.x += 0.3; }
+      if (players[socket.id].sprite.velocity.y > 0) { players[socket.id].sprite.velocity.y -= 0.3; }
+      if (players[socket.id].sprite.velocity.y < 0) { players[socket.id].sprite.velocity.y += 0.3; }
     }
     if (timeFlying == 0) {
       timeFlying = flyingDuration;
@@ -378,9 +378,9 @@ function sendHimFlying() {
 
 
 function ammoCheck(weapon) {
-  player.item[weapon].ammo--;
-  if (player.item[weapon].ammo == 0) {
-    player.item[weapon] = undefined;
+  players[socket.id].item[weapon].ammo--;
+  if (players[socket.id].item[weapon].ammo == 0) {
+    players[socket.id].item[weapon] = undefined;
   }
 }
 

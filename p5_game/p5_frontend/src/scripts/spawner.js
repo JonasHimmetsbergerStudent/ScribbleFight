@@ -76,22 +76,22 @@ function itemPickUp() {
         items.forEach(item => {
             item.velocity.y -= GRAVITY;
             item.collide(environment);
-            if (item.overlap(player.sprite)) {
+            if (item.overlap(players[socket.id].sprite)) {
                 switch (item.type) {
                     case "bomb":
-                        player.item["bomb"] = new Item("bomb");
+                        players[socket.id].item["bomb"] = new Item("bomb");
                         break;
                     case "black_hole":
-                        player.item["black_hole"] = new Item("black_hole");
+                        players[socket.id].item["black_hole"] = new Item("black_hole");
                         break;
                     case "piano":
-                        player.item["piano"] = new Item("piano");
+                        players[socket.id].item["piano"] = new Item("piano");
                         break;
                     case "mine":
-                        player.item["mine"] = new Item("mine");
+                        players[socket.id].item["mine"] = new Item("mine");
                         break;
                     case "small":
-                        player.item["small"] = new Item("small");
+                        players[socket.id].item["small"] = new Item("small");
                         break;
                 }
                 items.splice(items.indexOf(item), 1);

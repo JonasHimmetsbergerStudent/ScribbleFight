@@ -1,8 +1,7 @@
 //Objects
-var player;
 var sprite_pixels = [];
 var environment;
-var otherPlayers = [];
+var players = [];
 var socket;
 
 //Variables
@@ -40,37 +39,43 @@ if(GAMESPEED > 1) {
 const SPEED = 5 * GAMESPEED;
 const CLIMBINGSPEED = -5 * GAMESPEED;
 
+
+
 function setup() {
   createCanvas(1429, 830);
   background(51);
 
   socket = io.connect('http://localhost:3000');
-  socket.on('update',updatePosition);
-
-
+  socket.on('newPlayer',createNewPlayer);
+  socket.on('update',updatePosition);  
   init();
-  player = new Player(createSprite(450, 100, player_width, player_height));
-  player.sprite.maxSpeed = 30;
-  otherPlayers[0] = new Player(createSprite(800, 200, player_width, player_height));
-  player.sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
-  environment = new Group();
+  socket.emit('newPlayer');
+    
 
-  player.sprite.debug = true;
-  
+  environment = new Group();
+}
+
+function createNewPlayer(data) {
+  console.log(data.id);
+  players[data.id] = new Player(createSprite(800, 200, player_width, player_height));
+  players[data.id].sprite.maxSpeed = 30;
+  players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
+  players[data.id].sprite.debug = true;
+  console.log(players);
 }
 
 function updatePosition(data) {
-  otherPlayers[0].sprite.position.x = data.x;
-  otherPlayers[0].sprite.position.y = data.y;
+  players[data.id].sprite.position.x = data.x;
+  players[data.id].sprite.position.y = data.y;
 }
 
 function draw() {
   touches_side = false;
   if (started && !youAreDead) {
     if (!flying && !noGravity) {
-      player.sprite.velocity.y -= GRAVITY;
+      players[socket.id].sprite.velocity.y -= GRAVITY;
     } else if (flying) {
-      player.sprite.velocity.y -= GRAVITY / 1.25;
+      players[socket.id].sprite.velocity.y -= GRAVITY / 1.25;
     }
     bombPhysics();
     defaultAttackPhysics();
@@ -86,7 +91,7 @@ function draw() {
     checkForCollisions();
 
     if (!flying && !noGravity) {
-      player.sprite.velocity.x = 0;
+      players[socket.id].sprite.velocity.x = 0;
       controls();
     }
    
@@ -94,19 +99,25 @@ function draw() {
     deathCheck();
     drawSprites();
     var data = {
-      x: player.sprite.position.x,
-      y: player.sprite.position.y
+      x: players[socket.id].sprite.position.x,
+      y: players[socket.id].sprite.position.y
     }
     socket.emit('update',data);
+    
   }
 }
 
 
 function init() {
+ 
   loadImage('assets/amogus.png', img => {
     img.resize(100, 0);
     amogus = img;
-    player.sprite.addImage(amogus);
+    players[socket.id] = new Player(createSprite(800, 200, player_width, player_height));
+    players[socket.id].sprite.maxSpeed = 30;
+    players[socket.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
+    players[socket.id].sprite.debug = true;
+    players[socket.id].sprite.addImage(amogus);
 
     //initialising the pixel sprites for the playing environment
     for (let i = 0; i < pixel_clumps.length; i++) {
@@ -198,16 +209,16 @@ function checkForCollisions() {
     for (let i = 0; i < pixel_clumps.length; i++) {
       for (let j = 0; j < pixel_clumps[0].length; j++) {
         if (sprite_pixels[i][j] !== undefined) {
-          if (player.sprite.collide(sprite_pixels[i][j])) {
-            if (player.sprite.touching.left || player.sprite.touching.right) {
+          if (players[socket.id].sprite.collide(sprite_pixels[i][j])) {
+            if (players[socket.id].sprite.touching.left || players[socket.id].sprite.touching.right) {
               touches_side = true;
             }
             if (touches_side && !noGravity) {
-              player.sprite.velocity.y = CLIMBINGSPEED;
-            } else if(!noGravity && !player.sprite.touching.top) {
-              player.sprite.velocity.y = 0;
+              players[socket.id].sprite.velocity.y = CLIMBINGSPEED;
+            } else if(!noGravity && !players[socket.id].sprite.touching.top) {
+              players[socket.id].sprite.velocity.y = 0;
             }
-            if (!player.sprite.touching.top) {
+            if (!players[socket.id].sprite.touching.top) {
               JUMP_COUNT = 0;
             }
           }
@@ -216,7 +227,7 @@ function checkForCollisions() {
 
     }
   } else {
-    player.sprite.bounce(environment);
+    players[socket.id].sprite.bounce(environment);
   }
 }
 
