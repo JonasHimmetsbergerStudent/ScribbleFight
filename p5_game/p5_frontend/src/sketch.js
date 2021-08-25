@@ -49,18 +49,16 @@ function setup() {
   socket.on('newPlayer',createNewPlayer);
   socket.on('update',updatePosition);  
   init();
-  socket.emit('newPlayer');
-    
-
+  
   environment = new Group();
 }
 
 function createNewPlayer(data) {
   console.log(data.id);
-  players[data.id] = new Player(createSprite(800, 200, player_width, player_height));
-  players[data.id].sprite.maxSpeed = 30;
-  players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
-  players[data.id].sprite.debug = true;
+    players[data.id] = new Player(createSprite(800, 200, player_width, player_height));
+    players[data.id].sprite.maxSpeed = 30;
+    players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
+    players[data.id].sprite.debug = true;
   console.log(players);
 }
 
@@ -103,7 +101,6 @@ function draw() {
       y: players[socket.id].sprite.position.y
     }
     socket.emit('update',data);
-    
   }
 }
 
@@ -113,11 +110,7 @@ function init() {
   loadImage('assets/amogus.png', img => {
     img.resize(100, 0);
     amogus = img;
-    players[socket.id] = new Player(createSprite(800, 200, player_width, player_height));
-    players[socket.id].sprite.maxSpeed = 30;
-    players[socket.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
-    players[socket.id].sprite.debug = true;
-    players[socket.id].sprite.addImage(amogus);
+    socket.emit('newPlayer');
 
     //initialising the pixel sprites for the playing environment
     for (let i = 0; i < pixel_clumps.length; i++) {

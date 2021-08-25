@@ -11,21 +11,24 @@ var socket = require('socket.io');
 
 var io = socket(server);
 
-var players = [];
+var players = new Map();
 
 io.sockets.on('connection', newConnection);
 
 function newConnection(socket) {
     console.log("New connection: " + socket.id);
-    // if there are existing players
-        players.forEach(p => {
+
+    if (players.size > 0) {
+        players.forEach((values, keys) => {
             let data = {
-                id: p.id
+                id: values.id
             }
-            socket.broadcast.emit('newPlayer', data);
-            console.log("erstellt");
-        });
-    
+            socket.emit('newPlayer', data);
+            console.log("erstellt" + socket.id);
+        })
+    }
+
+
 
     socket.on('newPlayer', createPlayer);
     socket.on('update', updatePosition);
@@ -43,9 +46,10 @@ function newConnection(socket) {
         let data = {
             id: socket.id
         }
-        socket.broadcast.emit('newPlayer', data);
-        players[socket.id] = new Player(socket.id);
-        console.log(players);
+        // damit es auch an mich sendet, benutze ich io.emit
+        io.emit('newPlayer', data);
+        players.set(socket.id, new Player(socket.id));
+        console.log(players.size);
     }
 
 }
