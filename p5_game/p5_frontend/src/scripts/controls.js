@@ -69,12 +69,14 @@ function mirrorSprite() {
         if (players[socket.id].sprite.mirrorX() === 1) {
             players[socket.id].sprite.mirrorX(players[socket.id].sprite.mirrorX() * -1);
             players[socket.id].direction = "left";
+            socket.emit('updateDirection','left');
         }
     }
     if (keyWentDown(68)) {
         if (players[socket.id].sprite.mirrorX() === -1) {
             players[socket.id].sprite.mirrorX(players[socket.id].sprite.mirrorX() * -1);
             players[socket.id].direction = "right";
+            socket.emit('updateDirection','right');
         }
     }
 }

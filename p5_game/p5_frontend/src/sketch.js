@@ -44,13 +44,12 @@ const CLIMBINGSPEED = -5 * GAMESPEED;
 function setup() {
   createCanvas(1429, 830);
   background(51);
+  init();
 
   socket = io.connect('http://localhost:3000');
   socket.on('newPlayer',createNewPlayer);
   socket.on('update',updatePosition);  
-  init();
-  
-  environment = new Group();
+  socket.on('updateDirection',updateDirection);
 }
 
 function createNewPlayer(data) {
@@ -59,12 +58,26 @@ function createNewPlayer(data) {
     players[data.id].sprite.maxSpeed = 30;
     players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
     players[data.id].sprite.debug = true;
+    players[data.id].sprite.addImage(amogus);
   console.log(players);
 }
 
 function updatePosition(data) {
   players[data.id].sprite.position.x = data.x;
   players[data.id].sprite.position.y = data.y;
+}
+
+function updateDirection(data) {
+  if(data.direction=="left") {
+    if(players[data.id].sprite.mirrorX()===1) {
+      players[data.id].sprite.mirrorX(players[data.id].sprite.mirrorX() * -1);
+    }
+  } else if(data.direction=="right") {
+    if(players[data.id].sprite.mirrorX()===-1) {
+      players[data.id].sprite.mirrorX(players[data.id].sprite.mirrorX() * -1);
+    }
+  }
+  
 }
 
 function draw() {
@@ -106,7 +119,7 @@ function draw() {
 
 
 function init() {
- 
+  environment = new Group();
   loadImage('assets/amogus.png', img => {
     img.resize(100, 0);
     amogus = img;

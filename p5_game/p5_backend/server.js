@@ -32,6 +32,7 @@ function newConnection(socket) {
 
     socket.on('newPlayer', createPlayer);
     socket.on('update', updatePosition);
+    socket.on('updateDirection',updateDirection);
 
     function updatePosition(data) {
         let dataWithId = {
@@ -40,6 +41,22 @@ function newConnection(socket) {
             id: socket.id
         }
         socket.broadcast.emit('update', dataWithId);
+    }
+
+    function updateDirection(data) {
+        let dataWithId = {
+            id: socket.id,
+            direction: ""
+        }
+        if(data == "left") {
+            dataWithId.direction = "left";
+            players.get(socket.id).direction = "left";
+            socket.broadcast.emit('updateDirection',dataWithId);
+        } else if(data == "right") {
+            dataWithId.direction = "right";
+            players.get(socket.id).direction = "right";
+            socket.broadcast.emit('updateDirection',dataWithId);
+        }
     }
 
     function createPlayer() {
