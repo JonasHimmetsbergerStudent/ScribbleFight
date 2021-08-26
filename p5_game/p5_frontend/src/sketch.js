@@ -50,6 +50,7 @@ function setup() {
   socket.on('newPlayer',createNewPlayer);
   socket.on('update',updatePosition);  
   socket.on('updateDirection',updateDirection);
+  socket.on('spawnItem',createItem);
 }
 
 function createNewPlayer(data) {

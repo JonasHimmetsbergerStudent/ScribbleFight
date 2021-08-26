@@ -10,8 +10,9 @@ var gameStart = true;
 var num;
 
 
+
 function spawn() {
-    if (gameStart) {
+   /* if (gameStart) {
         timer = 3;
         gameStart = false;
     }
@@ -32,13 +33,14 @@ function spawn() {
             createItem(xCoordinate);
             xCoordinatesUsed.push(xCoordinate);
         }
-    }
+    } */
     itemPickUp();
 }
 
 
-function createItem(x) {
-    num = getRandomInt(5);
+function createItem(data) {
+    let num = data.num;
+    let x = data.x;
     switch (num) {
         case 1:
             i = createSprite(x, 0, 50, 50);
@@ -67,6 +69,8 @@ function createItem(x) {
             break;
     }
     i.maxSpeed = 10;
+    i.id = data.id;
+    console.log(i.id);
     items.push(i);
 }
 
@@ -128,4 +132,5 @@ function getXCoordinates() {
             }
         }
     }
+    socket.emit('xCoordinates',xCoordinates);
 }

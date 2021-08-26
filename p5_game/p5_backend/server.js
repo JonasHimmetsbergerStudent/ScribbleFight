@@ -12,6 +12,10 @@ var socket = require('socket.io');
 var io = socket(server);
 
 var players = new Map();
+var xCoordinates;
+var xCoordinatesUsed = [];
+var items = [];
+
 
 io.sockets.on('connection', newConnection);
 
@@ -24,7 +28,6 @@ function newConnection(socket) {
                 id: values.id
             }
             socket.emit('newPlayer', data);
-            console.log("erstellt" + socket.id);
         })
     }
 
@@ -33,6 +36,11 @@ function newConnection(socket) {
     socket.on('newPlayer', createPlayer);
     socket.on('update', updatePosition);
     socket.on('updateDirection',updateDirection);
+    socket.on('addItem',addItem);
+    socket.on('xCoordinates',function(data) {
+        xCoordinates = data;
+        console.log(xCoordinates);
+    })
 
     function updatePosition(data) {
         let dataWithId = {
@@ -69,6 +77,38 @@ function newConnection(socket) {
         console.log(players.size);
     }
 
+    function addItem() {
+        
+    }
+}
+
+setInterval(() => {
+    if(players.size>0) {
+       let x = getItemSpawnPoint();
+       let data = {
+           id: Date.now(),
+           x : x,
+           num : getRandomInt(5)
+       }
+       items.push(data.id);
+       console.log(items);
+       io.emit('spawnItem',data);
+    }
+}, 5000);
+
+function getItemSpawnPoint() {
+    if (items.length < xCoordinates.length) {
+        xCoordinate = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
+        while (xCoordinatesUsed.includes(xCoordinate)) {
+            xCoordinate = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
+        }
+        xCoordinatesUsed.push(xCoordinate);
+        return xCoordinate;
+    }
+}
+
+function getRandomInt(num) {
+    return Math.floor(Math.random() * num + 1);
 }
 
 class Player {
