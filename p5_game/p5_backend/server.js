@@ -31,6 +31,10 @@ function newConnection(socket) {
         })
     }
 
+    socket.on('disconnect', function(){
+        console.log('user disconnected: ' + socket.id);
+        players.delete(socket.id);
+      });
     socket.on('newPlayer', createPlayer);
     socket.on('update', updatePosition);
     socket.on('updateDirection',updateDirection);
