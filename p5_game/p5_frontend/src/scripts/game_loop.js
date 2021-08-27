@@ -12,7 +12,6 @@ function deathCheck() {
         } 
         if(spawnTimer==0) {
             players[socket.id].life--;
-            console.log("now");
             players[socket.id].sprite.position.x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
             players[socket.id].sprite.position.y = 10;
             spawnTimer = 3;

@@ -166,14 +166,14 @@ function blackHoleAttack() {
         players[socket.id].item["black_hole"].sprite = createSprite(players[socket.id].sprite.position.x + player_width, players[socket.id].sprite.position.y, 50, 50);
         players[socket.id].item["black_hole"].sprite.velocity.x += 3 * GAMESPEED;
         while ((environment.overlap(players[socket.id].item["black_hole"].sprite))) {
-          players[socket.id].item["black_hole"].sprite.position.x -= 1;console.log("r");
+          players[socket.id].item["black_hole"].sprite.position.x -= 1;
         }
       } else if (players[socket.id].direction == "left") {
         players[socket.id].item["black_hole"].sprite = createSprite(players[socket.id].sprite.position.x - player_width, players[socket.id].sprite.position.y, 50, 50);
         players[socket.id].item["black_hole"].sprite.velocity.x -= 3 * GAMESPEED;
         while ((environment.overlap(players[socket.id].item["black_hole"].sprite))) {
           players[socket.id].item["black_hole"].sprite.position.x += 1;
-          console.log("l");
+       
         }
       }
       players[socket.id].item["black_hole"].sprite.addImage(boogieBombImg);

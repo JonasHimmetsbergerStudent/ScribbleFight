@@ -31,15 +31,12 @@ function newConnection(socket) {
         })
     }
 
-
-
     socket.on('newPlayer', createPlayer);
     socket.on('update', updatePosition);
     socket.on('updateDirection',updateDirection);
-    socket.on('addItem',addItem);
+    socket.on('deleteItem',deleteItem);
     socket.on('xCoordinates',function(data) {
         xCoordinates = data;
-        console.log(xCoordinates);
     })
 
     function updatePosition(data) {
@@ -74,11 +71,16 @@ function newConnection(socket) {
         // damit es auch an mich sendet, benutze ich io.emit
         io.emit('newPlayer', data);
         players.set(socket.id, new Player(socket.id));
-        console.log(players.size);
     }
 
-    function addItem() {
-        
+    function deleteItem(data) {
+        items.forEach(i => {
+            if(i == data.id) {
+                items.splice(items.indexOf(i),1);
+                xCoordinatesUsed.splice(xCoordinatesUsed.indexOf(data.x), 1);
+                socket.broadcast.emit('deleteItem',data);
+            }
+        });
     }
 }
 
@@ -91,10 +93,9 @@ setInterval(() => {
            num : getRandomInt(5)
        }
        items.push(data.id);
-       console.log(items);
        io.emit('spawnItem',data);
     }
-}, 5000);
+}, 10000);
 
 function getItemSpawnPoint() {
     if (items.length < xCoordinates.length) {

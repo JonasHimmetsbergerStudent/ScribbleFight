@@ -51,16 +51,15 @@ function setup() {
   socket.on('update',updatePosition);  
   socket.on('updateDirection',updateDirection);
   socket.on('spawnItem',createItem);
+  socket.on('deleteItem',syncItems);
 }
 
 function createNewPlayer(data) {
-  console.log(data.id);
     players[data.id] = new Player(createSprite(800, 200, player_width, player_height));
     players[data.id].sprite.maxSpeed = 30;
     players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
     players[data.id].sprite.debug = true;
     players[data.id].sprite.addImage(amogus);
-  console.log(players);
 }
 
 function updatePosition(data) {

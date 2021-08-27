@@ -70,7 +70,7 @@ function createItem(data) {
     }
     i.maxSpeed = 10;
     i.id = data.id;
-    console.log(i.id);
+    console.log(items);
     items.push(i);
 }
 
@@ -97,14 +97,29 @@ function itemPickUp() {
                         players[socket.id].item["small"] = new Item("small");
                         break;
                 }
-                items.splice(items.indexOf(item), 1);
-                xCoordinatesUsed.splice(xCoordinatesUsed.indexOf(item.position.x), 1);
-                item.remove();
+                deleteItem(item);
             }
         });
 
     }
 
+}
+
+function deleteItem(item) {
+    // sending the whole item object, including the sprite, would be unnecessary
+    let data = {
+        id: item.id,
+        x: item.position.x,
+        index: items.indexOf(item)
+    }
+    items.splice(items.indexOf(item), 1);
+    item.remove();
+    socket.emit('deleteItem',data);
+}
+
+function syncItems(data) {
+    items[data.index].remove();
+    items.splice(items.indexOf(items[data.index]), 1);   
 }
 
 function getRandomInt(num) {
