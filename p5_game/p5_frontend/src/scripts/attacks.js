@@ -149,7 +149,7 @@ function bombPhysics() {
         // zum überprüfen ob man gerade eine bombe im einsatz hat
         if (bomb.me) {
           players[socket.id].item["bomb"].sprite = undefined;
-        }
+        } 
         bombs.splice(bombs.indexOf(bomb), 1);
         ammoCheck("bomb");
       }
@@ -379,7 +379,9 @@ function sendHimFlying() {
 
 function ammoCheck(weapon) {
   players[socket.id].item[weapon].ammo--;
+  console.log("-1");
   if (players[socket.id].item[weapon].ammo == 0) {
+    console.log("dff");
     players[socket.id].item[weapon] = undefined;
   }
 }

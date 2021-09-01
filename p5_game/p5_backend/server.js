@@ -12,7 +12,7 @@ var socket = require('socket.io');
 var io = socket(server);
 
 var players = new Map();
-var xCoordinates;
+var xCoordinates = [];
 var xCoordinatesUsed = [];
 var items = [];
 
@@ -85,23 +85,31 @@ function newConnection(socket) {
                 socket.broadcast.emit('deleteItem',data);
             }
         });
+        console.log(items.length);
     }
+  
 }
 
 setInterval(() => {
     if(players.size>0) {
        let x = getItemSpawnPoint();
+       console.log(x);
        let data = {
            id: Date.now(),
            x : x,
            num : getRandomInt(5)
        }
-       items.push(data.id);
+       // too many items on the field
+       if(x!=-1) {
+        items.push(data.id);
+       }
        io.emit('spawnItem',data);
     }
-}, 10000);
+}, 500);
 
 function getItemSpawnPoint() {
+    console.log(xCoordinates.length);
+    console.log(items.length)
     if (items.length < xCoordinates.length) {
         xCoordinate = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
         while (xCoordinatesUsed.includes(xCoordinate)) {
@@ -109,6 +117,8 @@ function getItemSpawnPoint() {
         }
         xCoordinatesUsed.push(xCoordinate);
         return xCoordinate;
+    } else {
+        return -1;
     }
 }
 

@@ -41,33 +41,36 @@ function spawn() {
 function createItem(data) {
     let num = data.num;
     let x = data.x;
-    switch (num) {
-        case 1:
-            i = createSprite(x, 0, 50, 50);
-            i.type = "bomb";
-            i.addImage(itemImg);
-            break;
-        case 2:
-            i = createSprite(x, 0, 50, 50);
-            i.type = "black_hole";
-            i.addImage(itemImgBlue);
-            break;
-        case 3:
-            i = createSprite(x, 0, 50, 50);
-            i.type = "piano";
-            i.addImage(itemImgYellow);
-            break;
-        case 4:
-            i = createSprite(x, 0, 50, 50);
-            i.type = "mine";
-            i.addImage(itemImgOrange);
-            break;
-        case 5:
-            i = createSprite(x, 0, 50, 50);
-            i.type = "small";
-            i.addImage(itemImgGreen);
-            break;
+    if(x!=-1) {
+        switch (num) {
+            case 1:
+                i = createSprite(x, 0, 50, 50);
+                i.type = "bomb";
+                i.addImage(itemImg);
+                break;
+            case 2:
+                i = createSprite(x, 0, 50, 50);
+                i.type = "black_hole";
+                i.addImage(itemImgBlue);
+                break;
+            case 3:
+                i = createSprite(x, 0, 50, 50);
+                i.type = "piano";
+                i.addImage(itemImgYellow);
+                break;
+            case 4:
+                i = createSprite(x, 0, 50, 50);
+                i.type = "mine";
+                i.addImage(itemImgOrange);
+                break;
+            case 5:
+                i = createSprite(x, 0, 50, 50);
+                i.type = "small";
+                i.addImage(itemImgGreen);
+                break;
+        }
     }
+  
     i.maxSpeed = 10;
     i.id = data.id;
     console.log(items);
