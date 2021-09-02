@@ -1,0 +1,3 @@
+!python -m atari_py.import_roms .\ROMS\ROMS
+
+roms müssen noch installiert werden mit python
