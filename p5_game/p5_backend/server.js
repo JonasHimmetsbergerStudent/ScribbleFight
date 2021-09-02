@@ -92,6 +92,8 @@ function newConnection(socket) {
 
     function syncAttacks(data) {
         switch (data.type) {
+            case "default":
+                socket.broadcast.emit('attack',data);
             case "bomb":
                 socket.broadcast.emit('attack',data);
                 break;

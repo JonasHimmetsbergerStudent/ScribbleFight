@@ -23,13 +23,24 @@ function defaultAttack() {
     projectile = createSprite(players[socket.id].sprite.position.x, players[socket.id].sprite.position.y, 20, 20);
   }
 
-
-  projectile.mass = 10;
+  let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
+ 
   projectile.life = 100;
   projectile.velocity.x = (camera.mouseX - players[socket.id].sprite.position.x) * 100;
   projectile.velocity.y = (camera.mouseY - players[socket.id].sprite.position.y) * 100;
   projectile.limitSpeed(25);
+  projectile.id = id;
+ 
   projectiles.push(projectile);
+  let data =  {
+    id: id,
+    type: "default",
+    x: projectile.position.x,
+    y: projectile.position.y,
+    velX: projectile.velocity.x,
+    velY: projectile.velocity.y
+  }
+  socket.emit("attack",data);
 
 }
 
@@ -55,9 +66,9 @@ function defaultAttackPhysics() {
       if (projectile.life <= 95) {
         if (projectile.collide(players[socket.id].sprite)) {
           if (players[socket.id].sprite.velocity.x > 0 && projectile.velocity.x > 0 || players[socket.id].sprite.velocity.x < 0 && projectile.velocity.x < 0) {
-            diffDirection = true;
+            diffDirection = false;
           } if (players[socket.id].sprite.velocity.y < 2 && players[socket.id].sprite.velocity.y != 1 && projectile.velocity.y <= 0) {
-            diffDirection = true;
+            diffDirection = false;
           }
           if (!diffDirection) {
             players[socket.id].sprite.velocity.x = projectile.velocity.x * 100;
@@ -67,12 +78,17 @@ function defaultAttackPhysics() {
             players[socket.id].sprite.velocity.y = -projectile.velocity.y * 100;
           }
           players[socket.id].sprite.limitSpeed(2 * testKnockback);
-
+          let data = {
+            id: projectile.id,
+            type: "default"
+          }
           flying = true;
           flyingDuration = 10;
           timeFlying = flyingDuration;
           projectile.remove();
           projectiles.splice(projectileIndex, 1);
+         
+          socket.emit("deleteAttack",data);
         }
       }
 
@@ -101,7 +117,8 @@ function bombAttack() {
         }
       }
 
-      let id = Date.now() - getRandomInt(1000) + getRandomInt(1000);
+      let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
+      console.log(id);
       players[socket.id].item["bomb"].sprite.addImage(bombImg);
       players[socket.id].item["bomb"].sprite.life = 1000;
       players[socket.id].item["bomb"].sprite.me = true;
