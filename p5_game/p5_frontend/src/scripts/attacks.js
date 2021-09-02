@@ -101,10 +101,21 @@ function bombAttack() {
         }
       }
 
+      let id = Date.now() - getRandomInt(1000) + getRandomInt(1000);
       players[socket.id].item["bomb"].sprite.addImage(bombImg);
       players[socket.id].item["bomb"].sprite.life = 1000;
       players[socket.id].item["bomb"].sprite.me = true;
+      players[socket.id].item["bomb"].sprite.id = id;
       bombs.push(players[socket.id].item["bomb"].sprite);
+      let data = {
+        id: id,
+        playerId: socket.id,
+        type: "bomb",
+        x: players[socket.id].item["bomb"].sprite.position.x,
+        y: players[socket.id].item["bomb"].sprite.position.y,
+        v: players[socket.id].item["bomb"].sprite.velocity.x
+      }
+      socket.emit('attack', data);
     }
   }
 }
@@ -118,7 +129,13 @@ function bombPhysics() {
       }
       bomb.bounce(environment);
 
+      let data = {
+        type: "bomb",
+        id: bomb.id,
+        playerId: bomb.playerId
+      }
       if (bomb.collide(players[socket.id].sprite)) {
+        console.log(bomb.me);
         if (players[socket.id].sprite.velocity.x > 0 && bomb.velocity.x > 0 || players[socket.id].sprite.velocity.x < 0 && bomb.velocity.x < 0) {
           diffDirection = true;
         } if (players[socket.id].sprite.velocity.y < 2 && players[socket.id].sprite.velocity.y != 1 && bomb.velocity.y <= 0) {
@@ -137,21 +154,26 @@ function bombPhysics() {
         flyingDuration = 50 / GAMESPEED;
         timeFlying = flyingDuration;
         bomb.remove();
-        // zum überprüfen ob man gerade eine bombe im einsatz hat
+
+
+        // zum überprüfen ob ich die Bombe erzeugt habe
         if (bomb.me) {
           players[socket.id].item["bomb"].sprite = undefined;
+          ammoCheck("bomb");
         }
         bombs.splice(bombs.indexOf(bomb), 1);
-        ammoCheck("bomb");
+        socket.emit("deleteAttack", data);
 
       } else if (bomb.position.x > screenWidth || bomb.position.y > screenHeight || bomb.life == 0) {
         bomb.remove();
-        // zum überprüfen ob man gerade eine bombe im einsatz hat
+
+        // zum überprüfen ob ich die Bombe erzeugt habe
         if (bomb.me) {
           players[socket.id].item["bomb"].sprite = undefined;
-        } 
+          ammoCheck("bomb");
+        }
         bombs.splice(bombs.indexOf(bomb), 1);
-        ammoCheck("bomb");
+        socket.emit("deleteAttack", data);
       }
       sendHimFlying();
     });
@@ -173,7 +195,7 @@ function blackHoleAttack() {
         players[socket.id].item["black_hole"].sprite.velocity.x -= 3 * GAMESPEED;
         while ((environment.overlap(players[socket.id].item["black_hole"].sprite))) {
           players[socket.id].item["black_hole"].sprite.position.x += 1;
-       
+
         }
       }
       players[socket.id].item["black_hole"].sprite.addImage(boogieBombImg);

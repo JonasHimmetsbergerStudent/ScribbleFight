@@ -52,6 +52,8 @@ function setup() {
   socket.on('updateDirection',updateDirection);
   socket.on('spawnItem',createItem);
   socket.on('deleteItem',syncItems);
+  socket.on('attack',addAttack);
+  socket.on('deleteAttack',deleteAttack);
 }
 
 function createNewPlayer(data) {

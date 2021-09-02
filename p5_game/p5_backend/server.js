@@ -31,15 +31,17 @@ function newConnection(socket) {
         })
     }
 
-    socket.on('disconnect', function(){
+    socket.on('disconnect', function () {
         console.log('user disconnected: ' + socket.id);
         players.delete(socket.id);
-      });
+    });
     socket.on('newPlayer', createPlayer);
     socket.on('update', updatePosition);
-    socket.on('updateDirection',updateDirection);
-    socket.on('deleteItem',deleteItem);
-    socket.on('xCoordinates',function(data) {
+    socket.on('updateDirection', updateDirection);
+    socket.on('deleteItem', deleteItem);
+    socket.on('attack', syncAttacks);
+    socket.on('deleteAttack',deleteAttack);
+    socket.on('xCoordinates', function (data) {
         xCoordinates = data;
     })
 
@@ -57,14 +59,14 @@ function newConnection(socket) {
             id: socket.id,
             direction: ""
         }
-        if(data == "left") {
+        if (data == "left") {
             dataWithId.direction = "left";
             players.get(socket.id).direction = "left";
-            socket.broadcast.emit('updateDirection',dataWithId);
-        } else if(data == "right") {
+            socket.broadcast.emit('updateDirection', dataWithId);
+        } else if (data == "right") {
             dataWithId.direction = "right";
             players.get(socket.id).direction = "right";
-            socket.broadcast.emit('updateDirection',dataWithId);
+            socket.broadcast.emit('updateDirection', dataWithId);
         }
     }
 
@@ -79,33 +81,51 @@ function newConnection(socket) {
 
     function deleteItem(data) {
         items.forEach(i => {
-            if(i == data.id) {
-                items.splice(items.indexOf(i),1);
+            if (i == data.id) {
+                items.splice(items.indexOf(i), 1);
                 xCoordinatesUsed.splice(xCoordinatesUsed.indexOf(data.x), 1);
-                socket.broadcast.emit('deleteItem',data);
+                socket.broadcast.emit('deleteItem', data);
             }
         });
         console.log(items.length);
     }
-  
+
+    function syncAttacks(data) {
+        switch (data.type) {
+            case "bomb":
+                socket.broadcast.emit('attack',data);
+                break;
+            case "blackHole":
+                break;
+            case "piano":
+                break;
+            case "mine":
+                break;
+        }
+    }
+
+    function deleteAttack(data) {
+        socket.broadcast.emit("deleteAttack",data);
+    }
+
 }
 
 setInterval(() => {
-    if(players.size>0) {
-       let x = getItemSpawnPoint();
-       console.log(x);
-       let data = {
-           id: Date.now(),
-           x : x,
-           num : getRandomInt(5)
-       }
-       // too many items on the field
-       if(x!=-1) {
-        items.push(data.id);
-       }
-       io.emit('spawnItem',data);
+    if (players.size > 0) {
+        let x = getItemSpawnPoint();
+        console.log(x);
+        let data = {
+            id: Date.now(),
+            x: x,
+            num: getRandomInt(5)
+        }
+        // too many items on the field
+        if (x != -1) {
+            items.push(data.id);
+        }
+        io.emit('spawnItem', data);
     }
-}, 500);
+}, 10000);
 
 function getItemSpawnPoint() {
     console.log(xCoordinates.length);
