@@ -280,6 +280,7 @@ function pianoTime() {
   setTimeout(() => {
     if (players[socket.id].item["piano"] !== undefined && players[socket.id].item["piano"].ammo > 0) {
       if (players[socket.id].item["piano"].sprite === undefined) {
+        let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
         players[socket.id].item["piano"].sprite = createSprite(xPos, 10, 100, 100);
         players[socket.id].item["piano"].sprite.addImage(pianoImg);
         players[socket.id].item["piano"].sprite.setCollider("rectangle", 0, 0, 100, 100);
@@ -287,7 +288,16 @@ function pianoTime() {
         players[socket.id].item["piano"].sprite.maxSpeed = 20;
         players[socket.id].item["piano"].sprite.rotation = getRandomInt(360);
         players[socket.id].item["piano"].sprite.me = true;
+        players[socket.id].item["piano"].sprite.id = id;
         pianos.push(players[socket.id].item["piano"].sprite);
+        let data = {
+          id: id,
+          playerId: socket.id,
+          type: "piano",
+          x: players[socket.id].item["piano"].sprite.position.x,
+          rotation: players[socket.id].item["piano"].sprite.rotation
+        }
+        socket.emit('attack', data);
       }
     }
   }, 500);
@@ -297,21 +307,28 @@ function pianoTime() {
 function pianoPhysics() {
   if (pianos.length >= 1) {
     pianos.forEach(p => {
+      let data = {
+        id: p.id,
+        playerId: p.playerId,
+        type: "piano"
+      }
       p.rotation += 2;
       if (p.collide(environment)) {
         p.remove();
         if (p.me) {
           players[socket.id].item["piano"].sprite = undefined;
+          ammoCheck("piano");
         }
         pianos.splice(pianos.indexOf(p), 1);
-        ammoCheck("piano");
       } else if (p.overlap(players[socket.id].sprite)) {
         p.remove();
+        socket.emit("deleteAttack",data);
         if (p.me) {
           players[socket.id].item["piano"].sprite = undefined;
+          ammoCheck("piano");
         }
         pianos.splice(pianos.indexOf(p), 1);
-        ammoCheck("piano");
+        
         if (p.position.x <= players[socket.id].sprite.position.x) {
           players[socket.id].sprite.velocity.x += 5;
         } else {

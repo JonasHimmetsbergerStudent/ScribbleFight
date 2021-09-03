@@ -41,7 +41,7 @@ function spawn() {
 function createItem(data) {
     let num = data.num;
     let x = data.x;
-    num = 2;
+    num = 3;
     if(x!=-1) {
         switch (num) {
             case 1:

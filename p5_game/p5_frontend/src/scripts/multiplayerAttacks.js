@@ -5,18 +5,21 @@ function addAttack(data) {
         case "bomb": addBomb(data);
             break;
         case "blackHole": addBlackHole(data);
+            break;
+        case "piano": addPiano(data);
+            break;
     }
 }
 
 function deleteAttack(data) {
     switch (data.type) {
         case "default":
-        projectiles.forEach(p => {
-            if(p.id === data.id) {
-                p.remove();
-                projectiles.splice(projectiles.indexOf(p),1);
-            }
-        });
+            projectiles.forEach(p => {
+                if (p.id === data.id) {
+                    p.remove();
+                    projectiles.splice(projectiles.indexOf(p), 1);
+                }
+            });
             break;
         case "bomb":
             bombs.forEach(b => {
@@ -26,6 +29,18 @@ function deleteAttack(data) {
                     if (data.playerId == socket.id) {
                         players[socket.id].item["bomb"].sprite = undefined;
                         ammoCheck("bomb");
+                    }
+                }
+            });
+            break;
+        case "piano":
+            pianos.forEach(p => {
+                if(p.id == data.id) {
+                    p.remove();
+                    pianos.splice(pianos.indexOf(p), 1);
+                    if(data.playerId == socket.id) {
+                        players[socket.id].item["piano"].sprite = undefined;
+                        ammoCheck("piano");
                     }
                 }
             });
@@ -55,7 +70,7 @@ function addDefaultAttack(data) {
 }
 
 function addBlackHole(data) {
-    let b = createSprite(data.x,data.y,50,50);
+    let b = createSprite(data.x, data.y, 50, 50);
     b.velocity.x = data.v;
     b.addImage(boogieBombImg);
     b.life = 500;
@@ -63,4 +78,15 @@ function addBlackHole(data) {
     b.maxSpeed = 20;
     b.me = false;
     blackHoles.push(b);
+}
+
+
+function addPiano(data) {
+    let piano = createSprite(data.x, 10, 100, 100);
+    piano.addImage(pianoImg);
+    piano.rotation = data.rotation;
+    piano.setCollider("rectangle", 0, 0, 100, 100);
+    piano.id = data.id;
+    piano.playerId = data.playerId;
+    pianos.push(piano);
 }
