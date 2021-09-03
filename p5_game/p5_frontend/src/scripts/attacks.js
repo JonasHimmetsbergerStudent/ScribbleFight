@@ -266,9 +266,9 @@ function blackHolePhysics() {
         // zum überprüfen ob man gerade ein schwarzes loch im einsatz hat
         if (b.me) {
           players[socket.id].item["black_hole"].sprite = undefined;
+          ammoCheck("black_hole");
         }
         blackHoles.splice(blackHoles.indexOf(b), 1);
-        ammoCheck("black_hole");
       }
     });
   }

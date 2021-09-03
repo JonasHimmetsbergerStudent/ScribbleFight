@@ -56,8 +56,10 @@ function addDefaultAttack(data) {
 
 function addBlackHole(data) {
     let b = createSprite(data.x,data.y,50,50);
+    b.velocity.x = data.v;
     b.addImage(boogieBombImg);
     b.life = 500;
+    b.debug = true;
     b.maxSpeed = 20;
     b.me = false;
     blackHoles.push(b);
