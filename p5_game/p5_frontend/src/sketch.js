@@ -47,6 +47,7 @@ function setup() {
   init();
 
   socket = io.connect('http://localhost:3000');
+  socket.on("deletePlayer",deletePlayer);
   socket.on('newPlayer',createNewPlayer);
   socket.on('update',updatePosition);  
   socket.on('updateDirection',updateDirection);
@@ -62,6 +63,11 @@ function createNewPlayer(data) {
     players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
     players[data.id].sprite.debug = true;
     players[data.id].sprite.addImage(amogus);
+}
+
+function deletePlayer(id) {
+  players[id].sprite.remove();
+  players[id] = undefined;
 }
 
 function updatePosition(data) {

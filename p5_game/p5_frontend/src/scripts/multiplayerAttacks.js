@@ -4,6 +4,7 @@ function addAttack(data) {
             break;
         case "bomb": addBomb(data);
             break;
+        case "blackHole": addBlackHole(data);
     }
 }
 
@@ -51,4 +52,13 @@ function addDefaultAttack(data) {
     projectile.limitSpeed(25);
     projectile.id = data.id;
     projectiles.push(projectile);
+}
+
+function addBlackHole(data) {
+    let b = createSprite(data.x,data.y,50,50);
+    b.addImage(boogieBombImg);
+    b.life = 500;
+    b.maxSpeed = 20;
+    b.me = false;
+    blackHoles.push(b);
 }

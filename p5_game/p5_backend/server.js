@@ -34,13 +34,14 @@ function newConnection(socket) {
     socket.on('disconnect', function () {
         console.log('user disconnected: ' + socket.id);
         players.delete(socket.id);
+        socket.broadcast.emit("deletePlayer",socket.id);
     });
     socket.on('newPlayer', createPlayer);
     socket.on('update', updatePosition);
     socket.on('updateDirection', updateDirection);
     socket.on('deleteItem', deleteItem);
     socket.on('attack', syncAttacks);
-    socket.on('deleteAttack',deleteAttack);
+    socket.on('deleteAttack', deleteAttack);
     socket.on('xCoordinates', function (data) {
         xCoordinates = data;
     })
@@ -91,23 +92,11 @@ function newConnection(socket) {
     }
 
     function syncAttacks(data) {
-        switch (data.type) {
-            case "default":
-                socket.broadcast.emit('attack',data);
-            case "bomb":
-                socket.broadcast.emit('attack',data);
-                break;
-            case "blackHole":
-                break;
-            case "piano":
-                break;
-            case "mine":
-                break;
-        }
+        socket.broadcast.emit('attack', data);
     }
 
     function deleteAttack(data) {
-        socket.broadcast.emit("deleteAttack",data);
+        socket.broadcast.emit("deleteAttack", data);
     }
 
 }

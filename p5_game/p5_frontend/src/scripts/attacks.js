@@ -118,7 +118,6 @@ function bombAttack() {
       }
 
       let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
-      console.log(id);
       players[socket.id].item["bomb"].sprite.addImage(bombImg);
       players[socket.id].item["bomb"].sprite.life = 1000;
       players[socket.id].item["bomb"].sprite.me = true;
@@ -215,12 +214,22 @@ function blackHoleAttack() {
 
         }
       }
+      let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
       players[socket.id].item["black_hole"].sprite.addImage(boogieBombImg);
       players[socket.id].item["black_hole"].sprite.life = 500;
       players[socket.id].item["black_hole"].sprite.debug = true;
       players[socket.id].item["black_hole"].sprite.maxSpeed = 20;
       players[socket.id].item["black_hole"].sprite.me = true;
       blackHoles.push(players[socket.id].item["black_hole"].sprite);
+      let data = {
+        id: id,
+        playerId: socket.id,
+        type: "blackHole",
+        x: players[socket.id].item["black_hole"].sprite.position.x,
+        y: players[socket.id].item["black_hole"].sprite.position.y,
+        v: players[socket.id].item["black_hole"].sprite.velocity.x
+      }
+      socket.emit('attack', data);
     }
   }
 }
