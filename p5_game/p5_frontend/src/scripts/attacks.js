@@ -24,15 +24,15 @@ function defaultAttack() {
   }
 
   let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
- 
+
   projectile.life = 100;
   projectile.velocity.x = (camera.mouseX - players[socket.id].sprite.position.x) * 100;
   projectile.velocity.y = (camera.mouseY - players[socket.id].sprite.position.y) * 100;
   projectile.limitSpeed(25);
   projectile.id = id;
- 
+
   projectiles.push(projectile);
-  let data =  {
+  let data = {
     id: id,
     type: "default",
     x: projectile.position.x,
@@ -40,7 +40,7 @@ function defaultAttack() {
     velX: projectile.velocity.x,
     velY: projectile.velocity.y
   }
-  socket.emit("attack",data);
+  socket.emit("attack", data);
 
 }
 
@@ -87,8 +87,8 @@ function defaultAttackPhysics() {
           timeFlying = flyingDuration;
           projectile.remove();
           projectiles.splice(projectileIndex, 1);
-         
-          socket.emit("deleteAttack",data);
+
+          socket.emit("deleteAttack", data);
         }
       }
 
@@ -322,13 +322,13 @@ function pianoPhysics() {
         pianos.splice(pianos.indexOf(p), 1);
       } else if (p.overlap(players[socket.id].sprite)) {
         p.remove();
-        socket.emit("deleteAttack",data);
+        socket.emit("deleteAttack", data);
         if (p.me) {
           players[socket.id].item["piano"].sprite = undefined;
           ammoCheck("piano");
         }
         pianos.splice(pianos.indexOf(p), 1);
-        
+
         if (p.position.x <= players[socket.id].sprite.position.x) {
           players[socket.id].sprite.velocity.x += 5;
         } else {
@@ -353,6 +353,7 @@ function placeMine() {
       mine = createSprite(players[socket.id].sprite.position.x + player_width, players[socket.id].sprite.position.y, 50, 50);
     }
 
+    let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
     mine.addImage(mineImg);
     mine.maxSpeed = 5;
     mine.debug = true;
@@ -360,12 +361,25 @@ function placeMine() {
     players[socket.id].item["mine"].sprite.push(mine);
     mines.push(mine);
     ammoCheck("mine");
+    let data = {
+      id: id,
+      playerId: socket.id,
+      type: "mine",
+      x: mine.position.x,
+      y: mine.position.y
+    }
+    socket.emit("attack", data);
   }
 }
 
 function minePhysics() {
   if (mines.length >= 1) {
     mines.forEach(m => {
+      let data = {
+        id: m.id,
+        playerId: m.playerId,
+        type: "mine"
+      }
       if (m.collide(environment) && m.touching.bottom) {
         m.set = true;
       }
@@ -377,6 +391,7 @@ function minePhysics() {
         timeFlying = flyingDuration;
         mines.splice(mines.indexOf(m), 1);
         m.remove();
+        socket.emit("deleteAttack", data);
         if (m.me && players[socket.id].item["mine"] != undefined) {
           players[socket.id].item["mine"].sprite.splice(players[socket.id].item["mine"].sprite.indexOf(m), 1);
         }
@@ -394,6 +409,11 @@ function makeMeSmall() {
   if (players[socket.id].item["small"] != undefined) {
     imSmall = true;
     smallTimer = 10;
+    let data= {
+      type: "small",
+      playerId: socket.id
+    }
+    socket.emit("attack",data);
   }
 }
 
@@ -414,14 +434,15 @@ function smallChecker() {
       smallTimer = 10;
       players[socket.id].item["small"] = undefined;
       imSmall = false;
+      let data= {
+        type: "small",
+        playerId: socket.id
+      }
+      socket.emit("deleteAttack",data);
     }
   }
 
 }
-
-
-
-
 
 
 function sendHimFlying() {

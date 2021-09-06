@@ -33,7 +33,7 @@ var amogus_supreme;
 const GAMESPEED = 1;
 const GRAVITY = -1 * GAMESPEED;
 var JUMP = 15;
-if(GAMESPEED > 1) {
+if (GAMESPEED > 1) {
   JUMP = 15 * GAMESPEED / 1.435;
 }
 const SPEED = 5 * GAMESPEED;
@@ -47,27 +47,29 @@ function setup() {
   init();
 
   socket = io.connect('http://localhost:3000');
-  socket.on("deletePlayer",deletePlayer);
-  socket.on('newPlayer',createNewPlayer);
-  socket.on('update',updatePosition);  
-  socket.on('updateDirection',updateDirection);
-  socket.on('spawnItem',createItem);
-  socket.on('deleteItem',syncItems);
-  socket.on('attack',addAttack);
-  socket.on('deleteAttack',deleteAttack);
+  socket.on("deletePlayer", deletePlayer);
+  socket.on('newPlayer', createNewPlayer);
+  socket.on('update', updatePosition);
+  socket.on('updateDirection', updateDirection);
+  socket.on('spawnItem', createItem);
+  socket.on('deleteItem', syncItems);
+  socket.on('attack', addAttack);
+  socket.on('deleteAttack', deleteAttack);
 }
 
 function createNewPlayer(data) {
-    players[data.id] = new Player(createSprite(800, 200, player_width, player_height));
-    players[data.id].sprite.maxSpeed = 30;
-    players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
-    players[data.id].sprite.debug = true;
-    players[data.id].sprite.addImage(amogus);
+  players[data.id] = new Player(createSprite(800, 200, player_width, player_height));
+  players[data.id].sprite.maxSpeed = 30;
+  players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
+  players[data.id].sprite.debug = true;
+  players[data.id].sprite.addImage(amogus);
 }
 
 function deletePlayer(id) {
-  players[id].sprite.remove();
-  players[id] = undefined;
+  if (players[id] != undefined) {
+    players[id].sprite.remove();
+    players[id] = undefined;
+  }
 }
 
 function updatePosition(data) {
@@ -76,16 +78,16 @@ function updatePosition(data) {
 }
 
 function updateDirection(data) {
-  if(data.direction=="left") {
-    if(players[data.id].sprite.mirrorX()===1) {
+  if (data.direction == "left") {
+    if (players[data.id].sprite.mirrorX() === 1) {
       players[data.id].sprite.mirrorX(players[data.id].sprite.mirrorX() * -1);
     }
-  } else if(data.direction=="right") {
-    if(players[data.id].sprite.mirrorX()===-1) {
+  } else if (data.direction == "right") {
+    if (players[data.id].sprite.mirrorX() === -1) {
       players[data.id].sprite.mirrorX(players[data.id].sprite.mirrorX() * -1);
     }
   }
-  
+
 }
 
 function draw() {
@@ -103,7 +105,7 @@ function draw() {
     minePhysics();
     smallChecker();
     spawn();
-    
+
 
     background(bg);
 
@@ -113,7 +115,7 @@ function draw() {
       players[socket.id].sprite.velocity.x = 0;
       controls();
     }
-   
+
     mirrorSprite();
     deathCheck();
     drawSprites();
@@ -121,7 +123,7 @@ function draw() {
       x: players[socket.id].sprite.position.x,
       y: players[socket.id].sprite.position.y
     }
-    socket.emit('update',data);
+    socket.emit('update', data);
   }
 }
 
@@ -153,7 +155,7 @@ function init() {
           }
         }
       }
-    } 
+    }
 
 
     // X Coordinates for the item drops
@@ -169,41 +171,40 @@ function init() {
           }
         } */
 
-   
-      loadImage('assets/smiley_bg.png', img => {
-        bg = img;
-        loadImage('assets/bomb.png', img => {
+
+    loadImage('assets/smiley_bg.png', img => {
+      bg = img;
+      loadImage('assets/bomb.png', img => {
+        img.resize(50, 0);
+        bombImg = img;
+        loadImage('assets/item.png', img => {
           img.resize(50, 0);
-          bombImg = img;
-          loadImage('assets/item.png',img => {
-            img.resize(50,0);
-            itemImg = img;
-            loadImage('assets/boogieBomb.png',img => {
-              img.resize(50,0);
-              boogieBombImg = img;
-              loadImage('assets/item_blue.png',img => {
-                img.resize(50,0);
-                itemImgBlue = img;
-                loadImage('assets/piano.png',img => {
-                  img.resize(120,0);
-                  pianoImg = img;
-                  loadImage('assets/item_yellow.png',img => {
-                    img.resize(50,0);
-                    itemImgYellow = img;
-                    loadImage('assets/item_orange.png',img => {
-                      img.resize(50,0);
-                      itemImgOrange = img;
-                      loadImage('assets/mine.png',img => {
-                        img.resize(50,0);
-                        mineImg= img;
-                        loadImage('assets/item_green.png',img => {
-                          img.resize(50,0);
-                          itemImgGreen= img;
-                          loadImage('assets/amogus_supreme.png',img => {
-                            img.resize(50,0);
-                            amogus_supreme= img;
-                            started = true;
-                          })
+          itemImg = img;
+          loadImage('assets/boogieBomb.png', img => {
+            img.resize(50, 0);
+            boogieBombImg = img;
+            loadImage('assets/item_blue.png', img => {
+              img.resize(50, 0);
+              itemImgBlue = img;
+              loadImage('assets/piano.png', img => {
+                img.resize(120, 0);
+                pianoImg = img;
+                loadImage('assets/item_yellow.png', img => {
+                  img.resize(50, 0);
+                  itemImgYellow = img;
+                  loadImage('assets/item_orange.png', img => {
+                    img.resize(50, 0);
+                    itemImgOrange = img;
+                    loadImage('assets/mine.png', img => {
+                      img.resize(50, 0);
+                      mineImg = img;
+                      loadImage('assets/item_green.png', img => {
+                        img.resize(50, 0);
+                        itemImgGreen = img;
+                        loadImage('assets/amogus_supreme.png', img => {
+                          img.resize(50, 0);
+                          amogus_supreme = img;
+                          started = true;
                         })
                       })
                     })
@@ -214,6 +215,7 @@ function init() {
           })
         })
       })
+    })
   });
 }
 
@@ -229,7 +231,7 @@ function checkForCollisions() {
             }
             if (touches_side && !noGravity) {
               players[socket.id].sprite.velocity.y = CLIMBINGSPEED;
-            } else if(!noGravity && !players[socket.id].sprite.touching.top) {
+            } else if (!noGravity && !players[socket.id].sprite.touching.top) {
               players[socket.id].sprite.velocity.y = 0;
             }
             if (!players[socket.id].sprite.touching.top) {

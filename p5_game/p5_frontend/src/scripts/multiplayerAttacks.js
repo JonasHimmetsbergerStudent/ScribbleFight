@@ -8,6 +8,10 @@ function addAttack(data) {
             break;
         case "piano": addPiano(data);
             break;
+        case "mine": addMine(data);
+            break;
+        case "small": addSmall(data);
+            break;
     }
 }
 
@@ -35,15 +39,27 @@ function deleteAttack(data) {
             break;
         case "piano":
             pianos.forEach(p => {
-                if(p.id == data.id) {
+                if (p.id == data.id) {
                     p.remove();
                     pianos.splice(pianos.indexOf(p), 1);
-                    if(data.playerId == socket.id) {
+                    if (data.playerId == socket.id) {
                         players[socket.id].item["piano"].sprite = undefined;
                         ammoCheck("piano");
                     }
                 }
             });
+            break;
+        case "mine":
+            mines.forEach(m => {
+                if (m.id == data.id) {
+                    m.remove();
+                    mines.splice(mines.indexOf(m), 1);
+                }
+            });
+            break;
+        case "small":
+            players[data.playerId].sprite.addImage(amogus);
+            players[data.playerId].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
             break;
     }
 }
@@ -89,4 +105,18 @@ function addPiano(data) {
     piano.id = data.id;
     piano.playerId = data.playerId;
     pianos.push(piano);
+}
+
+function addMine(data) {
+    let mine = createSprite(data.x, data.y, 50, 50);
+    mine.addImage(mineImg);
+    mine.maxSpeed = 5;
+    mine.debug = true;
+    mine.me = false;
+    mines.push(mine);
+}
+
+function addSmall(data) {
+    players[data.playerId].sprite.addImage(amogus_supreme);
+    players[data.playerId].sprite.setCollider("rectangle", 0, 0, player_width / 2 - 15, player_height / 2);
 }
