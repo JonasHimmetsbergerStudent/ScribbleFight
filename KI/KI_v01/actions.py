@@ -15,7 +15,7 @@ driver = webdriver.Chrome(chrome_options=options,
 url = 'http://localhost:3000/'
 driver.get(url)
 
-driver.set_window_position(100, 100)
+driver.set_window_position(10, 10)
 print(driver.get_window_size())
 print(driver.get_window_position())
 # wenn url bestimmte form hat (zb '.../fight') dann startet ki
@@ -76,13 +76,13 @@ def default(driver, mousePos):  # how tf do i shoot
     x = mousePos['x']
     y = mousePos['y']
 
-    if x > realx + drx:
-        x = realx + drx
+    if x > realx + drx - 30:
+        x = realx + drx - 30
     if x < drx:
         x = drx
 
-    if y > maxy + dry:
-        y = maxy + dry
+    if y > maxy + dry - 30:
+        y = maxy + dry - 30
     if y < (maxy - realy + dry):
         y = (maxy - realy + dry)
 
@@ -96,15 +96,17 @@ def getWinMeasurements(driver):
 
 
 def hasFocus(driver):
+    # has focus jetzt nur auf browser mit driver
+    # ich muss noch überprüfen, ob acuh tab gerade focus hat
     script = 'return document.hasFocus()'
     return driver.execute_script(script)
 
 
-# for i in range(5):
-#     mousePos = {
-#         'x': 0,
-#         'y': 0
-#     }
-#     default(driver=driver, mousePos=mousePos)
-#     time.sleep(1)
-#     i += 1
+for i in range(5):
+    mousePos = {
+        'x': 100,
+        'y': 100
+    }
+    default(driver=driver, mousePos=mousePos)
+    time.sleep(1)
+    i += 1

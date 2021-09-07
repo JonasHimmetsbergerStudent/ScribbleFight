@@ -1,5 +1,5 @@
 from .utlis import *
-from PIL import Image
+# from PIL import Image
 
 import cv2
 import numpy as np
@@ -163,10 +163,13 @@ def getPlayableArray(img):
         blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 7, 2)
     imgAdaptiveThre = cv2.bitwise_not(imgAdaptiveThre)
     imgAdaptiveThre = cv2.medianBlur(imgAdaptiveThre, 3)
+
     img = cv2.cvtColor(imgAdaptiveThre, cv2.COLOR_BGR2BGRA)
 
-    pippoRGBA2 = Image.fromarray(np.array(img).astype('uint8'), mode='RGBA')
-    pippoRGBA2.show()
+    # pippoRGBA2 = Image.fromarray(np.array(img).astype('uint8'), mode='RGBA')
+    # pippoRGBA2.show()
+    cv2.imwrite(
+        './prototypes/streamFusion/output/imgAdaptiveThre.png', imgAdaptiveThre)
 
     iar = np.asarray(img).tolist()
 
@@ -211,7 +214,13 @@ def getPlayableArray(img):
         x = 0
         y += n
 
-    pippoRGBA2 = Image.fromarray(np.array(newImg).astype('uint8'), mode='RGBA')
-    pippoRGBA2.show()
+    iar = np.asarray(newImg).tolist()
+    with open('./prototypes/streamFusion/output/mapArray.txt', 'w') as f:
+        f.writelines(repr(iar))
+
+    # pippoRGBA2 = Image.fromarray(np.array(newImg).astype('uint8'), mode='RGBA')
+    # pippoRGBA2.show()
+    cv2.imwrite(
+        './prototypes/streamFusion/output/newImg.png', np.array(newImg))
 
     return newImg

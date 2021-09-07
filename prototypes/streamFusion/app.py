@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
+from PIL import Image
 
 import Scanner.cv2scan as scanner
 import cv2
@@ -65,12 +66,15 @@ def test_message(message):
         base64_data = message['data']
         # COVERT B64 MESSAGE TO CV2 IMAGE
         img = convertB64ToCv2img(base64_data)
+
         heightImg, widthImg, chanel = img.shape
         n = math.ceil(np.sqrt(heightImg * widthImg / 200000))
         resized = cv2.resize(img, (int(widthImg / n), int(heightImg / n)))
         playerMap = scanner.getPlayableArray(resized)
 
         json_str = json.dumps(playerMap)
+
+        cv2.imwrite('./prototypes/streamFusion/output/input.png', img)
 
         emit('playable map', {'map': json_str})
     except:
@@ -92,6 +96,6 @@ if __name__ == '__main__':
     # Aufpassen, dass port nicht geblockt ist und IP passt
     # app.run(debug=True, host="192.168.0.21", port=443, ssl_context='adhoc')
     print('server running')
-    socketio.run(app, host="192.168.0.8", port=443, certfile="./cert/cert.pem",
+    socketio.run(app, host="192.168.0.5", port=443, certfile="./cert/cert.pem",
                  keyfile="./keys/key.pem")
     print('server stopped')

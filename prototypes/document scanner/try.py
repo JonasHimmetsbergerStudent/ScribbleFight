@@ -1,3 +1,5 @@
+
+
 '''from time import sleep
 import imutils
 import utlis
@@ -28,14 +30,22 @@ Smth(1).start()
 
 
 
-
 # get array of image pixels
 from PIL import Image
 import sys
+import cv2
 import numpy as np
 np.set_printoptions(threshold=sys.maxsize)
 
-i = Image.open('Unbenannt_map.png')
+
+from PIL import Image
+import cv2
+import numpy as np
+import base64
+import json
+import math
+
+i = Image.open('./prototypes/document scanner/1.jpg')
 iar = np.asarray(i).tolist()
 
 with open('readme.txt', 'w') as f:
@@ -73,7 +83,7 @@ for i in range(1, h-1):
 tool.logDebug('Vertex sequence: {}'.format(p))
 
 '''
-
+'''
 import cv2
 import numpy as np
 import sys
@@ -153,3 +163,4 @@ while y < rows:
 
 pippoRGBA2 = Image.fromarray(np.array(newImg).astype('uint8'), mode='RGBA')
 pippoRGBA2.show()
+'''
