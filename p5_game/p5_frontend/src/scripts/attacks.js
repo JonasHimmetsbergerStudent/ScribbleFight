@@ -103,14 +103,22 @@ function bombAttack() {
     // man kann nur eine bombe gleichzeitig aussenden
     if (players[socket.id].item["bomb"].sprite === undefined) {
       if (players[socket.id].direction == "right") {
-        players[socket.id].item["bomb"].sprite = createSprite(players[socket.id].sprite.position.x + player_width, players[socket.id].sprite.position.y, 50, 50);
+        if(imSmall) {
+          players[socket.id].item["bomb"].sprite = createSprite(players[socket.id].sprite.position.x + player_width / 2, players[socket.id].sprite.position.y - 25, 50, 50);
+        } else {
+          players[socket.id].item["bomb"].sprite = createSprite(players[socket.id].sprite.position.x + player_width, players[socket.id].sprite.position.y, 50, 50);
+        }
         players[socket.id].item["bomb"].sprite.velocity.x += 5 * GAMESPEED;
         while ((environment.overlap(players[socket.id].item["bomb"].sprite))) {
           players[socket.id].item["bomb"].sprite.position.x -= 1;
         }
 
       } if (players[socket.id].direction == "left") {
-        players[socket.id].item["bomb"].sprite = createSprite(players[socket.id].sprite.position.x - player_width, players[socket.id].sprite.position.y, 50, 50);
+        if(imSmall) {
+          players[socket.id].item["bomb"].sprite = createSprite(players[socket.id].sprite.position.x - player_width / 2, players[socket.id].sprite.position.y - 25, 50, 50);
+        } else {
+          players[socket.id].item["bomb"].sprite = createSprite(players[socket.id].sprite.position.x - player_width, players[socket.id].sprite.position.y, 50, 50);
+        }
         players[socket.id].item["bomb"].sprite.velocity.x -= 5 * GAMESPEED;
         while ((environment.overlap(players[socket.id].item["bomb"].sprite))) {
           players[socket.id].item["bomb"].sprite.position.x += 1;
@@ -201,13 +209,21 @@ function blackHoleAttack() {
   if (players[socket.id].item["black_hole"] !== undefined && players[socket.id].item["black_hole"].ammo > 0) {
     if (players[socket.id].item["black_hole"].sprite === undefined) {
       if (players[socket.id].direction == "right") {
-        players[socket.id].item["black_hole"].sprite = createSprite(players[socket.id].sprite.position.x + player_width, players[socket.id].sprite.position.y, 50, 50);
+        if(imSmall) {
+          players[socket.id].item["black_hole"].sprite = createSprite(players[socket.id].sprite.position.x + player_width / 2, players[socket.id].sprite.position.y - 25, 50, 50);
+        } else {
+          players[socket.id].item["black_hole"].sprite = createSprite(players[socket.id].sprite.position.x + player_width, players[socket.id].sprite.position.y, 50, 50);
+        }
         players[socket.id].item["black_hole"].sprite.velocity.x += 3 * GAMESPEED;
         while ((environment.overlap(players[socket.id].item["black_hole"].sprite))) {
           players[socket.id].item["black_hole"].sprite.position.x -= 1;
         }
       } else if (players[socket.id].direction == "left") {
-        players[socket.id].item["black_hole"].sprite = createSprite(players[socket.id].sprite.position.x - player_width, players[socket.id].sprite.position.y, 50, 50);
+        if(imSmall) {
+          players[socket.id].item["black_hole"].sprite = createSprite(players[socket.id].sprite.position.x - player_width / 2, players[socket.id].sprite.position.y - 25, 50, 50);
+        } else {
+          players[socket.id].item["black_hole"].sprite = createSprite(players[socket.id].sprite.position.x - player_width, players[socket.id].sprite.position.y, 50, 50);
+        }
         players[socket.id].item["black_hole"].sprite.velocity.x -= 3 * GAMESPEED;
         while ((environment.overlap(players[socket.id].item["black_hole"].sprite))) {
           players[socket.id].item["black_hole"].sprite.position.x += 1;

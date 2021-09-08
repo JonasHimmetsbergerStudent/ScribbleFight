@@ -34,7 +34,7 @@ function newConnection(socket) {
     socket.on('disconnect', function () {
         console.log('user disconnected: ' + socket.id);
         players.delete(socket.id);
-        socket.broadcast.emit("deletePlayer",socket.id);
+        socket.broadcast.emit("deletePlayer", socket.id);
     });
     socket.on('newPlayer', createPlayer);
     socket.on('update', updatePosition);
@@ -104,7 +104,6 @@ function newConnection(socket) {
 setInterval(() => {
     if (players.size > 0) {
         let x = getItemSpawnPoint();
-        console.log(x);
         let data = {
             id: Date.now(),
             x: x,
@@ -115,12 +114,12 @@ setInterval(() => {
             items.push(data.id);
         }
         io.emit('spawnItem', data);
+        console.log(xCoordinates.length);
+        console.log(items.length)
     }
-}, 10000);
+}, 1000);
 
 function getItemSpawnPoint() {
-    console.log(xCoordinates.length);
-    console.log(items.length)
     if (items.length < xCoordinates.length) {
         xCoordinate = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
         while (xCoordinatesUsed.includes(xCoordinate)) {
