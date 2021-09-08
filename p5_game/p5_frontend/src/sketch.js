@@ -42,7 +42,7 @@ const CLIMBINGSPEED = -5 * GAMESPEED;
 
 
 function setup() {
-  createCanvas(1429, 830);
+  createCanvas(windowWidth,windowHeight);
   background(51);
   init();
 
@@ -127,6 +127,10 @@ function draw() {
   }
 }
 
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
+
 
 function init() {
   environment = new Group();
@@ -143,7 +147,7 @@ function init() {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
             sprite_pixels[i][j] = createSprite((j - ((same_x_counter - 1) / 2)) * 25, i * 25, 25 * (same_x_counter - 1), 25);
-            sprite_pixels[i][j].visible = false;
+            //sprite_pixels[i][j].visible = false;
             sprite_pixels[i][j].debug = true;
             environment.add(sprite_pixels[i][j]);
             sprite_pixels[i][j].immovable = true;
@@ -152,6 +156,7 @@ function init() {
           } else {
             same_x_counter = 1;
             sprite_pixels[i][j] = createSprite(j * 25, i * 25, 25, 25);
+            sprite_pixels[i][j].debug = true;
           }
         }
       }
@@ -172,7 +177,7 @@ function init() {
         } */
 
 
-    loadImage('assets/smiley_bg.png', img => {
+    loadImage('assets/komischer_smiley.png', img => {
       bg = img;
       loadImage('assets/bomb.png', img => {
         img.resize(50, 0);
