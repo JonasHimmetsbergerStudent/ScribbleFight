@@ -3,7 +3,7 @@ let youAreDead = false;
 let gameOver;
 let alivePlayerCount = 0;
 function deathCheck() {
-    if (players[socket.id].sprite.position.x > screenWidth || players[socket.id].sprite.position.y > screenHeight) {
+    if (players[socket.id].sprite.position.x > windowWidth || players[socket.id].sprite.position.y > windowHeight) {
         if(players[socket.id].item != undefined && players[socket.id].item.sprite != undefined) {
             players[socket.id].item.sprite = undefined;
         }
