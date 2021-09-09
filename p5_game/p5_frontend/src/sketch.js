@@ -83,6 +83,7 @@ function setup() {
             same_x_counter = 1;
             sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth-newImageWidth)/2), i * pixelWidth, pixelWidth, pixelWidth);
             sprite_pixels[i][j].debug = true;
+            environment.add(sprite_pixels[i][j]);
             //sprite_pixels[i][j].visible = false;
           }
         }
