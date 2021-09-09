@@ -117,7 +117,7 @@ setInterval(() => {
         console.log(xCoordinates.length);
         console.log(items.length)
     }
-}, 1000);
+}, 10000);
 
 function getItemSpawnPoint() {
     if (items.length < xCoordinates.length) {

@@ -2,5 +2,9 @@ body{
     padding: 0;
     margin: 0;
     overflow:hidden;
-    background: url("assets/komischer_smiley.png");
+    /*background: url("assets/komischer_smiley.png");*/
+}
+
+canvas {
+    z-index: -1;
 }

@@ -42,9 +42,86 @@ const CLIMBINGSPEED = -5 * GAMESPEED;
 
 
 function setup() {
-  createCanvas(windowWidth,windowHeight);
-  background(51);
+  var canvas = createCanvas(windowWidth, windowHeight);
+  background('FFFFFF');
+  var backgroundImage = new Image();
+  backgroundImage.src = 'assets/komischer_smiley.png';
+
+
+  var obildbreite = 1;
+  var obildhoehe = 1;
+  backgroundImage.onload = function () {
+    obildbreite = this.width;
+    obildhoehe = this.height;
+  
+
+
+    if ((windowWidth / windowHeight) > (obildbreite / obildhoehe)) {
+      let screenHeight = windowHeight;
+      var faktor = screenHeight / obildhoehe;
+      newImageHeight = faktor * obildhoehe;
+      newImageWidth = faktor * obildbreite;
+    }
+
+    const pixelWidth = obildbreite / pixel_clumps[0].length * faktor;
+    environment = new Group();
+    for (let i = 0; i < pixel_clumps.length; i++) {
+      sprite_pixels[i] = [];
+      for (let j = 0; j < pixel_clumps[0].length; j++) {
+        if (pixel_clumps[i][j][3] > 0) {
+          if (sprite_pixels[i][j - 1] !== undefined) {
+            same_x_counter++;
+            sprite_pixels[i][j] = createSprite((j - ((same_x_counter - 1) / 2)) * pixelWidth + ((windowWidth-newImageWidth)/2), i * pixelWidth, pixelWidth * (same_x_counter - 1), pixelWidth);
+            sprite_pixels[i][j].visible = false;
+            sprite_pixels[i][j].debug = true;
+            sprite_pixels[i][j].depth = 10;
+            environment.add(sprite_pixels[i][j]);
+            sprite_pixels[i][j].immovable = true;
+            sprite_pixels[i][j - 1].remove();
+            sprite_pixels[i][j - 1] = undefined;
+          } else {
+            same_x_counter = 1;
+            sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth-newImageWidth)/2), i * pixelWidth, pixelWidth, pixelWidth);
+            sprite_pixels[i][j].debug = true;
+            sprite_pixels[i][j].visible = false;
+          }
+        }
+      }
+    } 
+
+     
+      /* for (let i = 0; i < pixel_clumps.length; i++) {
+          sprite_pixels[i] = [];
+          for (let j = 0; j < pixel_clumps[0].length; j++) {
+            if (pixel_clumps[i][j][3] > 0) {
+              sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth-newImageWidth)/2), i * pixelWidth, pixelWidth, pixelWidth);
+              sprite_pixels[i][j].immovable = true;
+              environment.add(sprite_pixels[i][j]);
+              //sprite_pixels[i][j].visible = false;
+            }
+          }
+        } */
+
+    //for background
+    /*let div = createDiv('').size(newImageWidth, newImageHeight);
+    div.style('background-color', 'orange');
+    div.style('background', 'url("assets/komischer_smiley.png")');
+    div.style('background-repeat', 'no-repeat');
+    div.style('background-size','contain');
+    div.center(); */
+
+    let background = createSprite(windowWidth / 2, windowHeight / 2, newImageWidth, newImageHeight);
+    loadImage('assets/komischer_smiley.png', img => {
+      img.resize(newImageWidth, newImageHeight);
+      bg = img;
+      background.addImage(bg);  
+      background.depth = -1;
+    })
+
+  }
   init();
+
+
 
   socket = io.connect('http://localhost:3000');
   socket.on("deletePlayer", deletePlayer);
@@ -107,7 +184,7 @@ function draw() {
     spawn();
 
 
-    background(bg);
+    background('FFFFFF');
 
     checkForCollisions();
 
@@ -133,84 +210,52 @@ function windowResized() {
 
 
 function init() {
-  environment = new Group();
   loadImage('assets/amogus.png', img => {
     img.resize(100, 0);
     amogus = img;
     socket.emit('newPlayer');
 
     //initialising the pixel sprites for the playing environment
-    for (let i = 0; i < pixel_clumps.length; i++) {
-      sprite_pixels[i] = [];
-      for (let j = 0; j < pixel_clumps[0].length; j++) {
-        if (pixel_clumps[i][j][3] > 0) {
-          if (sprite_pixels[i][j - 1] !== undefined) {
-            same_x_counter++;
-            sprite_pixels[i][j] = createSprite((j - ((same_x_counter - 1) / 2)) * 25, i * 25, 25 * (same_x_counter - 1), 25);
-            //sprite_pixels[i][j].visible = false;
-            sprite_pixels[i][j].debug = true;
-            environment.add(sprite_pixels[i][j]);
-            sprite_pixels[i][j].immovable = true;
-            sprite_pixels[i][j - 1].remove();
-            sprite_pixels[i][j - 1] = undefined;
-          } else {
-            same_x_counter = 1;
-            sprite_pixels[i][j] = createSprite(j * 25, i * 25, 25, 25);
-            sprite_pixels[i][j].debug = true;
-          }
-        }
-      }
-    }
+
 
 
     // X Coordinates for the item drops
     getXCoordinates();
-    /*
-        for (let i = 0; i < pixel_clumps.length; i++) {
-          sprite_pixels[i] = [];
-          for (let j = 0; j < pixel_clumps[0].length; j++) {
-            if (pixel_clumps[i][j][3] > 0) {
-              sprite_pixels[i][j] = createSprite(j * 25, i * 25, 5, 5);
-              sprite_pixels[i][j].immovable = true;
-            }
-          }
-        } */
+   
 
 
-    loadImage('assets/komischer_smiley.png', img => {
-      bg = img;
-      loadImage('assets/bomb.png', img => {
+
+    loadImage('assets/bomb.png', img => {
+      img.resize(50, 0);
+      bombImg = img;
+      loadImage('assets/item.png', img => {
         img.resize(50, 0);
-        bombImg = img;
-        loadImage('assets/item.png', img => {
+        itemImg = img;
+        loadImage('assets/boogieBomb.png', img => {
           img.resize(50, 0);
-          itemImg = img;
-          loadImage('assets/boogieBomb.png', img => {
+          boogieBombImg = img;
+          loadImage('assets/item_blue.png', img => {
             img.resize(50, 0);
-            boogieBombImg = img;
-            loadImage('assets/item_blue.png', img => {
-              img.resize(50, 0);
-              itemImgBlue = img;
-              loadImage('assets/piano.png', img => {
-                img.resize(120, 0);
-                pianoImg = img;
-                loadImage('assets/item_yellow.png', img => {
+            itemImgBlue = img;
+            loadImage('assets/piano.png', img => {
+              img.resize(120, 0);
+              pianoImg = img;
+              loadImage('assets/item_yellow.png', img => {
+                img.resize(50, 0);
+                itemImgYellow = img;
+                loadImage('assets/item_orange.png', img => {
                   img.resize(50, 0);
-                  itemImgYellow = img;
-                  loadImage('assets/item_orange.png', img => {
+                  itemImgOrange = img;
+                  loadImage('assets/mine.png', img => {
                     img.resize(50, 0);
-                    itemImgOrange = img;
-                    loadImage('assets/mine.png', img => {
+                    mineImg = img;
+                    loadImage('assets/item_green.png', img => {
                       img.resize(50, 0);
-                      mineImg = img;
-                      loadImage('assets/item_green.png', img => {
+                      itemImgGreen = img;
+                      loadImage('assets/amogus_supreme.png', img => {
                         img.resize(50, 0);
-                        itemImgGreen = img;
-                        loadImage('assets/amogus_supreme.png', img => {
-                          img.resize(50, 0);
-                          amogus_supreme = img;
-                          started = true;
-                        })
+                        amogus_supreme = img;
+                        started = true;
                       })
                     })
                   })
@@ -221,6 +266,7 @@ function init() {
         })
       })
     })
+
   });
 }
 
