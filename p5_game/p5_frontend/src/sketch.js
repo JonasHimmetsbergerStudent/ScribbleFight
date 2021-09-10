@@ -45,7 +45,7 @@ function setup() {
   var canvas = createCanvas(windowWidth, windowHeight);
   background('FFFFFF');
   var backgroundImage = new Image();
-  backgroundImage.src = 'assets/komischer_smiley.png';
+  backgroundImage.src = 'assets/smiley_bg.png';
 
 
   var obildbreite = 1;
@@ -71,7 +71,7 @@ function setup() {
         if (pixel_clumps[i][j][3] > 0) {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
-            sprite_pixels[i][j] = createSprite((j - ((same_x_counter) / 2) + 0.5) * pixelWidth + ((windowWidth - newImageWidth) / 2), i * pixelWidth + ((windowHeight - newImageHeight) / 2), pixelWidth * (same_x_counter), pixelWidth);
+            sprite_pixels[i][j] = createSprite((j - ((same_x_counter) / 2) + 0.5) * pixelWidth + ((windowWidth - newImageWidth) / 2), i * pixelWidth + ((windowHeight - newImageHeight) / 2) + 20, pixelWidth * (same_x_counter), pixelWidth);
             sprite_pixels[i][j].visible = false;
             sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].depth = 10;
@@ -81,7 +81,7 @@ function setup() {
             sprite_pixels[i][j - 1] = undefined;
           } else {
             same_x_counter = 1;
-            sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth - newImageWidth) / 2), i * pixelWidth + ((windowHeight - newImageHeight) / 2), pixelWidth, pixelWidth);
+            sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth - newImageWidth) / 2), i * pixelWidth + ((windowHeight - newImageHeight) / 2) + 20, pixelWidth, pixelWidth);
             sprite_pixels[i][j].debug = true;
             environment.add(sprite_pixels[i][j]);
             sprite_pixels[i][j].visible = false;
@@ -112,7 +112,7 @@ function setup() {
     div.center(); */
 
     let background = createSprite(windowWidth / 2, windowHeight / 2, newImageWidth, newImageHeight);
-    loadImage('assets/komischer_smiley.png', img => {
+    loadImage('assets/smiley_bg.png', img => {
       img.resize(newImageWidth, newImageHeight);
       bg = img;
       background.addImage(bg);
