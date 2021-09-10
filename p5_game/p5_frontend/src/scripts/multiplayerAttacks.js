@@ -82,6 +82,7 @@ function addDefaultAttack(data) {
     projectile.velocity.y = data.velY;
     projectile.limitSpeed(25);
     projectile.id = data.id;
+    projectile.me = false;
     projectiles.push(projectile);
 }
 

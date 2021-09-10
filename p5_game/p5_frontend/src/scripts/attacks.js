@@ -29,6 +29,7 @@ function defaultAttack() {
   projectile.velocity.x = (camera.mouseX - players[socket.id].sprite.position.x) * 100;
   projectile.velocity.y = (camera.mouseY - players[socket.id].sprite.position.y) * 100;
   projectile.limitSpeed(25);
+  projectile.me = true;
   projectile.id = id;
 
   projectiles.push(projectile);
@@ -63,7 +64,7 @@ function defaultAttackPhysics() {
         }
       }
       // if you shoot the projectile, it needs about 5 frames to be outside of your own hitbox
-      if (projectile.life <= 95) {
+      if (!projectile.me) {
         if (projectile.collide(players[socket.id].sprite)) {
           if (players[socket.id].sprite.velocity.x > 0 && projectile.velocity.x > 0 || players[socket.id].sprite.velocity.x < 0 && projectile.velocity.x < 0) {
             diffDirection = false;
