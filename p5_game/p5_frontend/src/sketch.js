@@ -72,7 +72,7 @@ function setup() {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
             sprite_pixels[i][j] = createSprite((j - ((same_x_counter) / 2) + 0.5) * pixelWidth + ((windowWidth - newImageWidth) / 2), i * pixelWidth + ((windowHeight - newImageHeight) / 2), pixelWidth * (same_x_counter), pixelWidth);
-            //sprite_pixels[i][j].visible = false;
+            sprite_pixels[i][j].visible = false;
             sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].depth = 10;
             sprite_pixels[i][j].immovable = true;
@@ -84,7 +84,7 @@ function setup() {
             sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth - newImageWidth) / 2), i * pixelWidth + ((windowHeight - newImageHeight) / 2), pixelWidth, pixelWidth);
             sprite_pixels[i][j].debug = true;
             environment.add(sprite_pixels[i][j]);
-            //sprite_pixels[i][j].visible = false;
+            sprite_pixels[i][j].visible = false;
           }
         }
       }
