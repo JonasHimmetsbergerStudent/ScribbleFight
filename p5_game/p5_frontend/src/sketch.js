@@ -53,7 +53,7 @@ function setup() {
   backgroundImage.onload = function () {
     obildbreite = this.width;
     obildhoehe = this.height;
-  
+
 
 
     if ((windowWidth / windowHeight) > (obildbreite / obildhoehe)) {
@@ -71,37 +71,37 @@ function setup() {
         if (pixel_clumps[i][j][3] > 0) {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
-            sprite_pixels[i][j] = createSprite((j - ((same_x_counter - 1) / 2)) * pixelWidth + ((windowWidth-newImageWidth)/2), i * pixelWidth, pixelWidth * (same_x_counter - 1), pixelWidth);
+            sprite_pixels[i][j] = createSprite((j - ((same_x_counter) / 2) + 0.5) * pixelWidth + ((windowWidth - newImageWidth) / 2), i * pixelWidth + ((windowHeight - newImageHeight) / 2), pixelWidth * (same_x_counter), pixelWidth);
             //sprite_pixels[i][j].visible = false;
             sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].depth = 10;
-            environment.add(sprite_pixels[i][j]);
             sprite_pixels[i][j].immovable = true;
+            environment.add(sprite_pixels[i][j]);
             sprite_pixels[i][j - 1].remove();
             sprite_pixels[i][j - 1] = undefined;
           } else {
             same_x_counter = 1;
-            sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth-newImageWidth)/2), i * pixelWidth, pixelWidth, pixelWidth);
+            sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth - newImageWidth) / 2), i * pixelWidth + ((windowHeight - newImageHeight) / 2), pixelWidth, pixelWidth);
             sprite_pixels[i][j].debug = true;
             environment.add(sprite_pixels[i][j]);
             //sprite_pixels[i][j].visible = false;
           }
         }
       }
-    } 
+    }
 
-     
-      /* for (let i = 0; i < pixel_clumps.length; i++) {
-          sprite_pixels[i] = [];
-          for (let j = 0; j < pixel_clumps[0].length; j++) {
-            if (pixel_clumps[i][j][3] > 0) {
-              sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth-newImageWidth)/2), i * pixelWidth, pixelWidth, pixelWidth);
-              sprite_pixels[i][j].immovable = true;
-              environment.add(sprite_pixels[i][j]);
-              //sprite_pixels[i][j].visible = false;
-            }
-          }
-        } */
+
+    /*  for (let i = 0; i < pixel_clumps.length; i++) {
+         sprite_pixels[i] = [];
+         for (let j = 0; j < pixel_clumps[0].length; j++) {
+           if (pixel_clumps[i][j][3] > 0) {
+             sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth-newImageWidth)/2), i * pixelWidth, pixelWidth, pixelWidth);
+             sprite_pixels[i][j].immovable = true;
+             environment.add(sprite_pixels[i][j]);
+             //sprite_pixels[i][j].visible = false;
+           }
+         }
+       } */
 
     //for background
     /*let div = createDiv('').size(newImageWidth, newImageHeight);
@@ -115,7 +115,7 @@ function setup() {
     loadImage('assets/komischer_smiley.png', img => {
       img.resize(newImageWidth, newImageHeight);
       bg = img;
-      background.addImage(bg);  
+      background.addImage(bg);
       background.depth = -1;
     })
 
@@ -136,7 +136,7 @@ function setup() {
 }
 
 function createNewPlayer(data) {
-  players[data.id] = new Player(createSprite(800, 200, player_width, player_height));
+  players[data.id] = new Player(createSprite(1000, 200, player_width, player_height));
   players[data.id].sprite.maxSpeed = 30;
   players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
   players[data.id].sprite.debug = true;
@@ -222,7 +222,7 @@ function init() {
 
     // X Coordinates for the item drops
     getXCoordinates();
-   
+
 
 
 
