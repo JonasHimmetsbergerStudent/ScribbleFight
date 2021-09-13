@@ -35,6 +35,11 @@ function newConnection(socket) {
         console.log('user disconnected: ' + socket.id);
         players.delete(socket.id);
         socket.broadcast.emit("deletePlayer", socket.id);
+        if (players.size < 1) {
+            xCoordinates = [];
+            xCoordinatesUsed = [];
+            items = [];
+        }
     });
     socket.on('newPlayer', createPlayer);
     socket.on('update', updatePosition);

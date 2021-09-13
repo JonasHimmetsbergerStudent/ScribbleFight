@@ -61,6 +61,11 @@ function setup() {
       var faktor = screenHeight / obildhoehe;
       newImageHeight = faktor * obildhoehe;
       newImageWidth = faktor * obildbreite;
+    } else {
+      let screenWidth = windowWidth;
+      var faktor = screenWidth / obildbreite;
+      newImageHeight = faktor * obildhoehe;
+      newImageWidth = faktor * obildbreite;
     }
 
     const pixelWidth = obildbreite / pixel_clumps[0].length * faktor;
@@ -89,6 +94,8 @@ function setup() {
         }
       }
     }
+    // X Coordinates for the item drops
+    getXCoordinates();
 
 
     /*  for (let i = 0; i < pixel_clumps.length; i++) {
@@ -114,15 +121,11 @@ function setup() {
     let background = createSprite(windowWidth / 2, windowHeight / 2, newImageWidth, newImageHeight);
     loadImage('assets/smiley_bg.png', img => {
       img.resize(newImageWidth, newImageHeight);
-      bg = img;
-      background.addImage(bg);
+      background.addImage(img);
       background.depth = -1;
     })
 
   }
-  init();
-
-
 
   socket = io.connect('http://localhost:3000');
   socket.on("deletePlayer", deletePlayer);
@@ -133,14 +136,21 @@ function setup() {
   socket.on('deleteItem', syncItems);
   socket.on('attack', addAttack);
   socket.on('deleteAttack', deleteAttack);
+  init();
 }
 
 function createNewPlayer(data) {
-  players[data.id] = new Player(createSprite(1000, 200, player_width, player_height));
-  players[data.id].sprite.maxSpeed = 30;
-  players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
-  players[data.id].sprite.debug = true;
-  players[data.id].sprite.addImage(amogus);
+  loadImage('assets/amogus.png', img => {
+    img.resize(100, 0);
+    players[data.id] = new Player(createSprite(windowWidth / 2, 200, player_width, player_height));
+    players[data.id].sprite.maxSpeed = 30;
+    players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
+    players[data.id].sprite.debug = true;
+    players[data.id].sprite.addImage(img);
+    console.log(socket.id);
+    console.log(data.id);
+    started = true;
+  });
 }
 
 function deletePlayer(id) {
@@ -151,8 +161,10 @@ function deletePlayer(id) {
 }
 
 function updatePosition(data) {
-  players[data.id].sprite.position.x = data.x;
-  players[data.id].sprite.position.y = data.y;
+  if(players[data.id]!=undefined) {
+    players[data.id].sprite.position.x = data.x;
+    players[data.id].sprite.position.y = data.y;
+  }
 }
 
 function updateDirection(data) {
@@ -170,7 +182,7 @@ function updateDirection(data) {
 
 function draw() {
   touches_side = false;
-  if (started && !youAreDead) {
+  if (players[socket.id] != undefined && !youAreDead) {
     if (!flying && !noGravity) {
       players[socket.id].sprite.velocity.y -= GRAVITY;
     } else if (flying) {
@@ -195,7 +207,7 @@ function draw() {
     }
 
     mirrorSprite();
-    deathCheck();
+    //deathCheck();
     drawSprites();
     var data = {
       x: players[socket.id].sprite.position.x,
@@ -211,53 +223,37 @@ function windowResized() {
 
 
 function init() {
-  loadImage('assets/amogus.png', img => {
-    img.resize(100, 0);
-    amogus = img;
-    socket.emit('newPlayer');
-
-    //initialising the pixel sprites for the playing environment
-
-
-
-    // X Coordinates for the item drops
-    getXCoordinates();
-
-
-
-
-    loadImage('assets/bomb.png', img => {
+  loadImage('assets/bomb.png', img => {
+    img.resize(50, 0);
+    bombImg = img;
+    loadImage('assets/item.png', img => {
       img.resize(50, 0);
-      bombImg = img;
-      loadImage('assets/item.png', img => {
+      itemImg = img;
+      loadImage('assets/boogieBomb.png', img => {
         img.resize(50, 0);
-        itemImg = img;
-        loadImage('assets/boogieBomb.png', img => {
+        boogieBombImg = img;
+        loadImage('assets/item_blue.png', img => {
           img.resize(50, 0);
-          boogieBombImg = img;
-          loadImage('assets/item_blue.png', img => {
-            img.resize(50, 0);
-            itemImgBlue = img;
-            loadImage('assets/piano.png', img => {
-              img.resize(120, 0);
-              pianoImg = img;
-              loadImage('assets/item_yellow.png', img => {
+          itemImgBlue = img;
+          loadImage('assets/piano.png', img => {
+            img.resize(120, 0);
+            pianoImg = img;
+            loadImage('assets/item_yellow.png', img => {
+              img.resize(50, 0);
+              itemImgYellow = img;
+              loadImage('assets/item_orange.png', img => {
                 img.resize(50, 0);
-                itemImgYellow = img;
-                loadImage('assets/item_orange.png', img => {
+                itemImgOrange = img;
+                loadImage('assets/mine.png', img => {
                   img.resize(50, 0);
-                  itemImgOrange = img;
-                  loadImage('assets/mine.png', img => {
+                  mineImg = img;
+                  loadImage('assets/item_green.png', img => {
                     img.resize(50, 0);
-                    mineImg = img;
-                    loadImage('assets/item_green.png', img => {
+                    itemImgGreen = img;
+                    loadImage('assets/amogus_supreme.png', img => {
                       img.resize(50, 0);
-                      itemImgGreen = img;
-                      loadImage('assets/amogus_supreme.png', img => {
-                        img.resize(50, 0);
-                        amogus_supreme = img;
-                        started = true;
-                      })
+                      amogus_supreme = img;
+                      socket.emit('newPlayer');
                     })
                   })
                 })

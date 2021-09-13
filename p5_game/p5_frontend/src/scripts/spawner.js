@@ -150,5 +150,6 @@ function getXCoordinates() {
             }
         }
     }
+    console.log(xCoordinates);
     socket.emit('xCoordinates',xCoordinates);
 }
