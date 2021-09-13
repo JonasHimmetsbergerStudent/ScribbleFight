@@ -6,7 +6,6 @@ var socket;
 
 //Variables
 var bg;
-var started = false;
 var screenWidth = 1429;
 var screenHeight = 830;
 var player_height = 75;
@@ -147,9 +146,9 @@ function createNewPlayer(data) {
     players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
     players[data.id].sprite.debug = true;
     players[data.id].sprite.addImage(img);
+    amogus = img;
     console.log(socket.id);
     console.log(data.id);
-    started = true;
   });
 }
 
