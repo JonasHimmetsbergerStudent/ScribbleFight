@@ -10,10 +10,12 @@ var screenWidth = 1429;
 var screenHeight = 830;
 var player_height = 75;
 var player_width = 75;
+var imageFaktor;
 var JUMP_COUNT = 0;
 var same_x_counter = 1;
 const MAX_JUMP = 3;
 var touches_side;
+var background_path = "assets/komischer_smiley.png"
 
 // Images
 var amogus;
@@ -44,7 +46,7 @@ function setup() {
   var canvas = createCanvas(windowWidth, windowHeight);
   background('FFFFFF');
   var backgroundImage = new Image();
-  backgroundImage.src = 'assets/smiley_bg.png';
+  backgroundImage.src = background_path;
 
 
   var obildbreite = 1;
@@ -118,10 +120,17 @@ function setup() {
     div.center(); */
 
     let background = createSprite(windowWidth / 2, windowHeight / 2, newImageWidth, newImageHeight);
-    loadImage('assets/smiley_bg.png', img => {
+    loadImage(background_path, img => {
       img.resize(newImageWidth, newImageHeight);
       background.addImage(img);
       background.depth = -1;
+      console.log(faktor);
+      // 21 weil: 75 / 3.59 ~ 21;
+      // 75 ist die gewollte breite und höhe des sprites bei full screen und 3.59 ist der faktor bei fullscreen;
+      player_width = faktor * 21;
+      player_height = faktor * 21;
+      imageFaktor = faktor * 28;
+      init();
     })
 
   }
@@ -135,20 +144,17 @@ function setup() {
   socket.on('deleteItem', syncItems);
   socket.on('attack', addAttack);
   socket.on('deleteAttack', deleteAttack);
-  init();
 }
 
 function createNewPlayer(data) {
   loadImage('assets/amogus.png', img => {
-    img.resize(100, 0);
+    img.resize(imageFaktor, 0);
     players[data.id] = new Player(createSprite(windowWidth / 2, 200, player_width, player_height));
     players[data.id].sprite.maxSpeed = 30;
     players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
     players[data.id].sprite.debug = true;
     players[data.id].sprite.addImage(img);
     amogus = img;
-    console.log(socket.id);
-    console.log(data.id);
   });
 }
 

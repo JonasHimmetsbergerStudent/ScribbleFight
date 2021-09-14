@@ -12,28 +12,28 @@ var num;
 
 
 function spawn() {
-   /* if (gameStart) {
-        timer = 3;
-        gameStart = false;
-    }
-    spawning = false;
-    if (frameCount % 60 == 0 && timer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
-        timer--;
-    }
-    if (timer == 0) {
-        spawning = true;
-        timer = 15;
-    }
-    if (spawning) {
-        if (items.length < xCoordinates.length) {
-            xCoordinate = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
-            while (xCoordinatesUsed.includes(xCoordinate)) {
-                xCoordinate = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
-            }
-            createItem(xCoordinate);
-            xCoordinatesUsed.push(xCoordinate);
-        }
-    } */
+    /* if (gameStart) {
+         timer = 3;
+         gameStart = false;
+     }
+     spawning = false;
+     if (frameCount % 60 == 0 && timer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
+         timer--;
+     }
+     if (timer == 0) {
+         spawning = true;
+         timer = 15;
+     }
+     if (spawning) {
+         if (items.length < xCoordinates.length) {
+             xCoordinate = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
+             while (xCoordinatesUsed.includes(xCoordinate)) {
+                 xCoordinate = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
+             }
+             createItem(xCoordinate);
+             xCoordinatesUsed.push(xCoordinate);
+         }
+     } */
     itemPickUp();
 }
 
@@ -41,7 +41,7 @@ function spawn() {
 function createItem(data) {
     let num = data.num;
     let x = data.x;
-    if(x!=-1) {
+    if (x != -1) {
         switch (num) {
             case 1:
                 i = createSprite(x, 0, 50, 50);
@@ -69,12 +69,13 @@ function createItem(data) {
                 i.addImage(itemImgGreen);
                 break;
         }
+        i.maxSpeed = 10;
+        i.id = data.id;
+        console.log(items);
+        items.push(i);
     }
-  
-    i.maxSpeed = 10;
-    i.id = data.id;
-    console.log(items);
-    items.push(i);
+
+
 }
 
 function itemPickUp() {
@@ -117,12 +118,12 @@ function deleteItem(item) {
     }
     items.splice(items.indexOf(item), 1);
     item.remove();
-    socket.emit('deleteItem',data);
+    socket.emit('deleteItem', data);
 }
 
 function syncItems(data) {
     items[data.index].remove();
-    items.splice(items.indexOf(items[data.index]), 1);   
+    items.splice(items.indexOf(items[data.index]), 1);
 }
 
 function getRandomInt(num) {
@@ -151,5 +152,5 @@ function getXCoordinates() {
         }
     }
     console.log(xCoordinates);
-    socket.emit('xCoordinates',xCoordinates);
+    socket.emit('xCoordinates', xCoordinates);
 }
