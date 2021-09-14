@@ -1,5 +1,4 @@
 import time
-from time import sleep
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -8,14 +7,14 @@ import pyautogui as pg
 
 '''Auslagern'''
 options = webdriver.ChromeOptions()
-# options.add_argument("start-maximized")
+options.add_argument("start-maximized")
 options.add_argument("disable-infobars")
 driver = webdriver.Chrome(chrome_options=options,
                           executable_path=ChromeDriverManager().install())
 url = 'http://localhost:3000/'
 driver.get(url)
 
-driver.set_window_position(10, 10)
+# driver.set_window_position(10, 10)
 print(driver.get_window_size())
 print(driver.get_window_position())
 # wenn url bestimmte form hat (zb '.../fight') dann startet ki
@@ -83,8 +82,8 @@ def default(driver, mousePos):  # how tf do i shoot
 
     if y > maxy + dry - 30:
         y = maxy + dry - 30
-    if y < (maxy - realy + dry):
-        y = (maxy - realy + dry)
+    if y < (maxy - realy + dry + 30):
+        y = (maxy - realy + dry + 30)
 
     pg.click(x=x, y=y)
 
@@ -96,17 +95,25 @@ def getWinMeasurements(driver):
 
 
 def hasFocus(driver):
-    # has focus jetzt nur auf browser mit driver
-    # ich muss noch überprüfen, ob acuh tab gerade focus hat
-    script = 'return document.hasFocus()'
-    return driver.execute_script(script)
+    # hat browser localhost (spiel) als current tab offen?
+    if '://localhost:' in driver.current_url:
+        # hat document focus
+        script = 'return document.hasFocus()'
+        return driver.execute_script(script)
+    return False
 
 
-for i in range(5):
-    mousePos = {
-        'x': 100,
-        'y': 100
-    }
-    default(driver=driver, mousePos=mousePos)
-    time.sleep(1)
-    i += 1
+def test():
+    time.sleep(5)
+
+    for i in range(5):
+        mousePos = {
+            'x': 100,
+            'y': 100
+        }
+        default(driver=driver, mousePos=mousePos)
+        time.sleep(1)
+        i += 1
+
+
+test()
