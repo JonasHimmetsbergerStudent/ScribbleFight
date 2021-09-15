@@ -108,9 +108,13 @@ def hasFocus(driver):
 
 
 def test(driver):
+    nr = 2
+    driver.execute_script('document.title = "%s";' % (nr, ))
+    time.sleep(1)
     title = win32gui.GetWindowText(win32gui.GetForegroundWindow())
-    for i in range(5):
-        time.sleep(0.5)
+
+    for item in range(180):
+        time.sleep(1)
         # ControlClick ( "title", "text", controlID [, button = "left" [, clicks = 1 [, x [, y]]]] )
         autoit.control_click(title,
                              '', button="left", click=1, x=10, y=400)
