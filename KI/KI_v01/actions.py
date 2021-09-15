@@ -27,8 +27,8 @@ print(driver.current_url)
 
 
 def pressKey(driver, key):
-    if hasFocus(driver) is False or key not in pg.KEYBOARD_KEYS:
-        return
+    # if hasFocus(driver) is False or key not in pg.KEYBOARD_KEYS:
+    #     return
     pg.press(key)
 
 
@@ -48,48 +48,42 @@ def right(driver):
     # pressKey(driver, 's')
 
 
-def bomb(driver):
-    pressKey(driver, 'e')
+def bombAttack(driver):
+    driver.execute_script('bombAttack()')
 
 
-def blackhole(driver):
-    pressKey(driver, 'q')
+def blackHoleAttack(driver):
+    driver.execute_script('blackHoleAttack()')
 
 
-def piano(driver):
-    pressKey(driver, 'r')
+def pianoTime(driver):
+    driver.execute_script('pianoTime()')
 
 
-def mine(driver):
-    pressKey(driver, 'c')
+def placeMine(driver):
+    driver.execute_script('placeMine()')
 
 
-def small(driver):
-    pressKey(driver, 'f')
+def makeMeSmall(driver):
+    driver.execute_script('makeMeSmall()')
 
 
-def default(driver, mousePos):  # how tf do i shoot
-    if hasFocus(driver) is False:
-        return
+def default(driver, mousePos):
     realx, realy, maxx, maxy = getWinMeasurements(driver)
-    drPos = driver.get_window_position()
-    margin = 8
-    drx = drPos.get('x') + margin
-    dry = drPos.get('y') + margin
     x = mousePos['x']
     y = mousePos['y']
 
-    if x > realx + drx - 30:
-        x = realx + drx - 30
-    if x < drx:
-        x = drx
+    if x > realx:
+        x = realx
+    if x < 0:
+        x = 0
 
-    if y > maxy + dry - 30:
-        y = maxy + dry - 30
-    if y < (maxy - realy + dry + 30):
-        y = (maxy - realy + dry + 30)
+    if y > realy:
+        y = realy
+    if y < 0:
+        y = 0
 
-    pg.click(x=x, y=y)
+    driver.execute_script('defaultAttack(%s, %s)' % (x, y))
 
 
 def getWinMeasurements(driver):
@@ -108,16 +102,14 @@ def hasFocus(driver):
 
 
 def test(driver):
-    nr = 2
-    driver.execute_script('document.title = "%s";' % (nr, ))
-    time.sleep(1)
-    title = win32gui.GetWindowText(win32gui.GetForegroundWindow())
-
+    x = 10
+    time.sleep(3)
     for item in range(180):
-        time.sleep(1)
-        # ControlClick ( "title", "text", controlID [, button = "left" [, clicks = 1 [, x [, y]]]] )
-        autoit.control_click(title,
-                             '', button="left", click=1, x=10, y=400)
+        y = item * 3
+        time.sleep(0.5)
+        myDict = {"x": x, "y": y}
+        default(driver, myDict)
+        left(driver)
 
 
 test(driver)
