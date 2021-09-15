@@ -31,6 +31,7 @@ function defaultAttack() {
   projectile.limitSpeed(25);
   projectile.me = true;
   projectile.id = id;
+  projectile.playerId = socket.id;
 
   projectiles.push(projectile);
   let data = {
@@ -39,7 +40,8 @@ function defaultAttack() {
     x: projectile.position.x,
     y: projectile.position.y,
     velX: projectile.velocity.x,
-    velY: projectile.velocity.y
+    velY: projectile.velocity.y,
+    playerId: socket.id
   }
   socket.emit("attack", data);
 
@@ -63,7 +65,6 @@ function defaultAttackPhysics() {
           projectiles.splice(projectileIndex, 1);
         }
       }
-      // if you shoot the projectile, it needs about 5 frames to be outside of your own hitbox
       if (!projectile.me) {
         if (projectile.collide(players[socket.id].sprite)) {
           if (players[socket.id].sprite.velocity.x > 0 && projectile.velocity.x > 0 || players[socket.id].sprite.velocity.x < 0 && projectile.velocity.x < 0) {
@@ -131,6 +132,7 @@ function bombAttack() {
       players[socket.id].item["bomb"].sprite.life = 1000;
       players[socket.id].item["bomb"].sprite.me = true;
       players[socket.id].item["bomb"].sprite.id = id;
+      players[socket.id].item["bomb"].sprite.playerId = socket.id;
       bombs.push(players[socket.id].item["bomb"].sprite);
       let data = {
         id: id,
@@ -439,7 +441,7 @@ function smallChecker() {
   if (imSmall) {
     if (smallTimer == 10) {
       players[socket.id].sprite.addImage(amogus_supreme);
-      players[socket.id].sprite.setCollider("rectangle", 0, 0, player_width / 2 - 15, player_height / 2);
+      players[socket.id].sprite.scale = 0.7;
     }
 
     if (frameCount % 60 == 0 && smallTimer > 0) {
@@ -447,7 +449,7 @@ function smallChecker() {
     }
     if (smallTimer == 0) {
       players[socket.id].sprite.addImage(amogus);
-      players[socket.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
+      players[socket.id].sprite.scale = 1;
       smallTimer = 10;
       players[socket.id].item["small"] = undefined;
       imSmall = false;

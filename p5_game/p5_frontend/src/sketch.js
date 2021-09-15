@@ -15,7 +15,9 @@ var JUMP_COUNT = 0;
 var same_x_counter = 1;
 const MAX_JUMP = 3;
 var touches_side;
-var background_path = "assets/komischer_smiley.png"
+var background_path = "assets/komischer_smiley.png";
+var cookieArr = [];
+cookieArr["dmgDealt"] = 0;
 
 // Images
 var amogus;
@@ -125,11 +127,9 @@ function setup() {
       background.addImage(img);
       background.depth = -1;
       console.log(faktor);
-      // 21 weil: 75 / 3.59 ~ 21;
-      // 75 ist die gewollte breite und höhe des sprites bei full screen und 3.59 ist der faktor bei fullscreen;
-      player_width = faktor * 21;
-      player_height = faktor * 21;
-      imageFaktor = faktor * 28;
+      player_width = pixelWidth * 4;
+      player_height = pixelWidth * 4;
+      imageFaktor = pixelWidth * 5;
       init();
     })
 
@@ -148,10 +148,12 @@ function setup() {
 
 function createNewPlayer(data) {
   loadImage('assets/amogus.png', img => {
+    // noch unkorrekt, bald wird scale verwendet um die eigenschaften des players gleich zu behalten, die größe aber nicht
     img.resize(imageFaktor, 0);
-    players[data.id] = new Player(createSprite(windowWidth / 2, 200, player_width, player_height));
+    players[data.id] = new Player(createSprite(windowWidth / 2, windowHeight / 2, player_width, player_height));
+    //players[data.id].sprite.scale = 0.5;
     players[data.id].sprite.maxSpeed = 30;
-    players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
+    players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
     players[data.id].sprite.debug = true;
     players[data.id].sprite.addImage(img);
     amogus = img;
@@ -166,7 +168,7 @@ function deletePlayer(id) {
 }
 
 function updatePosition(data) {
-  if(players[data.id]!=undefined) {
+  if (players[data.id] != undefined) {
     players[data.id].sprite.position.x = data.x;
     players[data.id].sprite.position.y = data.y;
   }
@@ -219,6 +221,7 @@ function draw() {
       y: players[socket.id].sprite.position.y
     }
     socket.emit('update', data);
+    //console.log(cookieArr);
   }
 }
 
@@ -256,7 +259,7 @@ function init() {
                     img.resize(50, 0);
                     itemImgGreen = img;
                     loadImage('assets/amogus_supreme.png', img => {
-                      img.resize(50, 0);
+                      img.resize(imageFaktor, 0);
                       amogus_supreme = img;
                       socket.emit('newPlayer');
                     })

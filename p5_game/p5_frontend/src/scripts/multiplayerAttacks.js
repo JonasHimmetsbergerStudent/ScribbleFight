@@ -22,6 +22,13 @@ function deleteAttack(data) {
                 if (p.id === data.id) {
                     p.remove();
                     projectiles.splice(projectiles.indexOf(p), 1);
+                    console.log(p.playerId);
+                    console.log(socket.id);
+                    if(p.playerId == socket.id) {
+                        cookieArr["dmgDealt"] += 1;
+                        console.log(cookieArr);
+                        console.log(players[socket.id].sprite.mass);
+                    }
                 }
             });
             break;
@@ -59,7 +66,7 @@ function deleteAttack(data) {
             break;
         case "small":
             players[data.playerId].sprite.addImage(amogus);
-            players[data.playerId].sprite.setCollider("rectangle", 0, 0, player_width - 15, player_height);
+            players[data.playerId].sprite.scale = 1;
             break;
     }
 }
@@ -82,6 +89,7 @@ function addDefaultAttack(data) {
     projectile.velocity.y = data.velY;
     projectile.limitSpeed(25);
     projectile.id = data.id;
+    projectile.playerId = data.playerId;
     projectile.me = false;
     projectiles.push(projectile);
 }
@@ -119,5 +127,5 @@ function addMine(data) {
 
 function addSmall(data) {
     players[data.playerId].sprite.addImage(amogus_supreme);
-    players[data.playerId].sprite.setCollider("rectangle", 0, 0, player_width / 2 - 15, player_height / 2);
+    players[data.playerId].sprite.scale = 0.7;
 }
