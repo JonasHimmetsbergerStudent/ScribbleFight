@@ -2,19 +2,15 @@ function controls() {
     // Controls
     //Spacebar
     if (keyWentDown(32)) {
-        if (!(JUMP_COUNT >= MAX_JUMP)) {
-            players[socket.id].sprite.velocity.y = -JUMP;
-            JUMP_COUNT++;
-        }
+        jump()
     }
     //A
     if (keyIsDown(65)) {
-        players[socket.id].sprite.velocity.x = -SPEED;
-
+        moveLeft()
     }
     //D
     if (keyIsDown(68)) {
-        players[socket.id].sprite.velocity.x = SPEED;
+        moveRight()
     }
     //S
     // if (keyIsDown(83)) {
@@ -60,6 +56,22 @@ function controls() {
 
 }
 
+function jump() {
+    if (!(JUMP_COUNT >= MAX_JUMP)) {
+        players[socket.id].sprite.velocity.y = -JUMP;
+        JUMP_COUNT++;
+    }
+}
+
+function moveLeft() {
+    players[socket.id].sprite.velocity.x = -SPEED;
+}
+
+
+function moveRight() {
+    players[socket.id].sprite.velocity.x = SPEED;
+}
+
 function mouseClicked() {
     let x = camera.mouseX,
         y = camera.mouseY;
@@ -68,17 +80,25 @@ function mouseClicked() {
 
 function mirrorSprite() {
     if (keyWentDown(65)) {
-        if (players[socket.id].sprite.mirrorX() === 1) {
-            players[socket.id].sprite.mirrorX(players[socket.id].sprite.mirrorX() * -1);
-            players[socket.id].direction = "left";
-            socket.emit('updateDirection', 'left');
-        }
+        mirrorSpriteLeft()
     }
     if (keyWentDown(68)) {
-        if (players[socket.id].sprite.mirrorX() === -1) {
-            players[socket.id].sprite.mirrorX(players[socket.id].sprite.mirrorX() * -1);
-            players[socket.id].direction = "right";
-            socket.emit('updateDirection', 'right');
-        }
+        mirrorSpriteRight()
+    }
+}
+
+function mirrorSpriteLeft() {
+    if (players[socket.id].sprite.mirrorX() === 1) {
+        players[socket.id].sprite.mirrorX(players[socket.id].sprite.mirrorX() * -1);
+        players[socket.id].direction = "left";
+        socket.emit('updateDirection', 'left');
+    }
+}
+
+function mirrorSpriteRight() {
+    if (players[socket.id].sprite.mirrorX() === -1) {
+        players[socket.id].sprite.mirrorX(players[socket.id].sprite.mirrorX() * -1);
+        players[socket.id].direction = "right";
+        socket.emit('updateDirection', 'right');
     }
 }
