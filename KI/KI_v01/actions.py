@@ -26,22 +26,16 @@ print(driver.current_url)
 ''''''
 
 
-def pressKey(driver, key):
-    # if hasFocus(driver) is False or key not in pg.KEYBOARD_KEYS:
-    #     return
-    pg.press(key)
-
-
 def jump(driver):
-    pressKey(driver, 'space')
+    driver.execute_script('jump()')
 
 
 def left(driver):
-    pressKey(driver, 'a')
+    driver.execute_script('moveLeft(); mirrorSpriteLeft();')
 
 
 def right(driver):
-    pressKey(driver, 'd')
+    driver.execute_script('moveRight(); mirrorSpriteRight();')
 
 
 # def down(driver):
