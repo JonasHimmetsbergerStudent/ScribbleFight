@@ -3,7 +3,7 @@ function controls() {
     //Spacebar
     if (keyWentDown(32)) {
         if (!(JUMP_COUNT >= MAX_JUMP)) {
-            players[socket.id].sprite.velocity.y =  -JUMP;
+            players[socket.id].sprite.velocity.y = -JUMP;
             JUMP_COUNT++;
         }
     }
@@ -45,7 +45,7 @@ function controls() {
 
     // R
     if (keyWentDown(82)) {
-         pianoTime();
+        pianoTime();
     }
 
     // C
@@ -61,7 +61,9 @@ function controls() {
 }
 
 function mouseClicked() {
-    defaultAttack();
+    let x = camera.mouseX,
+        y = camera.mouseY;
+    defaultAttack(x, y);
 }
 
 function mirrorSprite() {
@@ -69,14 +71,14 @@ function mirrorSprite() {
         if (players[socket.id].sprite.mirrorX() === 1) {
             players[socket.id].sprite.mirrorX(players[socket.id].sprite.mirrorX() * -1);
             players[socket.id].direction = "left";
-            socket.emit('updateDirection','left');
+            socket.emit('updateDirection', 'left');
         }
     }
     if (keyWentDown(68)) {
         if (players[socket.id].sprite.mirrorX() === -1) {
             players[socket.id].sprite.mirrorX(players[socket.id].sprite.mirrorX() * -1);
             players[socket.id].direction = "right";
-            socket.emit('updateDirection','right');
+            socket.emit('updateDirection', 'right');
         }
     }
 }

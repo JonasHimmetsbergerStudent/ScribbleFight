@@ -15,7 +15,7 @@ var diffDirection = false;
 var testKnockback = 3;
 var projectileIndex;
 
-function defaultAttack() {
+function defaultAttack(x, y) {
 
   if (players[socket.id].direction == "right") {
     projectile = createSprite(players[socket.id].sprite.position.x, players[socket.id].sprite.position.y, 20, 20);
@@ -26,8 +26,8 @@ function defaultAttack() {
   let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
 
   projectile.life = 100;
-  projectile.velocity.x = (camera.mouseX - players[socket.id].sprite.position.x) * 100;
-  projectile.velocity.y = (camera.mouseY - players[socket.id].sprite.position.y) * 100;
+  projectile.velocity.x = (x - players[socket.id].sprite.position.x) * 100;
+  projectile.velocity.y = (y - players[socket.id].sprite.position.y) * 100;
   projectile.limitSpeed(25);
   projectile.me = true;
   projectile.id = id;
@@ -105,7 +105,7 @@ function bombAttack() {
     // man kann nur eine bombe gleichzeitig aussenden
     if (players[socket.id].item["bomb"].sprite === undefined) {
       if (players[socket.id].direction == "right") {
-        if(imSmall) {
+        if (imSmall) {
           players[socket.id].item["bomb"].sprite = createSprite(players[socket.id].sprite.position.x + player_width / 2, players[socket.id].sprite.position.y - 25, 50, 50);
         } else {
           players[socket.id].item["bomb"].sprite = createSprite(players[socket.id].sprite.position.x + player_width, players[socket.id].sprite.position.y, 50, 50);
@@ -116,7 +116,7 @@ function bombAttack() {
         }
 
       } if (players[socket.id].direction == "left") {
-        if(imSmall) {
+        if (imSmall) {
           players[socket.id].item["bomb"].sprite = createSprite(players[socket.id].sprite.position.x - player_width / 2, players[socket.id].sprite.position.y - 25, 50, 50);
         } else {
           players[socket.id].item["bomb"].sprite = createSprite(players[socket.id].sprite.position.x - player_width, players[socket.id].sprite.position.y, 50, 50);
@@ -212,7 +212,7 @@ function blackHoleAttack() {
   if (players[socket.id].item["black_hole"] !== undefined && players[socket.id].item["black_hole"].ammo > 0) {
     if (players[socket.id].item["black_hole"].sprite === undefined) {
       if (players[socket.id].direction == "right") {
-        if(imSmall) {
+        if (imSmall) {
           players[socket.id].item["black_hole"].sprite = createSprite(players[socket.id].sprite.position.x + player_width / 2, players[socket.id].sprite.position.y - 25, 50, 50);
         } else {
           players[socket.id].item["black_hole"].sprite = createSprite(players[socket.id].sprite.position.x + player_width, players[socket.id].sprite.position.y, 50, 50);
@@ -222,7 +222,7 @@ function blackHoleAttack() {
           players[socket.id].item["black_hole"].sprite.position.x -= 1;
         }
       } else if (players[socket.id].direction == "left") {
-        if(imSmall) {
+        if (imSmall) {
           players[socket.id].item["black_hole"].sprite = createSprite(players[socket.id].sprite.position.x - player_width / 2, players[socket.id].sprite.position.y - 25, 50, 50);
         } else {
           players[socket.id].item["black_hole"].sprite = createSprite(players[socket.id].sprite.position.x - player_width, players[socket.id].sprite.position.y, 50, 50);
@@ -428,11 +428,11 @@ function makeMeSmall() {
   if (players[socket.id].item["small"] != undefined) {
     imSmall = true;
     smallTimer = 10;
-    let data= {
+    let data = {
       type: "small",
       playerId: socket.id
     }
-    socket.emit("attack",data);
+    socket.emit("attack", data);
   }
 }
 
@@ -453,11 +453,11 @@ function smallChecker() {
       smallTimer = 10;
       players[socket.id].item["small"] = undefined;
       imSmall = false;
-      let data= {
+      let data = {
         type: "small",
         playerId: socket.id
       }
-      socket.emit("deleteAttack",data);
+      socket.emit("deleteAttack", data);
     }
   }
 
