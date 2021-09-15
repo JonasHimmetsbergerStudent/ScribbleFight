@@ -308,6 +308,7 @@ function pianoTime() {
         players[socket.id].item["piano"].sprite.rotation = getRandomInt(360);
         players[socket.id].item["piano"].sprite.me = true;
         players[socket.id].item["piano"].sprite.id = id;
+        players[socket.id].item["piano"].sprite.playerId = socket.id;
         pianos.push(players[socket.id].item["piano"].sprite);
         let data = {
           id: id,
@@ -377,6 +378,7 @@ function placeMine() {
     mine.maxSpeed = 5;
     mine.debug = true;
     mine.me = true;
+    mine.playerId = socket.id;
     players[socket.id].item["mine"].sprite.push(mine);
     mines.push(mine);
     ammoCheck("mine");

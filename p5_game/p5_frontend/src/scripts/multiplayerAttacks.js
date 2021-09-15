@@ -25,9 +25,8 @@ function deleteAttack(data) {
                     console.log(p.playerId);
                     console.log(socket.id);
                     if(p.playerId == socket.id) {
-                        cookieArr["dmgDealt"] += 1;
+                        cookieArr["dmgDealt"] +=1;
                         console.log(cookieArr);
-                        console.log(players[socket.id].sprite.mass);
                     }
                 }
             });
@@ -37,9 +36,11 @@ function deleteAttack(data) {
                 if (b.id === data.id) {
                     b.remove();
                     bombs.splice(bombs.indexOf(b), 1);
-                    if (data.playerId == socket.id) {
+                    if (b.playerId == socket.id) {
                         players[socket.id].item["bomb"].sprite = undefined;
                         ammoCheck("bomb");
+                        cookieArr["dmgDealt"] +=1;
+                        console.log(cookieArr);
                     }
                 }
             });
@@ -49,9 +50,11 @@ function deleteAttack(data) {
                 if (p.id == data.id) {
                     p.remove();
                     pianos.splice(pianos.indexOf(p), 1);
-                    if (data.playerId == socket.id) {
+                    if (p.playerId == socket.id) {
                         players[socket.id].item["piano"].sprite = undefined;
                         ammoCheck("piano");
+                        cookieArr["dmgDealt"] +=1;
+                        console.log(cookieArr);
                     }
                 }
             });
@@ -61,6 +64,10 @@ function deleteAttack(data) {
                 if (m.id == data.id) {
                     m.remove();
                     mines.splice(mines.indexOf(m), 1);
+                    if(m.playerId==socket.id) {
+                        cookieArr["dmgDealt"] +=1;
+                        console.log(cookieArr);
+                    }
                 }
             });
             break;
