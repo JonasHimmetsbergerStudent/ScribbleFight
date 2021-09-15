@@ -1,3 +1,7 @@
+import autoit
+import win32gui
+import win32con
+import win32api
 import time
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium import webdriver
@@ -103,17 +107,16 @@ def hasFocus(driver):
     return False
 
 
-def test():
-    time.sleep(5)
-
+def test(driver):
     for i in range(5):
-        mousePos = {
-            'x': 100,
-            'y': 100
-        }
-        default(driver=driver, mousePos=mousePos)
-        time.sleep(1)
-        i += 1
+        time.sleep(0.5)
+        # https://www.autoitscript.com/autoit3/docs/functions/ControlClick.htm
+        # ControlClick ( "title", "text", controlID [, button = "left" [, clicks = 1 [, x [, y]]]] )
+        title = win32gui.GetWindowText(win32gui.GetForegroundWindow())
+        autoit.control_click(title,
+                             '', button="left", click=1, x=200, y=200)
 
 
-test()
+test(driver)
+
+# driver.quit()
