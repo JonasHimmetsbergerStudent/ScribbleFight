@@ -81,9 +81,11 @@ function defaultAttackPhysics() {
           }
           players[socket.id].sprite.limitSpeed(2 * testKnockback);
           let data = {
+            playerId: socket.id,
             id: projectile.id,
             type: "default"
           }
+          cookieArr["knockback"] +=1;
           flying = true;
           flyingDuration = 10;
           timeFlying = flyingDuration;
@@ -190,6 +192,7 @@ function bombPhysics() {
         }
         bombs.splice(bombs.indexOf(bomb), 1);
         socket.emit("deleteAttack", data);
+        cookieArr["knockback"] +=1;
 
       } else if (bomb.position.x > screenWidth || bomb.position.y > screenHeight || bomb.life == 0) {
         bomb.remove();
@@ -200,7 +203,6 @@ function bombPhysics() {
           ammoCheck("bomb");
         }
         bombs.splice(bombs.indexOf(bomb), 1);
-        socket.emit("deleteAttack", data);
       }
       sendHimFlying();
     });
@@ -343,6 +345,7 @@ function pianoPhysics() {
       } else if (p.overlap(players[socket.id].sprite)) {
         p.remove();
         socket.emit("deleteAttack", data);
+        cookieArr["knockback"] +=1;
         if (p.me) {
           players[socket.id].item["piano"].sprite = undefined;
           ammoCheck("piano");
@@ -413,6 +416,7 @@ function minePhysics() {
         mines.splice(mines.indexOf(m), 1);
         m.remove();
         socket.emit("deleteAttack", data);
+        cookieArr["knockback"] +=1;
         if (m.me && players[socket.id].item["mine"] != undefined) {
           players[socket.id].item["mine"].sprite.splice(players[socket.id].item["mine"].sprite.indexOf(m), 1);
         }

@@ -101,6 +101,9 @@ function newConnection(socket) {
     }
 
     function deleteAttack(data) {
+        players.get(socket.id).knockback +=1;
+        console.log(players.get(socket.id));
+        console.log(players);
         socket.broadcast.emit("deleteAttack", data);
     }
 

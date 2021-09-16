@@ -18,6 +18,7 @@ var touches_side;
 var background_path = "assets/komischer_smiley.png";
 var cookieArr = [];
 cookieArr["dmgDealt"] = 0;
+cookieArr["knockback"] = 1;
 
 // Images
 var amogus;
@@ -188,6 +189,7 @@ function updateDirection(data) {
 }
 
 function draw() {
+  console.log(cookieArr["knockback"]);
   touches_side = false;
   if (players[socket.id] != undefined && !youAreDead) {
     if (!flying && !noGravity) {
