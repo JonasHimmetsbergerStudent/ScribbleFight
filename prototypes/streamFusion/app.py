@@ -67,6 +67,12 @@ def test_message(message):
         # COVERT B64 MESSAGE TO CV2 IMAGE
         img = convertB64ToCv2img(base64_data)
 
+        # make square
+        widht, height, _ = img.shape
+        size = int(max(widht, height))
+        img = np.array(scanner.makeSquare(
+            cv2.cvtColor(img, cv2.COLOR_BGR2BGRA), size))
+
         heightImg, widthImg, chanel = img.shape
         n = 55 * 8 / max(heightImg, widthImg)
         resized = cv2.resize(

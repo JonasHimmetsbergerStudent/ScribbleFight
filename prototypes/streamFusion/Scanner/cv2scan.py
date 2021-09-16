@@ -229,11 +229,10 @@ def getPlayableArray(img):
     return newImg
 
 
-def makeSquare(im, size=8, fill_color=(255, 255, 255, 1)):
-    size = size * 55
+def makeSquare(im, size=8 * 55, fill_color=(255, 255, 255, 1)):
     im = Image.fromarray(np.array(im).astype('uint8'),
                          mode='RGBA')  # cv2 img to PIL img
     x, y = im.size  # get mesurements
     new_im = Image.new('RGBA', (size, size), fill_color)
-    new_im.paste(im, (int((size - x) / 2), int((size - y) / 2)))
+    new_im.paste(im, (int((size - x) / 2), int((size - y))))
     return new_im
