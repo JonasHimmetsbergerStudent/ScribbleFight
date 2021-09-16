@@ -68,8 +68,9 @@ def test_message(message):
         img = convertB64ToCv2img(base64_data)
 
         heightImg, widthImg, chanel = img.shape
-        n = math.ceil(np.sqrt(heightImg * widthImg / 200000))
-        resized = cv2.resize(img, (int(widthImg / n), int(heightImg / n)))
+        n = 55 * 8 / max(heightImg, widthImg)
+        resized = cv2.resize(
+            img, (math.floor(widthImg * n), math.floor(heightImg * n)))
         playerMap = scanner.getPlayableArray(resized)
 
         json_str = json.dumps(playerMap)
@@ -96,6 +97,6 @@ if __name__ == '__main__':
     # Aufpassen, dass port nicht geblockt ist und IP passt
     # app.run(debug=True, host="192.168.0.21", port=443, ssl_context='adhoc')
     print('server running')
-    socketio.run(app, host="192.168.0.9", port=443, certfile="./cert/cert.pem",
+    socketio.run(app, host="192.168.0.5", port=443, certfile="./cert/cert.pem",
                  keyfile="./keys/key.pem")
     print('server stopped')

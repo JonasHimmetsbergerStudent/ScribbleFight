@@ -1,5 +1,5 @@
 from .utlis import *
-# from PIL import Image
+from PIL import Image
 
 import cv2
 import numpy as np
@@ -164,6 +164,9 @@ def getPlayableArray(img):
     imgAdaptiveThre = cv2.bitwise_not(imgAdaptiveThre)
     imgAdaptiveThre = cv2.medianBlur(imgAdaptiveThre, 3)
 
+    imgAdaptiveThre = np.array(makeSquare(
+        cv2.cvtColor(imgAdaptiveThre, cv2.COLOR_BGR2BGRA)))
+
     img = cv2.cvtColor(imgAdaptiveThre, cv2.COLOR_BGR2BGRA)
 
     # pippoRGBA2 = Image.fromarray(np.array(img).astype('uint8'), mode='RGBA')
@@ -176,7 +179,7 @@ def getPlayableArray(img):
     rows = len(iar)
     columns = len(iar[0])
 
-    meshes = 3000
+    meshes = 3025
     # percent = perc(rows * columns)
     percent = 95
     n = math.ceil(np.sqrt(rows * columns / meshes))
@@ -224,3 +227,13 @@ def getPlayableArray(img):
         './prototypes/streamFusion/output/newImg.png', np.array(newImg))
 
     return newImg
+
+
+def makeSquare(im, size=8, fill_color=(255, 255, 255, 1)):
+    size = size * 55
+    im = Image.fromarray(np.array(im).astype('uint8'),
+                         mode='RGBA')  # cv2 img to PIL img
+    x, y = im.size  # get mesurements
+    new_im = Image.new('RGBA', (size, size), fill_color)
+    new_im.paste(im, (int((size - x) / 2), int((size - y) / 2)))
+    return new_im
