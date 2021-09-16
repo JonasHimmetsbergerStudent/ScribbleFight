@@ -164,6 +164,7 @@ def getPlayableArray(img):
     imgAdaptiveThre = cv2.bitwise_not(imgAdaptiveThre)
     imgAdaptiveThre = cv2.medianBlur(imgAdaptiveThre, 3)
 
+    # make image square
     imgAdaptiveThre = np.array(makeSquare(
         cv2.cvtColor(imgAdaptiveThre, cv2.COLOR_BGR2BGRA)))
 
@@ -183,7 +184,6 @@ def getPlayableArray(img):
     # percent = perc(rows * columns)
     percent = 95
     n = math.ceil(np.sqrt(rows * columns / meshes))
-
     x = 0
     y = 0
 
