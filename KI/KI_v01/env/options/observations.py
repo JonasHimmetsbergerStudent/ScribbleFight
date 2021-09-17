@@ -1,19 +1,7 @@
-import time
-import os
-import logging
 import sys
-import random
-import copy
-
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-
-driver = webdriver.Chrome()
-
-url = 'http://localhost:3000/'
 
 
-def getVars():
+def getVars(driver):
     cookies = driver.get_cookies()
     speed, obs_dist, obs_size, passed, score, crashed = 0, 0, 0, 0, 0, 0
     for i in range(6):

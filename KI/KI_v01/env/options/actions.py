@@ -1,29 +1,17 @@
-import autoit
-import win32gui
-import win32con
-import win32api
-import time
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-import pyautogui as pg
-
-
-'''Auslagern'''
-options = webdriver.ChromeOptions()
-options.add_argument("start-maximized")
-options.add_argument("disable-infobars")
-driver = webdriver.Chrome(chrome_options=options,
-                          executable_path=ChromeDriverManager().install())
-url = 'http://localhost:3000/'
-driver.get(url)
-
-# driver.set_window_position(10, 10)
-print(driver.get_window_size())
-print(driver.get_window_position())
-# wenn url bestimmte form hat (zb '.../fight') dann startet ki
-print(driver.current_url)
-''''''
+'''
+10 Actions taken by AI to mimic player
+These are:
+spacebar	JUMP
+A		    LEFT
+D		    RIGHT
+S		    DOWN -- not implemented
+E		    BOMB
+Q		    BLACKHOLE
+R		    PIANO
+C		    MINE
+F		    SMALL
+click(x,y)	DEFAULT
+'''
 
 
 def jump(driver):
@@ -38,8 +26,8 @@ def right(driver):
     driver.execute_script('moveRight(); mirrorSpriteRight();')
 
 
-# def down(driver):
-    # pressKey(driver, 's')
+def down(driver):
+    pass
 
 
 def bombAttack(driver):
@@ -63,10 +51,13 @@ def makeMeSmall(driver):
 
 
 def default(driver, mousePos):
-    realx, realy, maxx, maxy = getWinMeasurements(driver)
     x = mousePos['x']
     y = mousePos['y']
 
+    '''
+    # check if click ins within bounds
+    # might be obsolete
+    realx, realy, maxx, maxy = getWinMeasurements(driver)
     if x > realx:
         x = realx
     if x < 0:
@@ -76,35 +67,21 @@ def default(driver, mousePos):
         y = realy
     if y < 0:
         y = 0
+    '''
 
     driver.execute_script('defaultAttack(%s, %s)' % (x, y))
 
 
-def getWinMeasurements(driver):
+def getWinMeasurements(driver):  # get measurements of window that is played in
     measurements = driver.execute_script(
         "return {'iwidth':window.innerWidth, 'iheight':window.innerHeight, 'owidth':window.outerWidth, 'oheight':window.outerHeight} ;")
     return measurements['iwidth'], measurements['iheight'], measurements['owidth'], measurements['oheight'],
 
 
-def hasFocus(driver):
+def hasFocus(driver):  # check if window has focus
     # hat browser localhost (spiel) als current tab offen?
     if '://localhost:' in driver.current_url:
         # hat document focus
         script = 'return document.hasFocus()'
         return driver.execute_script(script)
     return False
-
-
-def test(driver):
-    x = 10
-    time.sleep(3)
-    for item in range(180):
-        y = item * 3
-        time.sleep(0.5)
-        myDict = {"x": x, "y": y}
-        default(driver, myDict)
-        left(driver)
-
-
-test(driver)
-driver.quit()

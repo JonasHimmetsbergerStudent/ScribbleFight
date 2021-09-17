@@ -1,0 +1,38 @@
+import gym
+from gym.spaces import Discrete, Box, Dict, Tuple, MultiBinary, MultiDiscrete
+from KI_v01.env.game import Game
+
+
+class CustomEnv(gym.Env):
+    #metadata = {'render.modes' : ['human']}
+    def __init__(self):
+        self.pygame = Game()
+        # len(BUTTONS) = Discrete(9)
+        # FIXME aber was ist mit mausclick
+        # der kann irgendwo zwischen (x = 55, y = 55) sein
+        # wenn action = 9 (mausclick) dann action(9, (rand(0, 55), rand(0, 55)))
+        self.action_space = Discrete(9)
+        # Box(low, high, shape(x, y, anzahl an einträgen), dtype)
+        # random output when observation_space is sampled:
+        # [[[0],[0],[0],...],
+        #  [[0],[1],[0],...],
+        #       .....,
+        #  [[0],[1],[3],...],
+        #  [[0],[1],[5],...]]
+        self.observation_space = Box(0, 5, (55, 55, 1), int)
+
+    def reset(self):
+        del self.pygame
+        self.pygame = Game()
+        obs = self.pygame.observe()
+        return obs
+
+    def step(self, action):
+        self.pygame.action(action)
+        obs = self.pygame.observe()
+        reward = self.pygame.evaluate()
+        done = self.pygame.is_done()
+        return obs, reward, done, {}
+
+    def render(self, mode="human", close=False):
+        self.pygame.view()
