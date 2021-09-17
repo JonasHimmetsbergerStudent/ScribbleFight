@@ -81,7 +81,7 @@ function setup() {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
             sprite_pixels[i][j] = createSprite((j - ((same_x_counter) / 2) + 0.5) * pixelWidth + ((windowWidth - newImageWidth) / 2), i * pixelWidth + ((windowHeight - newImageHeight) / 2) + 20, pixelWidth * (same_x_counter), pixelWidth);
-            sprite_pixels[i][j].visible = false;
+           // sprite_pixels[i][j].visible = false;
             sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].depth = 10;
             sprite_pixels[i][j].immovable = true;
@@ -93,7 +93,7 @@ function setup() {
             sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth - newImageWidth) / 2), i * pixelWidth + ((windowHeight - newImageHeight) / 2) + 20, pixelWidth, pixelWidth);
             sprite_pixels[i][j].debug = true;
             environment.add(sprite_pixels[i][j]);
-            sprite_pixels[i][j].visible = false;
+           // sprite_pixels[i][j].visible = false;
           }
         }
       }
@@ -153,7 +153,7 @@ function createNewPlayer(data) {
     img.resize(imageFaktor, 0);
     players[data.id] = new Player(createSprite(windowWidth / 2, windowHeight / 2, player_width, player_height));
     //players[data.id].sprite.scale = 0.5;
-    players[data.id].sprite.maxSpeed = 30;
+    players[data.id].sprite.maxSpeed = 25;
     players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
     players[data.id].sprite.debug = true;
     players[data.id].sprite.addImage(img);
@@ -280,10 +280,7 @@ function init() {
 
 function checkForCollisions() {
   if (!flying) {
-    for (let i = 0; i < pixel_clumps.length; i++) {
-      for (let j = 0; j < pixel_clumps[0].length; j++) {
-        if (sprite_pixels[i][j] !== undefined) {
-          if (players[socket.id].sprite.collide(sprite_pixels[i][j])) {
+    if(players[socket.id].sprite.collide(environment)) {
             if (players[socket.id].sprite.touching.left || players[socket.id].sprite.touching.right) {
               touches_side = true;
             }
@@ -295,9 +292,9 @@ function checkForCollisions() {
             if (!players[socket.id].sprite.touching.top) {
               JUMP_COUNT = 0;
             }
-          }
-        }
-      }
+        
+        
+      
 
     }
   } else {
