@@ -46,6 +46,7 @@ function newConnection(socket) {
     socket.on('updateDirection', updateDirection);
     socket.on('deleteItem', deleteItem);
     socket.on('attack', syncAttacks);
+    socket.on('kill',kill);
     socket.on('deleteAttack', deleteAttack);
     socket.on('xCoordinates', function (data) {
         xCoordinates = data;
@@ -107,6 +108,12 @@ function newConnection(socket) {
         socket.broadcast.emit("deleteAttack", data);
     }
 
+    function kill(data) {
+        console.log(data.damagedBy);
+        io.to(data.damagedBy).emit('kill',1);
+        players.get(socket.id).death += 1;
+    }
+
 }
 
 setInterval(() => {
@@ -122,8 +129,6 @@ setInterval(() => {
             items.push(data.id);
         }
         io.emit('spawnItem', data);
-        console.log(xCoordinates.length);
-        console.log(items.length)
     }
 }, 10000);
 
@@ -148,7 +153,7 @@ class Player {
     constructor(id) {
         this.id = id;
         this.knockback = 1;
-        this.life = 3;
+        this.death = 0;
         this.item = [];
         this.direction = "";
     }

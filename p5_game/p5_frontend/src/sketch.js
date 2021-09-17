@@ -6,10 +6,8 @@ var socket;
 
 //Variables
 var bg;
-var screenWidth = 1429;
-var screenHeight = 830;
-var player_height = 75;
-var player_width = 75;
+var player_height;
+var player_width;
 var imageFaktor;
 var JUMP_COUNT = 0;
 var same_x_counter = 1;
@@ -19,6 +17,8 @@ var background_path = "assets/komischer_smiley.png";
 var cookieArr = [];
 cookieArr["dmgDealt"] = 0;
 cookieArr["knockback"] = 1;
+cookieArr["death"] = 0;
+cookieArr["kills"] = 0;
 
 // Images
 var amogus;
@@ -92,6 +92,7 @@ function setup() {
             same_x_counter = 1;
             sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth - newImageWidth) / 2), i * pixelWidth + ((windowHeight - newImageHeight) / 2) + 20, pixelWidth, pixelWidth);
             sprite_pixels[i][j].debug = true;
+            sprite_pixels[i][j].immovable = true;
             environment.add(sprite_pixels[i][j]);
            // sprite_pixels[i][j].visible = false;
           }
@@ -144,6 +145,7 @@ function setup() {
   socket.on('spawnItem', createItem);
   socket.on('deleteItem', syncItems);
   socket.on('attack', addAttack);
+  socket.on('kill',addKill);
   socket.on('deleteAttack', deleteAttack);
 }
 
@@ -152,7 +154,6 @@ function createNewPlayer(data) {
     // noch unkorrekt, bald wird scale verwendet um die eigenschaften des players gleich zu behalten, die größe aber nicht
     img.resize(imageFaktor, 0);
     players[data.id] = new Player(createSprite(windowWidth / 2, windowHeight / 2, player_width, player_height));
-    //players[data.id].sprite.scale = 0.5;
     players[data.id].sprite.maxSpeed = 25;
     players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
     players[data.id].sprite.debug = true;
@@ -188,8 +189,13 @@ function updateDirection(data) {
 
 }
 
+function addKill(data) {
+  cookieArr["kills"] += 1;
+  console.log(cookieArr);
+}
+
+let damagedByTimer = 5;
 function draw() {
-  console.log(cookieArr["knockback"]);
   touches_side = false;
   if (players[socket.id] != undefined && !youAreDead) {
     if (!flying && !noGravity) {
@@ -215,16 +221,38 @@ function draw() {
       controls();
     }
 
+if(frameCount == 60 && damagedByTimer > 0) {
+  damagedByTimer--;
+}
+
+if(damagedByTimer == 0) {
+  damagedByTimer = 5;
+  players[socket.id].damagedBy = null;
+}
+
     mirrorSprite();
-    //deathCheck();
+    deathCheck();
     drawSprites();
     var data = {
       x: players[socket.id].sprite.position.x,
       y: players[socket.id].sprite.position.y
     }
     socket.emit('update', data);
-    //console.log(cookieArr);
+
+    setCookies();
+
   }
+}
+
+function setCookie(name,value){
+  document.cookie= name + '=' + value;
+}
+
+function setCookies() {
+  setCookie("dmgDealt",cookieArr["dmgDealt"]);
+  setCookie("knockback",cookieArr["knockback"]);
+  setCookie("death",cookieArr["death"]);
+  setCookie("kills",cookieArr["kills"]);
 }
 
 function windowResized() {
@@ -292,10 +320,6 @@ function checkForCollisions() {
             if (!players[socket.id].sprite.touching.top) {
               JUMP_COUNT = 0;
             }
-        
-        
-      
-
     }
   } else {
     players[socket.id].sprite.bounce(environment);

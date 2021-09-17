@@ -85,7 +85,10 @@ function defaultAttackPhysics() {
             id: projectile.id,
             type: "default"
           }
+          
+          players[socket.id].damagedBy = projectile.playerId;
           cookieArr["knockback"] +=1;
+
           flying = true;
           flyingDuration = 10;
           timeFlying = flyingDuration;
@@ -191,10 +194,11 @@ function bombPhysics() {
           ammoCheck("bomb");
         }
         bombs.splice(bombs.indexOf(bomb), 1);
+        players[socket.id].damagedBy = bomb.playerId;
         socket.emit("deleteAttack", data);
         cookieArr["knockback"] +=1;
 
-      } else if (bomb.position.x > screenWidth || bomb.position.y > screenHeight || bomb.life == 0) {
+      } else if (bomb.position.x > windowWidth || bomb.position.y > windowHeight || bomb.life == 0) {
         bomb.remove();
 
         // zum überprüfen ob ich die Bombe erzeugt habe
@@ -282,7 +286,7 @@ function blackHolePhysics() {
         b.bounce(environment);
       }
 
-      if (b.position.x > screenWidth || b.position.y > screenHeight || b.life == 0) {
+      if (b.position.x > windowWidth || b.position.y > windowHeight || b.life == 0) {
         b.remove();
         // zum überprüfen ob man gerade ein schwarzes loch im einsatz hat
         if (b.me) {
@@ -345,6 +349,7 @@ function pianoPhysics() {
       } else if (p.overlap(players[socket.id].sprite)) {
         p.remove();
         socket.emit("deleteAttack", data);
+        players[socket.id].damagedBy = p.playerId;
         cookieArr["knockback"] +=1;
         if (p.me) {
           players[socket.id].item["piano"].sprite = undefined;
@@ -415,6 +420,8 @@ function minePhysics() {
         timeFlying = flyingDuration;
         mines.splice(mines.indexOf(m), 1);
         m.remove();
+        players[socket.id].damagedBy = m.playerId;
+        console.log(m.playerId);
         socket.emit("deleteAttack", data);
         cookieArr["knockback"] +=1;
         if (m.me && players[socket.id].item["mine"] != undefined) {

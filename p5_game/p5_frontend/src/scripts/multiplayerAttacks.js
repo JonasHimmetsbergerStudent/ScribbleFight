@@ -22,8 +22,6 @@ function deleteAttack(data) {
                 if (p.id === data.id) {
                     p.remove();
                     projectiles.splice(projectiles.indexOf(p), 1);
-                    console.log(p.playerId);
-                    console.log(socket.id);
                     if(p.playerId == socket.id) {
                         cookieArr["dmgDealt"] +=1;
                         console.log(cookieArr);
@@ -129,6 +127,7 @@ function addMine(data) {
     mine.maxSpeed = 5;
     mine.debug = true;
     mine.me = false;
+    mine.playerId = data.playerId;
     mines.push(mine);
 }
 

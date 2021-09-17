@@ -11,21 +11,24 @@ function deathCheck() {
             spawnTimer--;
         } 
         if(spawnTimer==0) {
-            players[socket.id].life--;
+            players[socket.id].death++;
+            cookieArr["death"]++;
+            console.log(players[socket.id].damagedBy);
+            let data = {
+                damagedBy : players[socket.id].damagedBy,
+            }
+            if(players[socket.id].damagedBy != null && players[socket.id].damagedBy != socket.id) {
+                socket.emit("kill",data);
+            }
             players[socket.id].sprite.position.x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
-            players[socket.id].sprite.position.y = 10;
+            players[socket.id].sprite.position.y = 0;
             spawnTimer = 3;
         }
     }
-    if(players[socket.id].life==0){
+    if(players[socket.id].death==3){
         youAreDead = true;
         alert("You died!");
         players[socket.id].sprite.remove();
-        otherPlayers.forEach(p => {
-            if(p.life>0) {
-               alivePlayerCount++;
-            }
-        });
         if(alivePlayerCount<=1) {
             gameOver = true;
             noLoop();
