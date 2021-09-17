@@ -7,18 +7,23 @@ class CustomEnv(gym.Env):
     #metadata = {'render.modes' : ['human']}
     def __init__(self):
         self.pygame = Game()
-        # len(BUTTONS) = Discrete(9)
-        # FIXME aber was ist mit mausclick
-        # der kann irgendwo zwischen (x = 55, y = 55) sein
-        # wenn action = 9 (mausclick) dann action(9, (rand(0, 55), rand(0, 55)))
+        '''
+        len(BUTTONS) = Discrete(9)
+        FIXME aber was ist mit mausclick
+        der kann irgendwo zwischen (x = 55, y = 55) sein
+        wenn action = 9 (mausclick) dann action(9, (rand(0, 55), rand(0, 55)))
+        '''
         self.action_space = Discrete(9)
-        # Box(low, high, shape(x, y, anzahl an einträgen), dtype)
-        # random output when observation_space is sampled:
-        # [[[0],[0],[0],...],
-        #  [[0],[1],[0],...],
-        #       .....,
-        #  [[0],[1],[3],...],
-        #  [[0],[1],[5],...]]
+
+        '''
+        Box(low, high, shape(x, y, anzahl an einträgen), dtype)
+        random output when observation_space is sampled:
+        [[[0],[0],[0],...],
+         [[0],[1],[0],...],
+              .....,
+         [[0],[1],[3],...],
+         [[0],[1],[5],...]]
+         '''
         self.observation_space = Box(0, 5, (55, 55, 1), int)
 
     def reset(self):
