@@ -58,8 +58,6 @@ function setup() {
     obildbreite = this.width;
     obildhoehe = this.height;
 
-
-
     if ((windowWidth / windowHeight) > (obildbreite / obildhoehe)) {
       let screenHeight = windowHeight;
       var faktor = screenHeight / obildhoehe;
@@ -72,16 +70,17 @@ function setup() {
       newImageWidth = faktor * obildbreite;
     }
 
-    const pixelWidth = obildbreite / pixel_clumps[0].length * faktor;
+    const pixelWidth = Math.max(obildbreite, obildhoehe) / pixel_clumps[0].length * faktor;
     environment = new Group();
+    console.log(pixelWidth);
     for (let i = 0; i < pixel_clumps.length; i++) {
       sprite_pixels[i] = [];
       for (let j = 0; j < pixel_clumps[0].length; j++) {
         if (pixel_clumps[i][j][3] > 0) {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
-            sprite_pixels[i][j] = createSprite((j - ((same_x_counter) / 2) + 0.5) * pixelWidth + ((windowWidth - newImageWidth) / 2), i * pixelWidth + ((windowHeight - newImageHeight) / 2) + 20, pixelWidth * (same_x_counter), pixelWidth);
-           // sprite_pixels[i][j].visible = false;
+            sprite_pixels[i][j] = createSprite((j - ((same_x_counter) / 2) + 0.5) * pixelWidth + ((windowWidth - newImageWidth) / 2) + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth * (same_x_counter), pixelWidth);
+            sprite_pixels[i][j].visible = false;
             sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].depth = 10;
             sprite_pixels[i][j].immovable = true;
@@ -90,11 +89,11 @@ function setup() {
             sprite_pixels[i][j - 1] = undefined;
           } else {
             same_x_counter = 1;
-            sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth - newImageWidth) / 2), i * pixelWidth + ((windowHeight - newImageHeight) / 2) + 20, pixelWidth, pixelWidth);
+            sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth - newImageWidth) / 2) + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth, pixelWidth);
             sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].immovable = true;
             environment.add(sprite_pixels[i][j]);
-           // sprite_pixels[i][j].visible = false;
+            sprite_pixels[i][j].visible = false;
           }
         }
       }
@@ -129,9 +128,9 @@ function setup() {
       background.addImage(img);
       background.depth = -1;
       console.log(faktor);
-      player_width = pixelWidth * 4;
-      player_height = pixelWidth * 4;
-      imageFaktor = pixelWidth * 5;
+      player_width = pixelWidth * 3;
+      player_height = pixelWidth * 3;
+      imageFaktor = pixelWidth * 4;
       init();
     })
 
@@ -145,13 +144,12 @@ function setup() {
   socket.on('spawnItem', createItem);
   socket.on('deleteItem', syncItems);
   socket.on('attack', addAttack);
-  socket.on('kill',addKill);
+  socket.on('kill', addKill);
   socket.on('deleteAttack', deleteAttack);
 }
 
 function createNewPlayer(data) {
   loadImage('assets/amogus.png', img => {
-    // noch unkorrekt, bald wird scale verwendet um die eigenschaften des players gleich zu behalten, die größe aber nicht
     img.resize(imageFaktor, 0);
     players[data.id] = new Player(createSprite(windowWidth / 2, windowHeight / 2, player_width, player_height));
     players[data.id].sprite.maxSpeed = 25;
@@ -221,14 +219,14 @@ function draw() {
       controls();
     }
 
-if(frameCount == 60 && damagedByTimer > 0) {
-  damagedByTimer--;
-}
+    if (frameCount == 60 && damagedByTimer > 0) {
+      damagedByTimer--;
+    }
 
-if(damagedByTimer == 0) {
-  damagedByTimer = 5;
-  players[socket.id].damagedBy = null;
-}
+    if (damagedByTimer == 0) {
+      damagedByTimer = 5;
+      players[socket.id].damagedBy = null;
+    }
 
     mirrorSprite();
     deathCheck();
@@ -244,15 +242,28 @@ if(damagedByTimer == 0) {
   }
 }
 
-function setCookie(name,value){
-  document.cookie= name + '=' + value;
+function test(arr) {
+  let dummy = [];
+  for (let i = 0; i < dummy; i++) {
+    dummy[i] = [];
+    for (let j = 0; j < dummy[0].length; j++) {
+      dummy[i][j] = 0;
+      if(arr[i][j][3]>0) {
+        
+      }
+    }
+  }
+}
+
+function setCookie(name, value) {
+  document.cookie = name + '=' + value;
 }
 
 function setCookies() {
-  setCookie("dmgDealt",cookieArr["dmgDealt"]);
-  setCookie("knockback",cookieArr["knockback"]);
-  setCookie("death",cookieArr["death"]);
-  setCookie("kills",cookieArr["kills"]);
+  setCookie("dmgDealt", cookieArr["dmgDealt"]);
+  setCookie("knockback", cookieArr["knockback"]);
+  setCookie("death", cookieArr["death"]);
+  setCookie("kills", cookieArr["kills"]);
 }
 
 function windowResized() {
@@ -292,6 +303,7 @@ function init() {
                       img.resize(imageFaktor, 0);
                       amogus_supreme = img;
                       socket.emit('newPlayer');
+                      test(pixel_clumps);
                     })
                   })
                 })
@@ -308,18 +320,18 @@ function init() {
 
 function checkForCollisions() {
   if (!flying) {
-    if(players[socket.id].sprite.collide(environment)) {
-            if (players[socket.id].sprite.touching.left || players[socket.id].sprite.touching.right) {
-              touches_side = true;
-            }
-            if (touches_side && !noGravity) {
-              players[socket.id].sprite.velocity.y = CLIMBINGSPEED;
-            } else if (!noGravity && !players[socket.id].sprite.touching.top) {
-              players[socket.id].sprite.velocity.y = 0;
-            }
-            if (!players[socket.id].sprite.touching.top) {
-              JUMP_COUNT = 0;
-            }
+    if (players[socket.id].sprite.collide(environment)) {
+      if (players[socket.id].sprite.touching.left || players[socket.id].sprite.touching.right) {
+        touches_side = true;
+      }
+      if (touches_side && !noGravity) {
+        players[socket.id].sprite.velocity.y = CLIMBINGSPEED;
+      } else if (!noGravity && !players[socket.id].sprite.touching.top) {
+        players[socket.id].sprite.velocity.y = 0;
+      }
+      if (!players[socket.id].sprite.touching.top) {
+        JUMP_COUNT = 0;
+      }
     }
   } else {
     players[socket.id].sprite.bounce(environment);
