@@ -1,4 +1,4 @@
-from KI_v01.env.options.actions import *
+# from KI_v01.env.options.actions import *
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 import time
@@ -22,13 +22,30 @@ print(driver.current_url)
 
 def test(driver):
     x = 10
-    time.sleep(3)
-    for item in range(180):
+    # time.sleep(3)
+    for item in range(5):
         y = item * 3
-        time.sleep(0.5)
+        time.sleep(3)
         myDict = {"x": x, "y": y}
-        default(driver, myDict)
-        left(driver)
+        print(getVars(driver))
+        # default(driver, myDict)
+        # left(driver)
+
+
+def getVars(driver):
+    cookies = driver.get_cookies()
+    dmgDealt, knockback, death, kills = 0, 0, 0, 0
+    for i in range(4):
+        cookie = cookies[i]
+        if cookie['name'] == u'dmgDealt':
+            dmgDealt = float(cookie['value'])
+        if cookie['name'] == u'knockback':
+            knockback = int(cookie['value'])
+        if cookie['name'] == u'death':
+            death = int(cookie['value'])
+        if cookie['name'] == u'kills':
+            kills = int(cookie['value'])
+    return dmgDealt, knockback, death, kills
 
 
 test(driver)

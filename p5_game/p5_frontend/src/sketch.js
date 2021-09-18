@@ -19,6 +19,7 @@ cookieArr["dmgDealt"] = 0;
 cookieArr["knockback"] = 1;
 cookieArr["death"] = 0;
 cookieArr["kills"] = 0;
+var visual;
 
 // Images
 var amogus;
@@ -242,18 +243,36 @@ function draw() {
   }
 }
 
-function test(arr) {
-  let dummy = [];
-  for (let i = 0; i < dummy; i++) {
-    dummy[i] = [];
-    for (let j = 0; j < dummy[0].length; j++) {
-      dummy[i][j] = 0;
-      if(arr[i][j][3]>0) {
-        
+/**
+ * it is what it is
+ * @param {*} param0 
+ * @returns 
+ */
+function createAndFillTwoDArray({ rows, columns, defaultValue }) {
+  return Array.from({ length: rows }, () => (
+    Array.from({ length: columns }, () => defaultValue)
+  ))
+}
+
+/**
+ * Converts standard map, which is 55x55 
+ * into visual map which is 165x165 for better accuracy
+ * 
+ * @param {given arry which represents map} paramarr 
+ * @returns new visual array
+ */
+function getVisualMap(paramarr) {
+  let visual = createAndFillTwoDArray({ rows: paramarr.length * 3, columns: paramarr.length * 3, defaultValue: [0] })
+  for (let i = 0; i < visual.length; i++) {
+    for (let j = 0; j < visual[0].length; j++) {
+      if (paramarr[int(i / 3)][int(j / 3)][3] > 0) {
+        visual[i][j] = [1]
       }
     }
   }
+  return visual
 }
+
 
 function setCookie(name, value) {
   document.cookie = name + '=' + value;
@@ -303,7 +322,7 @@ function init() {
                       img.resize(imageFaktor, 0);
                       amogus_supreme = img;
                       socket.emit('newPlayer');
-                      test(pixel_clumps);
+                      visual = getVisualMap(pixel_clumps);
                     })
                   })
                 })

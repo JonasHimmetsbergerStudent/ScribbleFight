@@ -42,15 +42,48 @@ class Game:
         self.scribble_fight = ScribbleFight()
         self.min_game_length = 60 * FPS
 
-    def seed(self, seed=None):
+    '''def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
-        return [seed]
+        return [seed]'''
 
     def action(self, action):
-        pass
+        # take actions
+        # down action not implemented
+        if action == 0:
+            jump(self.scribble_fight.getDriver())
+        if action == 1:
+            left(self.scribble_fight.getDriver())
+        if action == 2:
+            right(self.scribble_fight.getDriver())
+        if action == 3:
+            bombAttack(self.scribble_fight.getDriver())
+        if action == 4:
+            blackHoleAttack(self.scribble_fight.getDriver())
+        if action == 5:
+            pianoTime(self.scribble_fight.getDriver())
+        if action == 6:
+            placeMine(self.scribble_fight.getDriver())
+        if action == 7:
+            makeMeSmall(self.scribble_fight.getDriver())
+        if action == 8:  # TODO implement default attack
+            pass
 
     def evaluate(self):
-        pass
+        reward = 0
+
+        # evaluate reward
+        if self.scribble_fight.damage_dealt > previous_damage_dealt:
+            reward += 1
+        if self.scribble_fight.knockback > previous_knockback:
+            reward -= 1
+        if self.scribble_fight.kills > previous_kills:
+            reward += 1000
+        # the reason why less reward is given when dying is because I want
+        # the ai to be a killer machine
+        if self.scribble_fight.deaths > previous_deaths:
+            reward -= 990
+
+        return reward
 
     def is_done(self):
         pass
