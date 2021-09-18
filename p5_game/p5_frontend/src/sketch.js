@@ -211,6 +211,10 @@ function draw() {
     spawn();
 
 
+
+    visual[x][y]
+
+
     background('FFFFFF');
 
     checkForCollisions();
