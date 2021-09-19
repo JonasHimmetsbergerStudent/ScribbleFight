@@ -20,6 +20,8 @@ cookieArr["knockback"] = 1;
 cookieArr["death"] = 0;
 cookieArr["kills"] = 0;
 var visual;
+var pixelWidth;
+var visCopy;
 
 // Images
 var amogus;
@@ -71,7 +73,7 @@ function setup() {
       newImageWidth = faktor * obildbreite;
     }
 
-    const pixelWidth = Math.max(obildbreite, obildhoehe) / pixel_clumps[0].length * faktor;
+    pixelWidth = Math.max(obildbreite, obildhoehe) / pixel_clumps[0].length * faktor;
     environment = new Group();
     console.log(pixelWidth);
     for (let i = 0; i < pixel_clumps.length; i++) {
@@ -158,6 +160,7 @@ function createNewPlayer(data) {
     players[data.id].sprite.debug = true;
     players[data.id].sprite.addImage(img);
     amogus = img;
+   
   });
 }
 
@@ -190,7 +193,6 @@ function updateDirection(data) {
 
 function addKill(data) {
   cookieArr["kills"] += 1;
-  console.log(cookieArr);
 }
 
 let damagedByTimer = 5;
@@ -202,6 +204,8 @@ function draw() {
     } else if (flying) {
       players[socket.id].sprite.velocity.y -= GRAVITY / 1.25;
     }
+    visCopy = visual;
+    addSpriteToVisual(players[socket.id].sprite);
     bombPhysics();
     defaultAttackPhysics();
     blackHolePhysics();
@@ -209,10 +213,6 @@ function draw() {
     minePhysics();
     smallChecker();
     spawn();
-
-
-
-    visual[x][y]
 
 
     background('FFFFFF');
@@ -243,6 +243,7 @@ function draw() {
     socket.emit('update', data);
 
     setCookies();
+   
 
   }
 }
@@ -274,7 +275,37 @@ function getVisualMap(paramarr) {
       }
     }
   }
+  console.log(visual);
   return visual
+}
+
+function getVisualCoordinates(x, y) {
+  // x wird geparsed auf den 165 * 165 array
+  let newx = int(
+    ((x - ((windowWidth - newImageWidth) / 2)) / newImageWidth) * visual[0].length
+  )
+  // y wird geparsed auf den 165 * 165 array
+  let newy = int(
+    ((y - ((windowHeight - newImageHeight) / 2)) / newImageHeight) * visual.length
+  )
+  let data = {
+    x: newx,
+    y: newy
+  }
+  return data;
+}
+
+function addSpriteToVisual(sprite) {
+  let oriWidthInVisualUnit = sprite.width * visual[0].length / (pixel_clumps[0].length * pixelWidth);
+  let oriHeightInVisualUnit = sprite.height * visual[0].length / (pixel_clumps[0].length * pixelWidth);
+  let visualUnitCoordinates = getVisualCoordinates(sprite.position.x - sprite.width / 2,sprite.position.y - sprite.height / 2);
+  let visualUnitX = visualUnitCoordinates.x;
+  let visualUnitY = visualUnitCoordinates.y;
+  for (let i = visualUnitX; i < visualUnitX + oriWidthInVisualUnit; i++){
+    for (let j = visualUnitY; j < visualUnitY + oriHeightInVisualUnit; j++) {
+      visCopy[j][i] = [2];
+    }  
+  }
 }
 
 
