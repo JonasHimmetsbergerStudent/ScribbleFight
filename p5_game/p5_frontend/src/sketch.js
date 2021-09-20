@@ -204,9 +204,11 @@ function draw() {
     } else if (flying) {
       players[socket.id].sprite.velocity.y -= GRAVITY / 1.25;
     }
+
+    // deep copy of multidimensional array
+    // https://morioh.com/p/d15a64da5d09
     visCopy = JSON.parse(JSON.stringify(visual));
     addSpriteToVisual(players[socket.id].sprite);
-    // console.log(visCopy);
     bombPhysics();
     defaultAttackPhysics();
     blackHolePhysics();
