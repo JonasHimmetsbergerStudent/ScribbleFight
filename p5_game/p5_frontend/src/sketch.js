@@ -160,7 +160,7 @@ function createNewPlayer(data) {
     players[data.id].sprite.debug = true;
     players[data.id].sprite.addImage(img);
     amogus = img;
-   
+
   });
 }
 
@@ -204,7 +204,7 @@ function draw() {
     } else if (flying) {
       players[socket.id].sprite.velocity.y -= GRAVITY / 1.25;
     }
-    visCopy = visual;
+    visCopy = JSON.parse(JSON.stringify(visual));
     addSpriteToVisual(players[socket.id].sprite);
     bombPhysics();
     defaultAttackPhysics();
@@ -243,7 +243,7 @@ function draw() {
     socket.emit('update', data);
 
     setCookies();
-   
+
 
   }
 }
@@ -298,13 +298,13 @@ function getVisualCoordinates(x, y) {
 function addSpriteToVisual(sprite) {
   let oriWidthInVisualUnit = sprite.width * visual[0].length / (pixel_clumps[0].length * pixelWidth);
   let oriHeightInVisualUnit = sprite.height * visual[0].length / (pixel_clumps[0].length * pixelWidth);
-  let visualUnitCoordinates = getVisualCoordinates(sprite.position.x - sprite.width / 2,sprite.position.y - sprite.height / 2);
+  let visualUnitCoordinates = getVisualCoordinates(sprite.position.x - sprite.width / 2, sprite.position.y - sprite.height / 2);
   let visualUnitX = visualUnitCoordinates.x;
   let visualUnitY = visualUnitCoordinates.y;
-  for (let i = visualUnitX; i < visualUnitX + oriWidthInVisualUnit; i++){
+  for (let i = visualUnitX; i < visualUnitX + oriWidthInVisualUnit; i++) {
     for (let j = visualUnitY; j < visualUnitY + oriHeightInVisualUnit; j++) {
       visCopy[j][i] = [2];
-    }  
+    }
   }
 }
 
