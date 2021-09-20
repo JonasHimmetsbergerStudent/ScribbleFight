@@ -131,7 +131,7 @@ function setup() {
       background.addImage(img);
       background.depth = -1;
       console.log(faktor);
-      player_width = pixelWidth * 3;
+      player_width = pixelWidth * 9 / 4;
       player_height = pixelWidth * 3;
       imageFaktor = pixelWidth * 4;
       init();
@@ -276,19 +276,14 @@ function getVisualMap(paramarr) {
       }
     }
   }
-  console.log(visual);
   return visual
 }
 
 function getVisualCoordinates(x, y) {
   // x wird geparsed auf den 165 * 165 array
-  let newx = int(
-    ((x - ((windowWidth - newImageWidth) / 2)) / newImageWidth) * visual[0].length
-  )
+  let newx = Math.floor(((x - ((windowWidth - newImageWidth) / 2) + ((pixel_clumps[0].length * pixelWidth) - newImageWidth) / 2) / (pixel_clumps[0].length * pixelWidth)) * visual[0].length)
   // y wird geparsed auf den 165 * 165 array
-  let newy = int(
-    ((y - ((windowHeight - newImageHeight) / 2)) / newImageHeight) * visual.length
-  )
+  let newy = Math.floor(((y - ((windowHeight - newImageHeight) / 2) + ((pixel_clumps[0].length * pixelWidth) - newImageHeight) / 2) / (pixel_clumps[0].length * pixelWidth)) * visual.length)
   let data = {
     x: newx,
     y: newy
@@ -297,13 +292,36 @@ function getVisualCoordinates(x, y) {
 }
 
 function addSpriteToVisual(sprite) {
-  let oriWidthInVisualUnit = player_width * visual[0].length / (pixel_clumps[0].length * pixelWidth);
-  let oriHeightInVisualUnit = player_height * visual[0].length / (pixel_clumps[0].length * pixelWidth);
-  let visualUnitCoordinates = getVisualCoordinates(sprite.position.x - sprite.width / 2, sprite.position.y - sprite.height / 2);
+  let maxWidthHeight = pixel_clumps[0].length * pixelWidth
+  let spriteWidth = sprite.collider.extents.x
+  let spriteHeight = sprite.collider.extents.y
+  let oriWidthInVisualUnit = spriteWidth * visual[0].length / (maxWidthHeight);
+  let oriHeightInVisualUnit = spriteHeight * visual[0].length / (maxWidthHeight);
+  let visualUnitCoordinates = getVisualCoordinates(sprite.position.x - spriteWidth / 2, sprite.position.y - spriteHeight / 2);
   let visualUnitX = visualUnitCoordinates.x;
   let visualUnitY = visualUnitCoordinates.y;
-  for (let i = visualUnitX; i < visualUnitX + oriWidthInVisualUnit; i++) {
-    for (let j = visualUnitY; j < visualUnitY + oriHeightInVisualUnit; j++) {
+  let maxXIterations = visualUnitX + oriWidthInVisualUnit;
+  let maxYIterations = visualUnitY + oriHeightInVisualUnit;
+
+  // set x and y cooridnates if out of bounds
+  if ((visualUnitX + oriWidthInVisualUnit < 0)
+    || (visualUnitX >= visual[0].length)
+    || (visualUnitY + oriHeightInVisualUnit < 0)
+    || (visualUnitY >= visual[0].length))
+    return;
+  if (visualUnitX < 0)
+    visualUnitX = 0
+  if (visualUnitY < 0)
+    visualUnitY = 0
+  if ((visualUnitX + oriWidthInVisualUnit) >= visual[0].length) {
+    maxXIterations = visual[0].length - 1;
+  }
+  if ((visualUnitY + oriHeightInVisualUnit) >= visual[0].length) {
+    maxYIterations = visual[0].length - 1;
+  }
+
+  for (let i = visualUnitX; i < maxXIterations; i++) {
+    for (let j = visualUnitY; j < maxYIterations; j++) {
       visCopy[j][i] = [2];
     }
   }
