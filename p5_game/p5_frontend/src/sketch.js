@@ -291,6 +291,12 @@ function getVisualCoordinates(x, y) {
   return data;
 }
 
+/**
+ * Adds a given sprite to the visual array copy
+ * 
+ * @param {Sprite which should be added to the visual array copy} sprite
+ * @returns 
+ */
 function addSpriteToVisual(sprite) {
   let maxWidthHeight = pixel_clumps[0].length * pixelWidth
   let spriteWidth = sprite.collider.extents.x
@@ -322,6 +328,11 @@ function addSpriteToVisual(sprite) {
 
   for (let i = visualUnitX; i < maxXIterations; i++) {
     for (let j = visualUnitY; j < maxYIterations; j++) {
+      // RAFI du muast hier überprüfen auf den typen vom sprite und dann natürlich die jeweilige ziffer adden
+      // so
+      // if (sprite.type == "user") {visCopy[j][i] = [2];}
+      // if (sprite.type == "item") {visCopy[j][i] = [3];}
+      // if (sprite.type == "clown") {visCopy[j][i] = [2100010202];}
       visCopy[j][i] = [2];
     }
   }
