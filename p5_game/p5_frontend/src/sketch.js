@@ -206,6 +206,7 @@ function draw() {
     }
     visCopy = JSON.parse(JSON.stringify(visual));
     addSpriteToVisual(players[socket.id].sprite);
+    // console.log(visCopy);
     bombPhysics();
     defaultAttackPhysics();
     blackHolePhysics();
@@ -296,8 +297,8 @@ function getVisualCoordinates(x, y) {
 }
 
 function addSpriteToVisual(sprite) {
-  let oriWidthInVisualUnit = sprite.width * visual[0].length / (pixel_clumps[0].length * pixelWidth);
-  let oriHeightInVisualUnit = sprite.height * visual[0].length / (pixel_clumps[0].length * pixelWidth);
+  let oriWidthInVisualUnit = player_width * visual[0].length / (pixel_clumps[0].length * pixelWidth);
+  let oriHeightInVisualUnit = player_height * visual[0].length / (pixel_clumps[0].length * pixelWidth);
   let visualUnitCoordinates = getVisualCoordinates(sprite.position.x - sprite.width / 2, sprite.position.y - sprite.height / 2);
   let visualUnitX = visualUnitCoordinates.x;
   let visualUnitY = visualUnitCoordinates.y;
