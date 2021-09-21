@@ -175,7 +175,7 @@ function updatePosition(data) {
   if (players[data.id] != undefined) {
     players[data.id].sprite.position.x = data.x;
     players[data.id].sprite.position.y = data.y;
-    addSpriteToVisual(players[data.id].sprite,3);
+    addSpriteToVisual(players[data.id].sprite, 3);
   }
 }
 
@@ -209,7 +209,8 @@ function draw() {
     // deep copy of multidimensional array
     // https://morioh.com/p/d15a64da5d09
     visCopy = JSON.parse(JSON.stringify(visual));
-    addSpriteToVisual(players[socket.id].sprite,2);
+    addSpriteToVisual(players[socket.id].sprite, 2);
+    // console.log(visCopy);
     bombPhysics();
     defaultAttackPhysics();
     blackHolePhysics();
@@ -311,7 +312,7 @@ function getVisualCoordinates(x, y) {
  * @param {Sprite which should be added to the visual array copy} sprite
  * @returns 
  */
-function addSpriteToVisual(sprite,num) {
+function addSpriteToVisual(sprite, num) {
   let maxWidthHeight = pixel_clumps[0].length * pixelWidth
   let spriteWidth = sprite.collider.extents.x
   let spriteHeight = sprite.collider.extents.y
@@ -342,7 +343,10 @@ function addSpriteToVisual(sprite,num) {
 
   for (let i = visualUnitX; i < maxXIterations; i++) {
     for (let j = visualUnitY; j < maxYIterations; j++) {
-      visCopy[j][i] = [num];
+      if (visCopy[j][i] != 2
+        || visCopy[j][i] != 3
+        || num == 2)
+        visCopy[j][i] = [num];
     }
   }
 }

@@ -22,7 +22,23 @@ while y < rows:
         if iar[y][x] == [1]:
             newImg[y].append([255, 0, 0, 255])
         if iar[y][x] == [2]:
+            newImg[y].append([0, 255, 0, 255])
+        if iar[y][x] == [3]:
+            newImg[y].append([0, 0, 255, 255])
+        if iar[y][x] == [4]:
             newImg[y].append([255, 255, 0, 255])
+        if iar[y][x] == [5]:
+            newImg[y].append([0, 255, 255, 255])
+        if iar[y][x] == [6]:
+            newImg[y].append([255, 100, 0, 255])
+        if iar[y][x] == [7]:
+            newImg[y].append([0, 0, 0, 255])
+        if iar[y][x] == [8]:
+            newImg[y].append([0, 100, 255, 255])
+        if iar[y][x] == [9]:
+            newImg[y].append([100, 100, 255, 255])
+        if iar[y][x] == [10]:
+            newImg[y].append([255, 100, 100, 255])
 
         x += 1
     x = 0
