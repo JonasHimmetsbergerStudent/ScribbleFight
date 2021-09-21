@@ -70,6 +70,7 @@ function createItem(data) {
                 break;
         }
         i.maxSpeed = 10;
+        i.setDefaultCollider();
         i.id = data.id;
         console.log(items);
         items.push(i);
@@ -78,29 +79,37 @@ function createItem(data) {
 
 }
 
+let itemString;
 function itemPickUp() {
     if (items.length > 0) {
         items.forEach(item => {
             item.velocity.y -= GRAVITY;
+            
+            switch (item.type) {
+                case "bomb":
+                    itemString = "bomb";
+                    addSpriteToVisual(item, 6);
+                    break;
+                case "black_hole":
+                    itemString = "black_hole";
+                    addSpriteToVisual(item, 7);
+                    break;
+                case "piano":
+                    itemString = "piano";
+                    addSpriteToVisual(item, 10);
+                    break;
+                case "mine":
+                    itemString = "mine";
+                    addSpriteToVisual(item, 9);
+                    break;
+                case "small":
+                    itemString = "small";
+                    addSpriteToVisual(item, 8);
+                    break;
+            }
             item.collide(environment);
             if (item.overlap(players[socket.id].sprite)) {
-                switch (item.type) {
-                    case "bomb":
-                        players[socket.id].item["bomb"] = new Item("bomb");
-                        break;
-                    case "black_hole":
-                        players[socket.id].item["black_hole"] = new Item("black_hole");
-                        break;
-                    case "piano":
-                        players[socket.id].item["piano"] = new Item("piano");
-                        break;
-                    case "mine":
-                        players[socket.id].item["mine"] = new Item("mine");
-                        break;
-                    case "small":
-                        players[socket.id].item["small"] = new Item("small");
-                        break;
-                }
+                players[socket.id].item[itemString] = new Item(itemString);
                 deleteItem(item);
             }
         });

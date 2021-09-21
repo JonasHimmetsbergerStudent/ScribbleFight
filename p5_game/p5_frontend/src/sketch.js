@@ -175,6 +175,7 @@ function updatePosition(data) {
   if (players[data.id] != undefined) {
     players[data.id].sprite.position.x = data.x;
     players[data.id].sprite.position.y = data.y;
+    addSpriteToVisual(players[data.id].sprite,3);
   }
 }
 
@@ -208,7 +209,7 @@ function draw() {
     // deep copy of multidimensional array
     // https://morioh.com/p/d15a64da5d09
     visCopy = JSON.parse(JSON.stringify(visual));
-    addSpriteToVisual(players[socket.id].sprite);
+    addSpriteToVisual(players[socket.id].sprite,2);
     bombPhysics();
     defaultAttackPhysics();
     blackHolePhysics();
@@ -246,7 +247,6 @@ function draw() {
     socket.emit('update', data);
 
     setCookies();
-
 
   }
 }
@@ -295,11 +295,23 @@ function getVisualCoordinates(x, y) {
 
 /**
  * Adds a given sprite to the visual array copy
+ * num: 
+0-> hintergrund
+1->map
+2->ich
+3->gegner
+4->meine projektile
+5->fügt mir schaden zu (oiso a des gegnerische Projektil und dann eigentlich jedes gedropte item)
+6->bombe item (packerl)
+7-> schwarzes loch (packerl)
+8->small (packerl)
+9->miene(packerl)
+10->klavier(packerl)
  * 
  * @param {Sprite which should be added to the visual array copy} sprite
  * @returns 
  */
-function addSpriteToVisual(sprite) {
+function addSpriteToVisual(sprite,num) {
   let maxWidthHeight = pixel_clumps[0].length * pixelWidth
   let spriteWidth = sprite.collider.extents.x
   let spriteHeight = sprite.collider.extents.y
@@ -330,12 +342,7 @@ function addSpriteToVisual(sprite) {
 
   for (let i = visualUnitX; i < maxXIterations; i++) {
     for (let j = visualUnitY; j < maxYIterations; j++) {
-      // RAFI du muast hier überprüfen auf den typen vom sprite und dann natürlich die jeweilige ziffer adden
-      // so
-      // if (sprite.type == "user") {visCopy[j][i] = [2];}
-      // if (sprite.type == "item") {visCopy[j][i] = [3];}
-      // if (sprite.type == "clown") {visCopy[j][i] = [2100010202];}
-      visCopy[j][i] = [2];
+      visCopy[j][i] = [num];
     }
   }
 }

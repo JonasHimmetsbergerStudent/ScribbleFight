@@ -29,6 +29,8 @@ function defaultAttack(x, y) {
   projectile.velocity.x = (x - players[socket.id].sprite.position.x) * 100;
   projectile.velocity.y = (y - players[socket.id].sprite.position.y) * 100;
   projectile.limitSpeed(25);
+  // damit man den collider abrufen kann bei addSpriteToVisual
+  projectile.setDefaultCollider();
   projectile.me = true;
   projectile.id = id;
   projectile.playerId = socket.id;
@@ -51,7 +53,14 @@ function defaultAttackPhysics() {
   // if a projectile exists
   if (projectiles.length > 0) {
     projectiles.forEach(projectile => {
-      projectileIndex = projectiles.indexOf(projectile);
+      projectileIndex = projectiles.indexOf(projectile); 
+      if(projectile.me) {
+        addSpriteToVisual(projectile,4);
+      } else {
+        addSpriteToVisual(projectile,5);
+      }
+      
+     
       //and hits the map, destroy it
       if (projectile.overlap(environment)) {
         projectile.remove();
@@ -136,8 +145,10 @@ function bombAttack() {
       players[socket.id].item["bomb"].sprite.addImage(bombImg);
       players[socket.id].item["bomb"].sprite.life = 1000;
       players[socket.id].item["bomb"].sprite.me = true;
+      players[socket.id].item["bomb"].sprite.setDefaultCollider();
       players[socket.id].item["bomb"].sprite.id = id;
       players[socket.id].item["bomb"].sprite.playerId = socket.id;
+      console.log(players[socket.id].item["bomb"].sprite.collider);
       bombs.push(players[socket.id].item["bomb"].sprite);
       let data = {
         id: id,
@@ -160,7 +171,7 @@ function bombPhysics() {
         bomb.velocity.y -= GRAVITY * GAMESPEED;
       }
       bomb.bounce(environment);
-
+      addSpriteToVisual(bomb,5);
       let data = {
         type: "bomb",
         id: bomb.id,
@@ -285,6 +296,7 @@ function blackHolePhysics() {
         b.velocity.y -= GRAVITY;
         b.bounce(environment);
       }
+      addSpriteToVisual(b,5);
 
       if (b.position.x > windowWidth || b.position.y > windowHeight || b.life == 0) {
         b.remove();
@@ -338,7 +350,7 @@ function pianoPhysics() {
         playerId: p.playerId,
         type: "piano"
       }
-      p.rotation += 2;
+      //p.rotation += 2;
       if (p.collide(environment)) {
         p.remove();
         if (p.me) {
@@ -368,6 +380,7 @@ function pianoPhysics() {
         sendHimFlying();
       }
       p.velocity.y -= GRAVITY;
+      addSpriteToVisual(p,5);
     });
   }
 }
@@ -418,6 +431,7 @@ function minePhysics() {
         flying = true;
         flyingDuration = 25;
         timeFlying = flyingDuration;
+        sendHimFlying();
         mines.splice(mines.indexOf(m), 1);
         m.remove();
         players[socket.id].damagedBy = m.playerId;
@@ -429,7 +443,7 @@ function minePhysics() {
         }
       }
       m.velocity.y -= GRAVITY;
-      sendHimFlying();
+      addSpriteToVisual(m,5);
     });
   }
 }

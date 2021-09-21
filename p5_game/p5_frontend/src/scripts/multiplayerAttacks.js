@@ -81,6 +81,7 @@ function addBomb(data) {
     bomb.velocity.x = data.v;
     bomb.addImage(bombImg);
     bomb.life = 1000;
+    bomb.setDefaultCollider();
     bomb.me = false;
     bomb.id = data.id;
     bomb.playerId = data.playerId;
@@ -93,6 +94,7 @@ function addDefaultAttack(data) {
     projectile.velocity.x = data.velX;
     projectile.velocity.y = data.velY;
     projectile.limitSpeed(25);
+    projectile.setDefaultCollider();
     projectile.id = data.id;
     projectile.playerId = data.playerId;
     projectile.me = false;
@@ -104,6 +106,7 @@ function addBlackHole(data) {
     b.velocity.x = data.v;
     b.addImage(boogieBombImg);
     b.life = 500;
+    b.setDefaultCollider();
     b.debug = true;
     b.maxSpeed = 20;
     b.me = false;
@@ -124,6 +127,7 @@ function addPiano(data) {
 function addMine(data) {
     let mine = createSprite(data.x, data.y, 50, 50);
     mine.addImage(mineImg);
+    mine.setDefaultCollider();
     mine.maxSpeed = 5;
     mine.debug = true;
     mine.me = false;
