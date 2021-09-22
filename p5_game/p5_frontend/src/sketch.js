@@ -343,8 +343,8 @@ function addSpriteToVisual(sprite, num) {
 
   for (let i = visualUnitX; i < maxXIterations; i++) {
     for (let j = visualUnitY; j < maxYIterations; j++) {
-      if (visCopy[j][i] != 2
-        || visCopy[j][i] != 3
+      if ((visCopy[j][i] != 2
+        && visCopy[j][i] != 3)
         || num == 2)
         visCopy[j][i] = [num];
     }
