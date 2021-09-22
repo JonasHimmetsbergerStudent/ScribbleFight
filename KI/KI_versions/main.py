@@ -16,6 +16,10 @@ TODO
 
 * Rafi sagen, dass er einen start button machen soll (unter localhost:300), 
     der alle gleichzeitig auf eine url weiterleitet (localhost:3000/fight)
+
+* implement winning condition
+
+* implement view (render visual array)
 '''
 import time
 from selenium import webdriver

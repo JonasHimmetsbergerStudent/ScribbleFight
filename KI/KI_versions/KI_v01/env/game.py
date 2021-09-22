@@ -75,20 +75,20 @@ class Game:
     '''AI INTERFACE TO SCRIBBLEFIGHT GAME INSTANCE'''
 
     def __init__(self):
-        # self.np_random = 0
-        # self.seed()
+        # self.np_random = 0 # not needed
+        # self.seed() # not needed
         self.scribble_fight = ScribbleFight()
         self.min_game_length = 60 * FPS  # 1 min
+        self.nothingChanged = 0  # player didn't accomplish anything in this timespan
+        self.just_won = False  # the winning condition has yet to be implemented
         self.previous_damage_dealt = 0
         self.previous_knockback = 0
         self.previous_kills = 0
         self.previous_deaths = 0
 
-    def seed(self, seed=None):
-        self.np_random, seed = seeding.np_random(seed)
-        return [seed]
-
     def action(self, action):
+        # if current browser window has wrong url
+        #   then dont execute action
         if (self.scribble_fight.isPlaying() is False):
             return
 
@@ -116,6 +116,10 @@ class Game:
         # update and save in-game stats
         self.scribble_fight.update()
 
+    def observe(self):
+        # get computer vision
+        return getVisual(self.scribble_fight.driver)
+
     def evaluate(self):
         reward = 0
         dmgDealt = self.scribble_fight.dmgDealt
@@ -128,29 +132,31 @@ class Game:
         #   since they will be used for future comparison and reward calculation
         if dmgDealt > self.previous_damage_dealt:
             reward += 1
-            self.previous_damage_dealt = dmgDealt
         if knockback > self.previous_knockback:
             reward -= 1
-            self.previous_knockback = knockback
         if kills > self.previous_kills:
             reward += 1000
-            self.previous_kills = kills
         if deaths > self.previous_deaths:
             # the reason why less reward is given when dying is because
             # I want the ai to be a killer machine
             reward -= 990
             self.scribble_fight.just_died = True
-            self.previous_deaths = deaths
-            # when player dies the variables need to be reset
-            self.reset()
+
+        self.previous_damage_dealt = dmgDealt
+        self.previous_knockback = knockback
+        self.previous_kills = kills
+        self.previous_deaths = deaths
+
+        if reward == 0:
+            self.nothingChanged += 1
         else:
-            self.scribble_fight.just_died = False
+            self.nothingChanged = 0
 
         return reward
 
     def is_done(self):
-        # returns if game won
-        pass
+        # returns if game won or nothing changed or agent died
+        return self.scribble_fight.just_died or self.just_won or self.nothingChanged == self.min_game_length
 
     def reset(self):
         # reset in-game varibales
@@ -162,10 +168,18 @@ class Game:
         self.previous_kills = self.scribble_fight.kills  # should always be 0
         self.previous_deaths = self.scribble_fight.deaths
         self.scribble_fight.just_died = False
+        self.nothingChanged = 0
 
-    def observe(self):
-        # get computer vision
-        return getVisual(self.scribble_fight.driver)
+    def info(self):
+        # return all infos about player
+        #   not really needed tho
+        return self.scribble_fight.dmgDealt, self.scribble_fight.knockback, self.scribble_fight.kills, self.scribble_fight.deaths
 
     def view(self):
+        # render visual array?
         pass
+
+    def seed(self, seed=None):
+        # i dont really know why i implemented this
+        self.np_random, seed = seeding.np_random(seed)
+        return [seed]
