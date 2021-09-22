@@ -60,7 +60,9 @@ class ScribbleFight:
         self.driver.get(url)
 
     def isPlaying(self):
-        return '://localhost:' in self.driver.current_url
+        port = 3000
+        url = '://localhost:%s/fight' % (port)
+        return url in self.driver.current_url
 
     def update(self):
         # get stats via cookies
@@ -87,6 +89,9 @@ class Game:
         return [seed]
 
     def action(self, action):
+        if (self.scribble_fight.isPlaying() is False):
+            return
+
         # take action
         # down action not implemented
         if action == 0:

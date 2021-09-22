@@ -1,12 +1,21 @@
 # not yet implemented
 '''
 TODO 
-* in observations.py ist der getvisual cookie name fix falsch
+* in observations.py sind die cookie indizes fix falsch
+
 * action funktionsaufruf könnte man noch auf scribbleFight class auslagern,
     denn schließlich sind es ja ingame actions
+
 * implement default attack
+
 * implement is_done return if game won
+
 * ordnerstruktur verbessern (so wie in slidea)
+
+* isPlaying url richtig gestalten
+
+* Rafi sagen, dass er einen start button machen soll (unter localhost:300), 
+    der alle gleichzeitig auf eine url weiterleitet (localhost:3000/fight)
 '''
 import time
 from selenium import webdriver
