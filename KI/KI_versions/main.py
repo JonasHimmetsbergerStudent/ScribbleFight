@@ -8,7 +8,7 @@ TODO
 
 * implement default attack
 
-* implement is_done return if game won
+* implement is_done (return if game won)
 
 * ordnerstruktur verbessern (so wie in slidea)
 
