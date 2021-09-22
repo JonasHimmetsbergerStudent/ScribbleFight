@@ -9,18 +9,15 @@ class CustomEnv(gym.Env):
         self.pygame = Game()
         # "SPACE", "A", "D", "E", "Q", "R", "C", "F", "LEFTCLICK"
         self.action_space = Discrete(9)
-        '''
-        random output when observation_space is sampled:
+        '''random output when observation_space is sampled:
         [[[0],[0],[0],...],
          [[0],[1],[0],...],
               .....,
          [[0],[1],[3],...],
-         [[0],[1],[5],...]]
-         '''
-        self.observation_space = Box(0, 5, (55, 55, 1), int)
+         [[0],[1],[5],...]]'''
+        self.observation_space = Box(0, 10, (165, 165, 1), int)
 
     def reset(self):
-        del self.pygame
         self.pygame.reset()
         obs = self.pygame.observe()
         return obs

@@ -1,34 +1,24 @@
-import sys
 
-
-def getVars(driver):
+def getStats(driver):
     cookies = driver.get_cookies()
-    speed, obs_dist, obs_size, passed, score, crashed = 0, 0, 0, 0, 0, 0
-    for i in range(6):
+    dmgDealt, knockback, deaths, kills = 0, 0, 0, 0
+    for i in range(4):  # FIXME sind es eh die ersten 4?
         cookie = cookies[i]
-        if cookie['name'] == u'speed':
-            speed = float(cookie['value'])
-        if cookie['name'] == u'obs_dist':
-            obs_dist = int(cookie['value'])
-        if cookie['name'] == u'obs_size':
-            obs_size = int(cookie['value'])
-        if cookie['name'] == u'passed':
-            passed_obs = int(cookie['value'])
-        if cookie['name'] == u'score':
-            score = int(cookie['value'])
-        if cookie['name'] == u'crashed':
-            crashed = (cookie['value'] == u'true')
-    return speed, obs_dist, obs_size, passed_obs, score, crashed
+        if cookie['name'] == u'dmgDealt':
+            dmgDealt = int(cookie['value'])
+        if cookie['name'] == u'knockback':
+            knockback = int(cookie['value'])
+        if cookie['name'] == u'death':
+            deaths = int(cookie['value'])
+        if cookie['name'] == u'kills':
+            kills = int(cookie['value'])
+    return dmgDealt, knockback, deaths, kills
 
 
-def write(str):
-    sys.stdout.write(str)
-    sys.stdout.flush()
-
-
-def printVars(speed, obs_dist, obs_size):
-    dispStr = ""
-    dispStr += '    ║ SPEED: ' + str(speed).rjust(5)
-    dispStr += '  -  OBS DIST: ' + str(obs_dist).rjust(3)
-    dispStr += '  -  OBS SIZE: ' + str(obs_size).rjust(2)
-    write(dispStr + '\r')
+def getVisual(driver):
+    cookies = driver.get_cookies()
+    visual = []
+    cookie = cookies[4]  # FIXME ist es eh die nr 5?
+    if cookie['name'] == u'visual':
+        visual = cookie['value']
+    return visual
