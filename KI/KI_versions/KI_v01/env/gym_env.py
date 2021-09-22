@@ -4,6 +4,11 @@ from KI_v01.env.game import Game
 
 
 class CustomEnv(gym.Env):
+
+    '''
+    This is an environment in wich an AI learns to play ScribbleFight
+    '''
+
     #metadata = {'render.modes' : ['human']}
     def __init__(self):
         self.pygame = Game()

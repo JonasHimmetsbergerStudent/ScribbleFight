@@ -24,7 +24,7 @@ import time
 
 '''VARIABLES'''
 FPS = 30
-BUTTONS = [
+BUTTONS = [  # not needed
     "SPACE",
     "A",
     "D",

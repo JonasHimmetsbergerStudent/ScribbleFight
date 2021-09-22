@@ -4,7 +4,7 @@ TODO
 * in observations.py sind die cookie indizes fix falsch
 
 * action funktionsaufruf könnte man noch auf scribbleFight class auslagern,
-    denn schließlich sind es ja ingame actions
+    denn schließlich sind es ja in-game actions
 
 * implement default attack
 
