@@ -12,7 +12,7 @@ function deathCheck() {
         } 
         if(spawnTimer==0) {
             players[socket.id].death++;
-            cookieArr["death"]++;
+            cookieArrDeathUpdate();
             console.log(players[socket.id].damagedBy);
             let data = {
                 damagedBy : players[socket.id].damagedBy,
@@ -35,4 +35,11 @@ function deathCheck() {
         }
     }
     
+}
+
+function cookieArrDeathUpdate() {
+    cookieArr["dmgDone"] = 0;
+    cookieArr["kills"] = 0;
+    cookieArr["knockback"] = 1;
+    cookieArr["death"]++;
 }
