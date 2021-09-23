@@ -38,7 +38,7 @@ function deathCheck() {
 }
 
 function cookieArrDeathUpdate() {
-    cookieArr["dmgDone"] = 0;
+    cookieArr["dmgDealt"] = 0;
     cookieArr["kills"] = 0;
     cookieArr["knockback"] = 1;
     cookieArr["death"]++;
