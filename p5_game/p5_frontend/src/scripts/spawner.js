@@ -41,32 +41,39 @@ function spawn() {
 function createItem(data) {
     let num = data.num;
     let x = data.x;
+    let itemSize = 3 * pixelWidth;
     if (x != -1) {
         switch (num) {
             case 1:
                 i = createSprite(x, 0, 50, 50);
                 i.type = "bomb";
+                itemImg.resize(itemSize,itemSize);
                 i.addImage(itemImg);
+                
                 break;
             case 2:
                 i = createSprite(x, 0, 50, 50);
                 i.type = "black_hole";
                 i.addImage(itemImgBlue);
+                itemImgBlue.resize(itemSize,itemSize);
                 break;
             case 3:
                 i = createSprite(x, 0, 50, 50);
                 i.type = "piano";
                 i.addImage(itemImgYellow);
+                itemImgYellow.resize(itemSize,itemSize);
                 break;
             case 4:
                 i = createSprite(x, 0, 50, 50);
                 i.type = "mine";
                 i.addImage(itemImgOrange);
+                itemImgOrange.resize(itemSize,itemSize);
                 break;
             case 5:
                 i = createSprite(x, 0, 50, 50);
                 i.type = "small";
                 i.addImage(itemImgGreen);
+                itemImgGreen.resize(itemSize,itemSize);
                 break;
         }
         i.maxSpeed = 10;

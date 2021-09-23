@@ -234,7 +234,7 @@ function draw() {
     }
 
     if (damagedByTimer == 0) {
-      damagedByTimer = 5;
+      damagedByTimer = 3;
       players[socket.id].damagedBy = null;
     }
 
