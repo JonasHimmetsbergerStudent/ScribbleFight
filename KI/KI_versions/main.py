@@ -8,8 +8,6 @@ TODO
 
 * implement default attack
 
-* implement is_done (return if game won)
-
 * ordnerstruktur verbessern (so wie in slidea)
 
 * isPlaying url richtig gestalten
@@ -48,13 +46,15 @@ def testMain():
     def test(driver):
         x = 10
         # time.sleep(3)
-        for item in range(5):
-            y = item * 3
-            time.sleep(3)
-            # myDict = {"x": x, "y": y}
-            print(getStats(driver))
-            # default(driver, myDict)
-            # left(driver)
+        # for item in range(5):
+        # y = item * 3
+        time.sleep(3)
+
+        # myDict = {"x": x, "y": y}
+        print(driver.get_cookies())
+        # print(getStats(driver))
+        # default(driver, myDict)
+        # left(driver)
 
     test(driver)
     driver.quit()

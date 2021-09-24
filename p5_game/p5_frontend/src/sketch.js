@@ -361,7 +361,7 @@ function setCookies() {
   setCookie("knockback", cookieArr["knockback"]);
   setCookie("death", cookieArr["death"]);
   setCookie("kills", cookieArr["kills"]);
-  setCookie("visual",visCopy);
+  setCookie("visual", visCopy);
 }
 
 function windowResized() {
