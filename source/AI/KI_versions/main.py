@@ -1,10 +1,7 @@
 # not yet implemented
 '''
 TODO 
-* in observations.py sind die cookie indizes fix falsch
-
-* action funktionsaufruf könnte man noch auf scribbleFight class auslagern,
-    denn schließlich sind es ja in-game actions
+* in observations.py sind die variablen namen fix falsch
 
 * implement default attack
 
@@ -51,7 +48,7 @@ def testMain():
         time.sleep(3)
 
         # myDict = {"x": x, "y": y}
-        print(driver.get_cookies())
+        print(getStats(driver))
         # print(getStats(driver))
         # default(driver, myDict)
         # left(driver)

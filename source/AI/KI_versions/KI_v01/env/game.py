@@ -69,6 +69,27 @@ class ScribbleFight:
         self.dmgDealt, self.knockback, self.deaths, self.kills = getStats(
             self.driver)
 
+    def action(self, action):
+        # down ('s') action not implemented
+        if action == 0:
+            jump(self.scribble_fight.driver)
+        if action == 1:
+            left(self.scribble_fight.driver)
+        if action == 2:
+            right(self.scribble_fight.driver)
+        if action == 3:
+            bombAttack(self.scribble_fight.driver)
+        if action == 4:
+            blackHoleAttack(self.scribble_fight.driver)
+        if action == 5:
+            pianoTime(self.scribble_fight.driver)
+        if action == 6:
+            placeMine(self.scribble_fight.driver)
+        if action == 7:
+            makeMeSmall(self.scribble_fight.driver)
+        if action == 8:
+            pass
+
 
 class Game:
 
@@ -93,25 +114,7 @@ class Game:
             return
 
         # take action
-        # down action not implemented
-        if action == 0:
-            jump(self.scribble_fight.driver)
-        if action == 1:
-            left(self.scribble_fight.driver)
-        if action == 2:
-            right(self.scribble_fight.driver)
-        if action == 3:
-            bombAttack(self.scribble_fight.driver)
-        if action == 4:
-            blackHoleAttack(self.scribble_fight.driver)
-        if action == 5:
-            pianoTime(self.scribble_fight.driver)
-        if action == 6:
-            placeMine(self.scribble_fight.driver)
-        if action == 7:
-            makeMeSmall(self.scribble_fight.driver)
-        if action == 8:
-            pass
+        self.scribble_fight.action(action)
 
         # update and save in-game stats
         self.scribble_fight.update()

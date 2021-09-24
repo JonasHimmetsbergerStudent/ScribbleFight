@@ -173,7 +173,7 @@ def getPlayableArray(img):
     # pippoRGBA2 = Image.fromarray(np.array(img).astype('uint8'), mode='RGBA')
     # pippoRGBA2.show()
     cv2.imwrite(
-        './prototypes/streamFusion/output/imgAdaptiveThre.png', imgAdaptiveThre)
+        './source/prototypes/streamFusion/output/imgAdaptiveThre.png', imgAdaptiveThre)
 
     iar = np.asarray(img).tolist()
 
@@ -218,13 +218,13 @@ def getPlayableArray(img):
         y += n
 
     iar = np.asarray(newImg).tolist()
-    with open('./prototypes/streamFusion/output/mapArray.txt', 'w') as f:
+    with open('./source/prototypes/streamFusion/output/mapArray.txt', 'w') as f:
         f.writelines(repr(iar))
 
     # pippoRGBA2 = Image.fromarray(np.array(newImg).astype('uint8'), mode='RGBA')
     # pippoRGBA2.show()
     cv2.imwrite(
-        './prototypes/streamFusion/output/newImg.png', np.array(newImg))
+        './source/prototypes/streamFusion/output/newImg.png', np.array(newImg))
 
     return newImg
 

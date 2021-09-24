@@ -2,7 +2,7 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 from PIL import Image
 
-import Scanner.cv2scan as scanner
+import scanner.cv2scan as scanner
 import cv2
 import numpy as np
 import base64
@@ -105,6 +105,6 @@ if __name__ == '__main__':
     # Aufpassen, dass port nicht geblockt ist und IP passt
     # app.run(debug=True, host="192.168.0.21", port=443, ssl_context='adhoc')
     print('server running')
-    socketio.run(app, host="192.168.0.5", port=443, certfile="./cert/cert.pem",
+    socketio.run(app, host="192.168.0.9", port=443, certfile="./cert/cert.pem",
                  keyfile="./keys/key.pem")
     print('server stopped')
