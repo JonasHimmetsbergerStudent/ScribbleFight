@@ -5,8 +5,6 @@ TODO
 
 * implement default attack
 
-* ordnerstruktur verbessern (so wie in slidea)
-
 * isPlaying url richtig gestalten
 
 * Rafi sagen, dass er einen start button machen soll (unter localhost:300), 

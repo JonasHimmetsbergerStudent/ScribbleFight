@@ -60,8 +60,9 @@ class ScribbleFight:
         self.driver.get(url)
 
     def isPlaying(self):
-        port = 3000
-        url = '://localhost:%s/fight' % (port)
+        # port = 3000
+        # url = '://localhost:%s/fight' % (port)
+        url = '://localhost:'
         return url in self.driver.current_url
 
     def update(self):
