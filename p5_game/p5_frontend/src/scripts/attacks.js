@@ -50,18 +50,37 @@ function defaultAttack(x, y) {
 
 }
 
+
+/**
+ * Default attack from angle relative to player
+ * for AI to use
+  * Mit freundlichen Grüßen :)
+  * Jonas Himmetsberger ;)
+ * @param {angle in which to shoot at in degree} angle 
+ */
+function shootAngle(angle) {
+  let r = 30;
+
+  angle *= Math.PI / 180
+
+  let x = float(Math.cos(angle).toFixed(2)) * r + myPlayer.sprite.position.x;
+  let y = float(Math.sin(angle).toFixed(2)) * r * -1 + myPlayer.sprite.position.y;
+
+  defaultAttack(x, y)
+}
+
 function defaultAttackPhysics() {
   // if a projectile exists
   if (projectiles.length > 0) {
     projectiles.forEach(projectile => {
-      projectileIndex = projectiles.indexOf(projectile); 
-      if(projectile.me) {
-        addSpriteToVisual(projectile,4);
+      projectileIndex = projectiles.indexOf(projectile);
+      if (projectile.me) {
+        addSpriteToVisual(projectile, 4);
       } else {
-        addSpriteToVisual(projectile,5);
+        addSpriteToVisual(projectile, 5);
       }
-      
-     
+
+
       //and hits the map, destroy it
       if (projectile.overlap(environment)) {
         projectile.remove();
@@ -95,9 +114,9 @@ function defaultAttackPhysics() {
             id: projectile.id,
             type: "default"
           }
-          
+
           myPlayer.damagedBy = projectile.playerId;
-          myPlayer.knockback +=1;
+          myPlayer.knockback += 1;
 
           flying = true;
           flyingDuration = 10;
@@ -172,7 +191,7 @@ function bombPhysics() {
         bomb.velocity.y -= GRAVITY * GAMESPEED;
       }
       bomb.bounce(environment);
-      addSpriteToVisual(bomb,5);
+      addSpriteToVisual(bomb, 5);
       let data = {
         type: "bomb",
         id: bomb.id,
@@ -208,7 +227,7 @@ function bombPhysics() {
         bombs.splice(bombs.indexOf(bomb), 1);
         myPlayer.damagedBy = bomb.playerId;
         socket.emit("deleteAttack", data);
-        myPlayer.knockback +=1;
+        myPlayer.knockback += 1;
 
       } else if (bomb.position.x > windowWidth || bomb.position.y > windowHeight || bomb.life == 0) {
         bomb.remove();
@@ -297,7 +316,7 @@ function blackHolePhysics() {
         b.velocity.y -= GRAVITY;
         b.bounce(environment);
       }
-      addSpriteToVisual(b,5);
+      addSpriteToVisual(b, 5);
 
       if (b.position.x > windowWidth || b.position.y > windowHeight || b.life == 0) {
         b.remove();
@@ -363,7 +382,7 @@ function pianoPhysics() {
         p.remove();
         socket.emit("deleteAttack", data);
         myPlayer.damagedBy = p.playerId;
-        myPlayer.knockback +=1;
+        myPlayer.knockback += 1;
         if (p.me) {
           myPlayer.item["piano"].sprite = undefined;
           ammoCheck("piano");
@@ -381,7 +400,7 @@ function pianoPhysics() {
         sendHimFlying();
       }
       p.velocity.y -= GRAVITY;
-      addSpriteToVisual(p,5);
+      addSpriteToVisual(p, 5);
     });
   }
 }
@@ -438,13 +457,13 @@ function minePhysics() {
         myPlayer.damagedBy = m.playerId;
         console.log(m.playerId);
         socket.emit("deleteAttack", data);
-        myPlayer.knockback +=1;
+        myPlayer.knockback += 1;
         if (m.me && myPlayer.item["mine"] != undefined) {
           myPlayer.item["mine"].sprite.splice(myPlayer.item["mine"].sprite.indexOf(m), 1);
         }
       }
       m.velocity.y -= GRAVITY;
-      addSpriteToVisual(m,5);
+      addSpriteToVisual(m, 5);
     });
   }
 }
