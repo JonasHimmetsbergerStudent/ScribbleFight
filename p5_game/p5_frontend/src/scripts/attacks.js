@@ -4,7 +4,6 @@ var bombs = [];
 var blackHoles = [];
 var pianos = [];
 var mines = [];
-var itemSize = pixelWidth * 3;
 // is he flying?
 var flying = false;
 // how long is he flying away
@@ -17,12 +16,8 @@ var testKnockback = 3;
 var projectileIndex;
 
 function defaultAttack(x, y) {
-
-  if (myPlayer.direction == "right") {
-    projectile = createSprite(myPlayer.sprite.position.x, myPlayer.sprite.position.y, 20, 20);
-  } else {
-    projectile = createSprite(myPlayer.sprite.position.x, myPlayer.sprite.position.y, 20, 20);
-  }
+ 
+    projectile = createSprite(myPlayer.sprite.position.x, myPlayer.sprite.position.y, pixelWidth, pixelWidth);
 
   let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
 
@@ -469,7 +464,7 @@ function minePhysics() {
 }
 
 
-let imSmall;
+var imSmall;
 let smallTimer;
 function makeMeSmall() {
   if (myPlayer.item["small"] != undefined) {

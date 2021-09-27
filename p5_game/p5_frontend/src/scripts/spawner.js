@@ -41,7 +41,7 @@ function spawn() {
 function createItem(data) {
     let num = data.num;
     let x = data.x;
-    let itemSize = 3 * pixelWidth;
+    let itemSize = 2 * pixelWidth;
     if (x != -1) {
         switch (num) {
             case 1:
