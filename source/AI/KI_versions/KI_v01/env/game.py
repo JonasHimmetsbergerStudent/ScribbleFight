@@ -89,6 +89,7 @@ class ScribbleFight:
         if action == 7:
             makeMeSmall(self.scribble_fight.driver)
         if action == 8:
+            # http://doublezoom.free.fr/programmation/AG_Exemple_Fighting.php
             pass
 
 
