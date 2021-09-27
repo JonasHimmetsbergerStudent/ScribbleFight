@@ -58,18 +58,18 @@ function controls() {
 
 function jump() {
     if (!(JUMP_COUNT >= MAX_JUMP)) {
-        players[socket.id].sprite.velocity.y = -JUMP;
+        myPlayer.sprite.velocity.y = -JUMP;
         JUMP_COUNT++;
     }
 }
 
 function moveLeft() {
-    players[socket.id].sprite.velocity.x = -SPEED;
+    myPlayer.sprite.velocity.x = -SPEED;
 }
 
 
 function moveRight() {
-    players[socket.id].sprite.velocity.x = SPEED;
+    myPlayer.sprite.velocity.x = SPEED;
 }
 
 function mouseClicked() {
@@ -88,17 +88,17 @@ function mirrorSprite() {
 }
 
 function mirrorSpriteLeft() {
-    if (players[socket.id].sprite.mirrorX() === 1) {
-        players[socket.id].sprite.mirrorX(players[socket.id].sprite.mirrorX() * -1);
-        players[socket.id].direction = "left";
+    if (myPlayer.sprite.mirrorX() === 1) {
+        myPlayer.sprite.mirrorX(myPlayer.sprite.mirrorX() * -1);
+        myPlayer.direction = "left";
         socket.emit('updateDirection', 'left');
     }
 }
 
 function mirrorSpriteRight() {
-    if (players[socket.id].sprite.mirrorX() === -1) {
-        players[socket.id].sprite.mirrorX(players[socket.id].sprite.mirrorX() * -1);
-        players[socket.id].direction = "right";
+    if (myPlayer.sprite.mirrorX() === -1) {
+        myPlayer.sprite.mirrorX(myPlayer.sprite.mirrorX() * -1);
+        myPlayer.direction = "right";
         socket.emit('updateDirection', 'right');
     }
 }

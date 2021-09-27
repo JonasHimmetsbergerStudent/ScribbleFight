@@ -3,32 +3,31 @@ let youAreDead = false;
 let gameOver;
 let alivePlayerCount = 0;
 function deathCheck() {
-    if (players[socket.id].sprite.position.x > windowWidth || players[socket.id].sprite.position.y > windowHeight) {
-        if(players[socket.id].item != undefined && players[socket.id].item.sprite != undefined) {
-            players[socket.id].item.sprite = undefined;
+    if (myPlayer.sprite.position.x > windowWidth || myPlayer.sprite.position.y > windowHeight) {
+        if(myPlayer.item != undefined && myPlayer.item.sprite != undefined) {
+            myPlayer.item.sprite = undefined;
         }
         if (frameCount % 60 == 0 && spawnTimer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
             spawnTimer--;
         } 
         if(spawnTimer==0) {
-            players[socket.id].death++;
-            cookieArrDeathUpdate();
-            console.log(players[socket.id].damagedBy);
+            myPlayer.death++;
+            DeathUpdate();
             let data = {
-                damagedBy : players[socket.id].damagedBy,
+                damagedBy : myPlayer.damagedBy,
             }
-            if(players[socket.id].damagedBy != null && players[socket.id].damagedBy != socket.id) {
+            if(myPlayer.damagedBy != null && myPlayer.damagedBy != socket.id) {
                 socket.emit("kill",data);
             }
-            players[socket.id].sprite.position.x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
-            players[socket.id].sprite.position.y = 0;
+            myPlayer.sprite.position.x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
+            myPlayer.sprite.position.y = 0;
             spawnTimer = 3;
         }
     }
-    if(players[socket.id].death==3){
+    if(myPlayer.death==3){
         youAreDead = true;
         alert("You died!");
-        players[socket.id].sprite.remove();
+        myPlayer.sprite.remove();
         if(alivePlayerCount<=1) {
             gameOver = true;
             noLoop();
@@ -37,9 +36,9 @@ function deathCheck() {
     
 }
 
-function cookieArrDeathUpdate() {
-    cookieArr["dmgDealt"] = 0;
-    cookieArr["kills"] = 0;
-    cookieArr["knockback"] = 1;
-    cookieArr["death"]++;
+function DeathUpdate() {
+    myPlayer.dmgDealt = 0;
+    myPlayer.kills= 0;
+    myPlayer.knockback = 1;
+    myPlayer.death++;
 }

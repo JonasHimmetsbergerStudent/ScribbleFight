@@ -22,9 +22,8 @@ function deleteAttack(data) {
                 if (p.id === data.id) {
                     p.remove();
                     projectiles.splice(projectiles.indexOf(p), 1);
-                    if(p.playerId == socket.id) {
-                        cookieArr["dmgDealt"] +=1;
-                        console.log(cookieArr);
+                    if (p.playerId == socket.id) {
+                        myPlayer.dmgDealt += 1;
                     }
                 }
             });
@@ -35,10 +34,9 @@ function deleteAttack(data) {
                     b.remove();
                     bombs.splice(bombs.indexOf(b), 1);
                     if (b.playerId == socket.id) {
-                        players[socket.id].item["bomb"].sprite = undefined;
+                        myPlayer.item["bomb"].sprite = undefined;
                         ammoCheck("bomb");
-                        cookieArr["dmgDealt"] +=1;
-                        console.log(cookieArr);
+                        myPlayer.dmgDealt += 1;
                     }
                 }
             });
@@ -49,10 +47,9 @@ function deleteAttack(data) {
                     p.remove();
                     pianos.splice(pianos.indexOf(p), 1);
                     if (p.playerId == socket.id) {
-                        players[socket.id].item["piano"].sprite = undefined;
+                        myPlayer.item["piano"].sprite = undefined;
                         ammoCheck("piano");
-                        cookieArr["dmgDealt"] +=1;
-                        console.log(cookieArr);
+                        myPlayer.dmgDealt += 1;
                     }
                 }
             });
@@ -62,9 +59,8 @@ function deleteAttack(data) {
                 if (m.id == data.id) {
                     m.remove();
                     mines.splice(mines.indexOf(m), 1);
-                    if(m.playerId==socket.id) {
-                        cookieArr["dmgDealt"] +=1;
-                        console.log(cookieArr);
+                    if (m.playerId == socket.id) {
+                        myPlayer.dmgDealt += 1;
                     }
                 }
             });

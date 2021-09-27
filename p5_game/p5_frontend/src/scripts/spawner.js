@@ -45,32 +45,32 @@ function createItem(data) {
     if (x != -1) {
         switch (num) {
             case 1:
-                i = createSprite(x, 0, 50, 50);
+                i = createSprite(x, 0, itemSize, itemSize);
                 i.type = "bomb";
                 itemImg.resize(itemSize,itemSize);
                 i.addImage(itemImg);
                 
                 break;
             case 2:
-                i = createSprite(x, 0, 50, 50);
+                i = createSprite(x, 0, itemSize, itemSize);
                 i.type = "black_hole";
                 i.addImage(itemImgBlue);
                 itemImgBlue.resize(itemSize,itemSize);
                 break;
             case 3:
-                i = createSprite(x, 0, 50, 50);
+                i = createSprite(x, 0, itemSize, itemSize);
                 i.type = "piano";
                 i.addImage(itemImgYellow);
                 itemImgYellow.resize(itemSize,itemSize);
                 break;
             case 4:
-                i = createSprite(x, 0, 50, 50);
+                i = createSprite(x, 0, itemSize, itemSize);
                 i.type = "mine";
                 i.addImage(itemImgOrange);
                 itemImgOrange.resize(itemSize,itemSize);
                 break;
             case 5:
-                i = createSprite(x, 0, 50, 50);
+                i = createSprite(x, 0, itemSize, itemSize);
                 i.type = "small";
                 i.addImage(itemImgGreen);
                 itemImgGreen.resize(itemSize,itemSize);
@@ -115,8 +115,8 @@ function itemPickUp() {
                     break;
             }
             item.collide(environment);
-            if (item.overlap(players[socket.id].sprite)) {
-                players[socket.id].item[itemString] = new Item(itemString);
+            if (item.overlap(myPlayer.sprite)) {
+                myPlayer.item[itemString] = new Item(itemString);
                 deleteItem(item);
             }
         });

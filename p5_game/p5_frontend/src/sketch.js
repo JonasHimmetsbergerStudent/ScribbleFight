@@ -3,6 +3,7 @@ var sprite_pixels = [];
 var environment;
 var players = [];
 var socket;
+var myPlayer;
 
 //Variables
 var bg;
@@ -14,11 +15,6 @@ var same_x_counter = 1;
 const MAX_JUMP = 3;
 var touches_side;
 var background_path = "assets/komischer_smiley.png";
-var cookieArr = [];
-cookieArr["dmgDealt"] = 0;
-cookieArr["knockback"] = 1;
-cookieArr["death"] = 0;
-cookieArr["kills"] = 0;
 var visual;
 var pixelWidth;
 var visCopy;
@@ -160,7 +156,9 @@ function createNewPlayer(data) {
     players[data.id].sprite.debug = true;
     players[data.id].sprite.addImage(img);
     amogus = img;
-
+    if(data.id == socket.id) {
+      myPlayer = players[data.id];
+    }
   });
 }
 
@@ -193,23 +191,23 @@ function updateDirection(data) {
 }
 
 function addKill(data) {
-  cookieArr["kills"] += 1;
+  myPlayer.kills += 1;
 }
 
 let damagedByTimer = 5;
 function draw() {
   touches_side = false;
-  if (players[socket.id] != undefined && !youAreDead) {
+  if (myPlayer != undefined && !youAreDead) {
     if (!flying && !noGravity) {
-      players[socket.id].sprite.velocity.y -= GRAVITY;
+      myPlayer.sprite.velocity.y -= GRAVITY;
     } else if (flying) {
-      players[socket.id].sprite.velocity.y -= GRAVITY / 1.25;
+      myPlayer.sprite.velocity.y -= GRAVITY / 1.25;
     }
 
     // deep copy of multidimensional array
     // https://morioh.com/p/d15a64da5d09
     visCopy = JSON.parse(JSON.stringify(visual));
-    addSpriteToVisual(players[socket.id].sprite, 2);
+    addSpriteToVisual(myPlayer.sprite, 2);
     // console.log(visCopy);
     bombPhysics();
     defaultAttackPhysics();
@@ -225,7 +223,7 @@ function draw() {
     checkForCollisions();
 
     if (!flying && !noGravity) {
-      players[socket.id].sprite.velocity.x = 0;
+      myPlayer.sprite.velocity.x = 0;
       controls();
     }
 
@@ -235,20 +233,17 @@ function draw() {
 
     if (damagedByTimer == 0) {
       damagedByTimer = 3;
-      players[socket.id].damagedBy = null;
+      myPlayer.damagedBy = null;
     }
 
     mirrorSprite();
     deathCheck();
     drawSprites();
     var data = {
-      x: players[socket.id].sprite.position.x,
-      y: players[socket.id].sprite.position.y
+      x: myPlayer.sprite.position.x,
+      y: myPlayer.sprite.position.y
     }
     socket.emit('update', data);
-
-    setCookies();
-
   }
 }
 
@@ -352,17 +347,7 @@ function addSpriteToVisual(sprite, num) {
 }
 
 
-function setCookie(name, value) {
-  document.cookie = name + '=' + value;
-}
 
-function setCookies() {
-  setCookie("dmgDealt", cookieArr["dmgDealt"]);
-  setCookie("knockback", cookieArr["knockback"]);
-  setCookie("death", cookieArr["death"]);
-  setCookie("kills", cookieArr["kills"]);
-  setCookie("visual", visCopy);
-}
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
@@ -418,21 +403,21 @@ function init() {
 
 function checkForCollisions() {
   if (!flying) {
-    if (players[socket.id].sprite.collide(environment)) {
-      if (players[socket.id].sprite.touching.left || players[socket.id].sprite.touching.right) {
+    if (myPlayer.sprite.collide(environment)) {
+      if (myPlayer.sprite.touching.left || myPlayer.sprite.touching.right) {
         touches_side = true;
       }
       if (touches_side && !noGravity) {
-        players[socket.id].sprite.velocity.y = CLIMBINGSPEED;
-      } else if (!noGravity && !players[socket.id].sprite.touching.top) {
-        players[socket.id].sprite.velocity.y = 0;
+        myPlayer.sprite.velocity.y = CLIMBINGSPEED;
+      } else if (!noGravity && !myPlayer.sprite.touching.top) {
+        myPlayer.sprite.velocity.y = 0;
       }
-      if (!players[socket.id].sprite.touching.top) {
+      if (!myPlayer.sprite.touching.top) {
         JUMP_COUNT = 0;
       }
     }
   } else {
-    players[socket.id].sprite.bounce(environment);
+    myPlayer.sprite.bounce(environment);
   }
 }
 
