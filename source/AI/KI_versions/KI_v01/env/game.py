@@ -70,27 +70,27 @@ class ScribbleFight:
         self.dmgDealt, self.knockback, self.deaths, self.kills = getStats(
             self.driver)
 
-    def action(self, action):
+    def action(self, action, angle):
         # down ('s') action not implemented
         if action == 0:
-            jump(self.scribble_fight.driver)
+            jump(self.driver)
         if action == 1:
-            left(self.scribble_fight.driver)
+            left(self.driver)
         if action == 2:
-            right(self.scribble_fight.driver)
+            right(self.driver)
         if action == 3:
-            bombAttack(self.scribble_fight.driver)
+            bombAttack(self.driver)
         if action == 4:
-            blackHoleAttack(self.scribble_fight.driver)
+            blackHoleAttack(self.driver)
         if action == 5:
-            pianoTime(self.scribble_fight.driver)
+            pianoTime(self.driver)
         if action == 6:
-            placeMine(self.scribble_fight.driver)
+            placeMine(self.driver)
         if action == 7:
-            makeMeSmall(self.scribble_fight.driver)
+            makeMeSmall(self.driver)
         if action == 8:
             # http://doublezoom.free.fr/programmation/AG_Exemple_Fighting.php
-            pass
+            default(self.driver, angle)
 
 
 class Game:
@@ -108,6 +108,7 @@ class Game:
         self.previous_knockback = 0
         self.previous_kills = 0
         self.previous_deaths = 0
+        self.angle = 0  # angle in which the ai can shoot a bullet
 
     def action(self, action):
         # if current browser window has wrong url
@@ -116,7 +117,16 @@ class Game:
             return
 
         # take action
-        self.scribble_fight.action(action)
+        if action < 9:
+            self.scribble_fight.action(action, self.angle)
+        if action == 9:
+            self.angle += 5
+            if self.angle > 360:
+                self.angle -= 360
+        if action == 10:
+            self.angle -= 5
+            if self.angle < 0:
+                self.angle += 360
 
         # update and save in-game stats
         self.scribble_fight.update()
@@ -174,6 +184,7 @@ class Game:
         self.previous_deaths = self.scribble_fight.deaths
         self.scribble_fight.just_died = False
         self.nothingChanged = 0
+        self.angle = 0
 
     def info(self):
         # return all infos about player

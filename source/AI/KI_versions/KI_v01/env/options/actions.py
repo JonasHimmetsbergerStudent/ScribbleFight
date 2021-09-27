@@ -10,7 +10,7 @@ Q		    BLACKHOLE
 R		    PIANO
 C		    MINE
 F		    SMALL
-click(x,y)	DEFAULT
+click(angle)DEFAULT
 '''
 
 
@@ -50,26 +50,8 @@ def makeMeSmall(driver):
     driver.execute_script('makeMeSmall()')
 
 
-def default(driver, mousePos):
-    x = mousePos['x']
-    y = mousePos['y']
-
-    '''
-    # check if click ins within bounds
-    # might be obsolete
-    realx, realy, maxx, maxy = getWinMeasurements(driver)
-    if x > realx:
-        x = realx
-    if x < 0:
-        x = 0
-
-    if y > realy:
-        y = realy
-    if y < 0:
-        y = 0
-    '''
-
-    driver.execute_script('defaultAttack(%s, %s)' % (x, y))
+def default(driver, angle):
+    driver.execute_script('shootAngle(%s)' % (angle))
 
 
 def getWinMeasurements(driver):  # get measurements of window that is played in
