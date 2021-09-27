@@ -35,12 +35,12 @@ var amogus_supreme;
 //Forces
 const GAMESPEED = 1;
 const GRAVITY = -1 * GAMESPEED;
-var JUMP = 15;
+var JUMP;
 if (GAMESPEED > 1) {
   JUMP = 15 * GAMESPEED / 1.435;
 }
-const SPEED = 5 * GAMESPEED;
-const CLIMBINGSPEED = -5 * GAMESPEED;
+var SPEED = 5;
+var CLIMBINGSPEED;
 
 
 
@@ -70,6 +70,9 @@ function setup() {
     }
 
     pixelWidth = Math.max(obildbreite, obildhoehe) / pixel_clumps[0].length * faktor;
+    JUMP = pixelWidth - (pixelWidth/3);
+    SPEED = pixelWidth/4;
+    CLIMBINGSPEED = -(pixelWidth/4);
     environment = new Group();
     console.log(pixelWidth);
     for (let i = 0; i < pixel_clumps.length; i++) {

@@ -75,7 +75,7 @@ function defaultAttackPhysics() {
         addSpriteToVisual(projectile, 5);
       }
 
-
+      console.log(projectile.velocity);
       //and hits the map, destroy it
       if (projectile.overlap(environment)) {
         projectile.remove();
@@ -135,9 +135,9 @@ function bombAttack() {
     if (myPlayer.item["bomb"].sprite === undefined) {
       if (myPlayer.direction == "right") {
         if (imSmall) {
-          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x + player_width / 2, myPlayer.sprite.position.y - 25, 50, 50);
+          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x + player_width / 2, myPlayer.sprite.position.y - pixelWidth, pixelWidth * 2, pixelWidth * 2);
         } else {
-          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x + player_width, myPlayer.sprite.position.y, 50, 50);
+          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x + player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
         myPlayer.item["bomb"].sprite.velocity.x += 5 * GAMESPEED;
         while ((environment.overlap(myPlayer.item["bomb"].sprite))) {
@@ -146,9 +146,9 @@ function bombAttack() {
 
       } if (myPlayer.direction == "left") {
         if (imSmall) {
-          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width / 2, myPlayer.sprite.position.y - 25, 50, 50);
+          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width / 2, myPlayer.sprite.position.y - pixelWidth, pixelWidth * 2, pixelWidth * 2);
         } else {
-          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, 50, 50);
+          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
         myPlayer.item["bomb"].sprite.velocity.x -= 5 * GAMESPEED;
         while ((environment.overlap(myPlayer.item["bomb"].sprite))) {
@@ -245,9 +245,9 @@ function blackHoleAttack() {
     if (myPlayer.item["black_hole"].sprite === undefined) {
       if (myPlayer.direction == "right") {
         if (imSmall) {
-          myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x + player_width / 2, myPlayer.sprite.position.y - 25, 50, 50);
+          myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x + player_width / 2, myPlayer.sprite.position.y - pixelWidth, pixelWidth * 2, pixelWidth * 2);
         } else {
-          myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x + player_width, myPlayer.sprite.position.y, 50, 50);
+          myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x + player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
         myPlayer.item["black_hole"].sprite.velocity.x += 3 * GAMESPEED;
         while ((environment.overlap(myPlayer.item["black_hole"].sprite))) {
@@ -255,9 +255,9 @@ function blackHoleAttack() {
         }
       } else if (myPlayer.direction == "left") {
         if (imSmall) {
-          myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x - player_width / 2, myPlayer.sprite.position.y - 25, 50, 50);
+          myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x - player_width / 2, myPlayer.sprite.position.y - pixelWidth, pixelWidth * 2, pixelWidth * 2);
         } else {
-          myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, 50, 50);
+          myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
         myPlayer.item["black_hole"].sprite.velocity.x -= 3 * GAMESPEED;
         while ((environment.overlap(myPlayer.item["black_hole"].sprite))) {
@@ -333,7 +333,7 @@ function pianoTime() {
     if (myPlayer.item["piano"] !== undefined && myPlayer.item["piano"].ammo > 0) {
       if (myPlayer.item["piano"].sprite === undefined) {
         let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
-        myPlayer.item["piano"].sprite = createSprite(xPos, 10, 100, 100);
+        myPlayer.item["piano"].sprite = createSprite(xPos, 10, pixelWidth * 4, pixelWidth * 4);
         myPlayer.item["piano"].sprite.addImage(pianoImg);
         myPlayer.item["piano"].sprite.setCollider("rectangle", 0, 0, 100, 100);
         myPlayer.item["piano"].sprite.debug = true;
@@ -404,9 +404,9 @@ function placeMine() {
   if (myPlayer.item["mine"] != undefined && myPlayer.item["mine"].ammo > 0) {
     let mine;
     if (myPlayer.direction == "right") {
-      mine = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, 50, 50);
+      mine = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
     } else {
-      mine = createSprite(myPlayer.sprite.position.x + player_width, myPlayer.sprite.position.y, 50, 50);
+      mine = createSprite(myPlayer.sprite.position.x + player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
     }
 
     let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
