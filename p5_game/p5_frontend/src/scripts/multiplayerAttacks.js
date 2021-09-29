@@ -89,7 +89,7 @@ function addDefaultAttack(data) {
     projectile.life = 100;
     projectile.velocity.x = data.velX;
     projectile.velocity.y = data.velY;
-    projectile.limitSpeed(25);
+    projectile.limitSpeed(pixelWidth - pixelWidth/5);
     projectile.setDefaultCollider();
     projectile.id = data.id;
     projectile.playerId = data.playerId;
