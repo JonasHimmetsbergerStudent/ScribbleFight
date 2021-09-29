@@ -1,26 +1,12 @@
 '''DEPENDENCIES'''
-# openai gym
-import gym
-from gym import Env
-from gym.spaces import Discrete, Box, Dict, Tuple, MultiBinary, MultiDiscrete
-from gym.utils import seeding, EzPickle
+# options
 from KI_v01.env.options.actions import *
 from KI_v01.env.options.observations import *
-
-# stable baselines
-from stable_baselines3 import PPO
-from stable_baselines3.common.vec_env import DummyVecEnv
-from stable_baselines3.common.evaluation import evaluate_policy
 
 # webdriver
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
-# other
-import numpy as np
-import random
-import os
-import time
 
 '''VARIABLES'''
 FPS = 30
@@ -89,7 +75,6 @@ class ScribbleFight:
         if action == 7:
             makeMeSmall(self.driver)
         if action == 8:
-            # http://doublezoom.free.fr/programmation/AG_Exemple_Fighting.php
             default(self.driver, angle)
 
 
@@ -101,7 +86,7 @@ class Game:
         # self.np_random = 0 # not needed
         # self.seed() # not needed
         self.scribble_fight = ScribbleFight()
-        self.min_game_length = 60 * FPS  # 1 min
+        self.min_game_length = 30 * FPS  # 1 min
         self.nothingChanged = 0  # player didn't accomplish anything in this timespan
         self.just_won = False  # the winning condition has yet to be implemented
         self.previous_damage_dealt = 0

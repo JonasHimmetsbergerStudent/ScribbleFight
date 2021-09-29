@@ -1,4 +1,41 @@
-# not yet implemented
+# openai gym
+import gym
+from gym import Env
+from gym.spaces import Discrete, Box, Dict, Tuple, MultiBinary, MultiDiscrete
+
+# stable baselines
+from stable_baselines3 import PPO
+from stable_baselines3.common.vec_env import VecFrameStack
+from stable_baselines3.common.evaluation import evaluate_policy
+
+# import env
+import KI_v01
+
+# other
+import numpy as np
+import random
+import os
+import time
+
+if __name__ == "__main__":
+    env = gym.make("ScribbleFight-v0")
+    time.sleep(3)
+
+    episodes = 100
+    for episode in range(1, episodes+1):
+        state = env.reset()
+        done = False
+        score = 0
+
+        while not done:
+            env.render()
+            action = env.action_space.sample()
+            n_state, reward, done, info = env.step(action)
+            score += reward
+        print('Episode:{} Score:{}'.format(episode, score))
+    env.close()
+
+
 '''
 TODO 
 * implement default attack
@@ -12,15 +49,15 @@ TODO
 
 * implement view (render visual array)
 '''
-import time
+'''
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from KI_v01.env.options.actions import *
 from KI_v01.env.options.observations import *
-
+import time
 
 def testMain():
-    '''Auslagern'''
+    # Auslagern
     options = webdriver.ChromeOptions()
     options.add_argument("start-maximized")
     options.add_argument("disable-infobars")
@@ -52,5 +89,5 @@ def testMain():
     test(driver)
     driver.quit()
 
-
 testMain()
+'''
