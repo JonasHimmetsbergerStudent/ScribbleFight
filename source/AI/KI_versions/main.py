@@ -1,8 +1,6 @@
 # not yet implemented
 '''
 TODO 
-* in observations.py sind die variablen namen fix falsch
-
 * implement default attack
 
 * isPlaying url richtig gestalten

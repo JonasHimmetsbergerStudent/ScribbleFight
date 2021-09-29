@@ -60,13 +60,13 @@ class ScribbleFight:
         self.driver.get(url)
 
     def isPlaying(self):
-        # port = 3000
+        port = 3000
+        url = '://localhost:%s' % (port)
         # url = '://localhost:%s/fight' % (port)
-        url = '://localhost:'
         return url in self.driver.current_url
 
     def update(self):
-        # get stats via cookies
+        # get stats
         self.dmgDealt, self.knockback, self.deaths, self.kills = getStats(
             self.driver)
 
