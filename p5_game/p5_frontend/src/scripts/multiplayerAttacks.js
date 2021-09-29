@@ -73,7 +73,7 @@ function deleteAttack(data) {
 }
 
 function addBomb(data) {
-    let bomb = createSprite(data.x, data.y, 50, 50);
+    let bomb = createSprite(data.x, data.y, pixelWidth * 2, pixelWidth * 2);
     bomb.velocity.x = data.v;
     bomb.addImage(bombImg);
     bomb.life = 1000;
@@ -85,7 +85,7 @@ function addBomb(data) {
 }
 
 function addDefaultAttack(data) {
-    projectile = createSprite(data.x, data.y, 20, 20);
+    projectile = createSprite(data.x, data.y, pixelWidth, pixelWidth);
     projectile.life = 100;
     projectile.velocity.x = data.velX;
     projectile.velocity.y = data.velY;
@@ -98,20 +98,20 @@ function addDefaultAttack(data) {
 }
 
 function addBlackHole(data) {
-    let b = createSprite(data.x, data.y, 50, 50);
+    let b = createSprite(data.x, data.y, pixelWidth * 2, pixelWidth * 2);
     b.velocity.x = data.v;
     b.addImage(boogieBombImg);
     b.life = 500;
     b.setDefaultCollider();
     b.debug = true;
-    b.maxSpeed = 20;
+    b.maxSpeed = pixelWidth - pixelWidth / 5;
     b.me = false;
     blackHoles.push(b);
 }
 
 
 function addPiano(data) {
-    let piano = createSprite(data.x, 10, 100, 100);
+    let piano = createSprite(data.x, 10, pixelWidth * 4, pixelWidth * 4);
     piano.addImage(pianoImg);
     piano.rotation = data.rotation;
     piano.setCollider("rectangle", 0, 0, 100, 100);
@@ -121,10 +121,10 @@ function addPiano(data) {
 }
 
 function addMine(data) {
-    let mine = createSprite(data.x, data.y, 50, 50);
+    let mine = createSprite(data.x, data.y, pixelWidth * 2, pixelWidth * 2);
     mine.addImage(mineImg);
     mine.setDefaultCollider();
-    mine.maxSpeed = 5;
+    mine.maxSpeed = pixelWidth / 5;
     mine.debug = true;
     mine.me = false;
     mine.playerId = data.playerId;
@@ -133,5 +133,5 @@ function addMine(data) {
 
 function addSmall(data) {
     players[data.playerId].sprite.addImage(amogus_supreme);
-    players[data.playerId].sprite.scale = 0.7;
+    players[data.playerId].sprite.scale = 0.6;
 }
