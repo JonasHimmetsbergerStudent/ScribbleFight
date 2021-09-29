@@ -154,7 +154,7 @@ function createNewPlayer(data) {
   loadImage('assets/amogus.png', img => {
     img.resize(imageFaktor, 0);
     players[data.id] = new Player(createSprite(windowWidth / 2, windowHeight / 2, player_width, player_height));
-    players[data.id].sprite.maxSpeed = 25;
+    players[data.id].sprite.maxSpeed = pixelWidth;
     players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
     players[data.id].sprite.debug = true;
     players[data.id].sprite.addImage(img);
@@ -198,11 +198,10 @@ function addKill(data) {
   myPlayer.kills += 1;
 }
 
-let damagedByTimer = 5;
+let damagedByTimer = 3;
 function draw() {
   touches_side = false;
   if (myPlayer != undefined && !youAreDead) {
-    myPlayer.sprite.limitSpeed(pixelWidth);
     if (!flying && !noGravity) {
       myPlayer.sprite.velocity.y -= GRAVITY;
     } else if (flying) {
@@ -373,13 +372,13 @@ function init() {
           img.resize(pixelWidth  *2, 0);
           itemImgBlue = img;
           loadImage('assets/piano.png', img => {
-            img.resize(pixelWidth * 4, 0);
+            img.resize(pixelWidth * 5, 0);
             pianoImg = img;
             loadImage('assets/item_yellow.png', img => {
               img.resize(pixelWidth*2, 0);
               itemImgYellow = img;
               loadImage('assets/item_orange.png', img => {
-                img.resize(50, 0);
+                img.resize(pixelWidth*2, 0);
                 itemImgOrange = img;
                 loadImage('assets/mine.png', img => {
                   img.resize(pixelWidth*2, 0);
