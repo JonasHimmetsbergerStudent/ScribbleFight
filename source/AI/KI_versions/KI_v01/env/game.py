@@ -83,10 +83,8 @@ class Game:
     '''AI INTERFACE TO SCRIBBLEFIGHT GAME INSTANCE'''
 
     def __init__(self):
-        # self.np_random = 0 # not needed
-        # self.seed() # not needed
         self.scribble_fight = ScribbleFight()
-        self.min_game_length = 30 * FPS  # 1 min
+        self.min_game_length = 1 * FPS  # 1 min
         self.nothingChanged = 0  # player didn't accomplish anything in this timespan
         self.just_won = False  # the winning condition has yet to be implemented
         self.previous_damage_dealt = 0
@@ -179,8 +177,3 @@ class Game:
     def view(self):
         # render visual array?
         pass
-
-    def seed(self, seed=None):
-        # i dont really know why i implemented this
-        self.np_random, seed = seeding.np_random(seed)
-        return [seed]

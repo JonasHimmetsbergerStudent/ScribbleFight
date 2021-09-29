@@ -19,9 +19,9 @@ import time
 
 if __name__ == "__main__":
     env = gym.make("ScribbleFight-v0")
-    time.sleep(3)
+    time.sleep(1)
 
-    episodes = 100
+    episodes = 1
     for episode in range(1, episodes+1):
         state = env.reset()
         done = False
