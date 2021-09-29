@@ -1,5 +1,5 @@
 import gym
-from gym.spaces import Discrete, Box, Dict, Tuple, MultiBinary, MultiDiscrete
+from gym.spaces import Discrete, Box
 from KI_v01.env.game import Game
 
 
@@ -32,7 +32,7 @@ class CustomEnv(gym.Env):
         obs = self.pygame.observe()
         reward = self.pygame.evaluate()
         done = self.pygame.is_done()
-        info = self.pygame.info()  # not really needed
+        # # info = self.pygame.info()  # not really needed
         return obs, reward, done, {}
 
     def render(self, mode="human", close=False):
