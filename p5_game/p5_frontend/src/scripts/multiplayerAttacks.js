@@ -89,7 +89,7 @@ function addDefaultAttack(data) {
     projectile.life = 100;
     projectile.velocity.x = data.velX;
     projectile.velocity.y = data.velY;
-    projectile.limitSpeed(pixelWidth - pixelWidth/5);
+    projectile.limitSpeed(pixelWidth - pixelWidth/2);
     projectile.setDefaultCollider();
     projectile.id = data.id;
     projectile.playerId = data.playerId;
@@ -114,7 +114,7 @@ function addPiano(data) {
     let piano = createSprite(data.x, 10, pixelWidth * 4, pixelWidth * 4);
     piano.addImage(pianoImg);
     piano.rotation = data.rotation;
-    piano.setCollider("rectangle", 0, 0, 100, 100);
+    piano.setCollider("rectangle", 0, 0, pixelWidth*4, pixelWidth*4);
     piano.id = data.id;
     piano.playerId = data.playerId;
     pianos.push(piano);

@@ -28,7 +28,7 @@ function defaultAttack(x, y) {
   projectile.setDefaultCollider();
   projectile.me = true;
   projectile.id = id;
-  projectile.limitSpeed(pixelWidth - pixelWidth/5);
+  projectile.limitSpeed(pixelWidth - pixelWidth/2);
   projectile.playerId = socket.id;
 
   projectiles.push(projectile);
@@ -75,7 +75,6 @@ function defaultAttackPhysics() {
         addSpriteToVisual(projectile, 5);
       }
 
-      console.log(projectile.getSpeed());
       //and hits the map, destroy it
       if (projectile.overlap(environment)) {
         projectile.remove();
@@ -90,20 +89,19 @@ function defaultAttackPhysics() {
         }
       }
       if (!projectile.me) {
-        if (projectile.collide(myPlayer.sprite)) {
+        if (projectile.overlap(myPlayer.sprite)) {
           if (myPlayer.sprite.velocity.x > 0 && projectile.velocity.x > 0 || myPlayer.sprite.velocity.x < 0 && projectile.velocity.x < 0) {
             diffDirection = false;
           } if (myPlayer.sprite.velocity.y < 2 && myPlayer.sprite.velocity.y != 1 && projectile.velocity.y <= 0) {
             diffDirection = false;
           }
           if (!diffDirection) {
-            myPlayer.sprite.velocity.x = projectile.velocity.x * 100;
-            myPlayer.sprite.velocity.y = projectile.velocity.y * testKnockback * 100;
+            myPlayer.sprite.velocity.x = projectile.velocity.x;
+            myPlayer.sprite.velocity.y = projectile.velocity.y;
           } else {
-            myPlayer.sprite.velocity.x = -projectile.velocity.x * 100;
-            myPlayer.sprite.velocity.y = -projectile.velocity.y * 100;
+            myPlayer.sprite.velocity.x = -projectile.velocity.x;
+            myPlayer.sprite.velocity.y = -projectile.velocity.y;
           }
-          myPlayer.sprite.limitSpeed(2 * testKnockback);
           let data = {
             playerId: socket.id,
             id: projectile.id,
@@ -146,9 +144,9 @@ function bombAttack() {
 
       } if (myPlayer.direction == "left") {
         if (imSmall) {
-          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width / 2, myPlayer.sprite.position.y - pixelWidth, pixelWidth * 2, pixelWidth * 2);
+          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width / 2, myPlayer.sprite.position.y - pixelWidth, pixelWidth, pixelWidth);
         } else {
-          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
+          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, pixelWidth, pixelWidth);
         }
         myPlayer.item["bomb"].sprite.velocity.x -=  pixelWidth/5 * GAMESPEED;
         while ((environment.overlap(myPlayer.item["bomb"].sprite))) {
@@ -163,7 +161,6 @@ function bombAttack() {
       myPlayer.item["bomb"].sprite.setDefaultCollider();
       myPlayer.item["bomb"].sprite.id = id;
       myPlayer.item["bomb"].sprite.playerId = socket.id;
-      console.log(myPlayer.item["bomb"].sprite.collider);
       bombs.push(myPlayer.item["bomb"].sprite);
       let data = {
         id: id,
@@ -182,7 +179,7 @@ function bombPhysics() {
   diffDirection = false;
   if (bombs.length >= 1) {
     bombs.forEach(bomb => {
-      if (bomb.velocity.y <= 20) {
+      if (bomb.velocity.y <= pixelWidth-pixelWidth/5) {
         bomb.velocity.y -= GRAVITY * GAMESPEED;
       }
       bomb.bounce(environment);
@@ -192,22 +189,19 @@ function bombPhysics() {
         id: bomb.id,
         playerId: bomb.playerId
       }
-      if (bomb.collide(myPlayer.sprite)) {
-        console.log(bomb.me);
+      if (bomb.overlap(myPlayer.sprite)) {
         if (myPlayer.sprite.velocity.x > 0 && bomb.velocity.x > 0 || myPlayer.sprite.velocity.x < 0 && bomb.velocity.x < 0) {
           diffDirection = true;
         } if (myPlayer.sprite.velocity.y < 2 && myPlayer.sprite.velocity.y != 1 && bomb.velocity.y <= 0) {
           diffDirection = true;
         }
         if (!diffDirection) {
-          myPlayer.sprite.velocity.x = bomb.velocity.x * 100;
-          myPlayer.sprite.velocity.y = bomb.velocity.y * testKnockback * 100;
+          myPlayer.sprite.velocity.x = bomb.velocity.x * pixelWidth / 5;
+          myPlayer.sprite.velocity.y = bomb.velocity.y * pixelWidth / 5;
         } else {
-          myPlayer.sprite.velocity.x = -bomb.velocity.x * 100;
-          myPlayer.sprite.velocity.y = -bomb.velocity.y * 100;
+          myPlayer.sprite.velocity.x = -bomb.velocity.x * pixelWidth/5;
+          myPlayer.sprite.velocity.y = -bomb.velocity.y * pixelWidth/5;
         }
-        myPlayer.sprite.limitSpeed(pixelWidth * GAMESPEED);
-
         flying = true;
         flyingDuration = 50 / GAMESPEED;
         timeFlying = flyingDuration;
@@ -269,7 +263,7 @@ function blackHoleAttack() {
       myPlayer.item["black_hole"].sprite.addImage(boogieBombImg);
       myPlayer.item["black_hole"].sprite.life = 500;
       myPlayer.item["black_hole"].sprite.debug = true;
-      myPlayer.item["black_hole"].sprite.maxSpeed = 20;
+      myPlayer.item["black_hole"].sprite.maxSpeed = pixelWidth-pixelWidth/5;
       myPlayer.item["black_hole"].sprite.me = true;
       blackHoles.push(myPlayer.item["black_hole"].sprite);
       let data = {
@@ -301,7 +295,7 @@ function blackHolePhysics() {
   if (blackHoles.length >= 1) {
     blackHoles.forEach(b => {
       if (b.life <= 400) {
-        b.setCollider("circle", 0, 0, 175);
+        b.setCollider("circle", 0, 0, pixelWidth*6);
         attraction(b);
         b.velocity.y = 0;
         b.velocity.x = 0;
@@ -335,7 +329,7 @@ function pianoTime() {
         let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
         myPlayer.item["piano"].sprite = createSprite(xPos, 10, pixelWidth * 4, pixelWidth * 4);
         myPlayer.item["piano"].sprite.addImage(pianoImg);
-        myPlayer.item["piano"].sprite.setCollider("rectangle", 0, 0, 100, 100);
+        myPlayer.item["piano"].sprite.setCollider("rectangle", 0, 0, pixelWidth*4, pixelWidth*4);
         myPlayer.item["piano"].sprite.debug = true;
         myPlayer.item["piano"].sprite.maxSpeed = pixelWidth-pixelWidth/5;
         myPlayer.item["piano"].sprite.rotation = getRandomInt(360);
@@ -385,9 +379,9 @@ function pianoPhysics() {
         pianos.splice(pianos.indexOf(p), 1);
 
         if (p.position.x <= myPlayer.sprite.position.x) {
-          myPlayer.sprite.velocity.x += pixelWidth/5;
+          myPlayer.sprite.velocity.x += pixelWidth/10;
         } else {
-          myPlayer.sprite.velocity.x -= pixelWidth/5;
+          myPlayer.sprite.velocity.x -= pixelWidth/10;
         }
         flying = true;
         flyingDuration = 20;
@@ -441,7 +435,7 @@ function minePhysics() {
         m.set = true;
       }
       if (m.overlap(myPlayer.sprite) && m.set) {
-        myPlayer.sprite.velocity.y = -pixelWidth;
+        myPlayer.sprite.velocity.y = -pixelWidth * 5;
         myPlayer.sprite.velocity.x *= -1;
         flying = true;
         flyingDuration = 25;
@@ -450,7 +444,6 @@ function minePhysics() {
         mines.splice(mines.indexOf(m), 1);
         m.remove();
         myPlayer.damagedBy = m.playerId;
-        console.log(m.playerId);
         socket.emit("deleteAttack", data);
         myPlayer.knockback += 1;
         if (m.me && myPlayer.item["mine"] != undefined) {
@@ -483,7 +476,7 @@ function smallChecker() {
   if (imSmall) {
     if (smallTimer == 10) {
       myPlayer.sprite.addImage(amogus_supreme);
-      myPlayer.sprite.scale = 0.7;
+      myPlayer.sprite.scale = 0.6;
     }
 
     if (frameCount % 60 == 0 && smallTimer > 0) {
