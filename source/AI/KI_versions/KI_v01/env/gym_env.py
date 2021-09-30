@@ -29,11 +29,10 @@ class CustomEnv(gym.Env):
 
     def step(self, action):
         self.pygame.action(action)
-        # obs = self.pygame.observe()
-        obs = 0
+        obs = self.pygame.observe()
         reward = self.pygame.evaluate()
         done = self.pygame.is_done()
-        # # info = self.pygame.info()  # not really needed
+        # info = self.pygame.info()  # not really needed
         return obs, reward, done, {}
 
     def render(self, mode="human", close=False):

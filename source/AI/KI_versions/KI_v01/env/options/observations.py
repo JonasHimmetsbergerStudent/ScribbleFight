@@ -1,14 +1,14 @@
 
-'''def getStats(driver):
+def getStats(driver):
     dmgDealt, knockback, deaths, kills = 0, 0, 0, 0
 
     dmgDealt, knockback, deaths, kills = driver.execute_script(
         'return [myPlayer.dmgDealt, myPlayer.knockback, myPlayer.death, myPlayer.kills]')
 
-    return dmgDealt, knockback, deaths, kills'''
-'''
+    return dmgDealt, knockback, deaths, kills
 
-def getStats(driver):
+
+def getStatsViaCookies(driver):
     cookies = driver.get_cookies()
     dmgDealt, knockback, deaths, kills = 0, 0, 0, 0
     for i in range(4):
@@ -22,7 +22,6 @@ def getStats(driver):
         if cookie['name'] == u'kills':
             kills = int(cookie['value'])
     return dmgDealt, knockback, deaths, kills
-'''
 
 
 def getVisual(driver):

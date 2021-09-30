@@ -253,13 +253,14 @@ function draw() {
 
 /**
  * saves stats to cookies
+ * not used
  */
-// function saveToCookies() {
-//   document.cookie = 'death=' + myPlayer.death;
-//   document.cookie = 'dmgDealt=' + myPlayer.dmgDealt;
-//   document.cookie = 'kills=' + myPlayer.kills;
-//   document.cookie = 'knockback=' + myPlayer.knockback;
-// }
+function saveToCookies() {
+  document.cookie = 'death=' + myPlayer.death;
+  document.cookie = 'dmgDealt=' + myPlayer.dmgDealt;
+  document.cookie = 'kills=' + myPlayer.kills;
+  document.cookie = 'knockback=' + myPlayer.knockback;
+}
 
 /**
  * it is what it is
