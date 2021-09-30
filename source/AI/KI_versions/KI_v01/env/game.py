@@ -9,7 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 
 '''VARIABLES'''
-FPS = 30
+FPS = 10
 BUTTONS = [  # not needed
     "SPACE",
     "A",
@@ -60,8 +60,13 @@ class ScribbleFight:
         if action == 0:
             left(self.driver)
         if action == 1:
-            right(self.driver)
+            # right(self.driver)
+            left(self.driver)
+
         if action == 2:
+            # idle state
+            left(self.driver)
+
             pass
 
     def action(self, action, angle):
@@ -81,6 +86,7 @@ class ScribbleFight:
         if action == 6:
             default(self.driver, angle)
         if action == 7:
+            # idle state
             pass
 
 
@@ -90,7 +96,7 @@ class Game:
 
     def __init__(self):
         self.scribble_fight = ScribbleFight()
-        self.min_game_length = 1 * FPS  # 1 min
+        self.min_game_length = 30 * FPS  # 1 min
         self.nothingChanged = 0  # player didn't accomplish anything in this timespan
         self.just_won = False  # the winning condition has yet to be implemented
         self.previous_damage_dealt = 0
@@ -105,7 +111,10 @@ class Game:
         if (self.scribble_fight.isPlaying() is False):
             return
 
-        # take action
+        # take set of actions
+        '''DISCRETE[0]: "A", "D", idle
+        DISCRETE[1]: "SPACE", "E", "Q", "R", "C", "F", "LEFTCLICK", idle     
+        DISCRETE[2]: ANGLE+, ANGLE-, idle'''
         for item in range(3):
             if item == 0:
                 self.scribble_fight.move(actions[item])
@@ -121,6 +130,7 @@ class Game:
                     if self.angle < 0:
                         self.angle += 360
                 if actions[item] == 2:
+                    # idle state
                     pass
 
         # update and save in-game stats
