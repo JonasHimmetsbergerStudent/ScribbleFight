@@ -21,7 +21,7 @@ if __name__ == "__main__":
     env = gym.make("ScribbleFight-v0")
     time.sleep(1)
 
-    episodes = 1
+    episodes = 3
     for episode in range(1, episodes+1):
         state = env.reset()
         done = False
@@ -32,6 +32,7 @@ if __name__ == "__main__":
             action = env.action_space.sample()
             n_state, reward, done, info = env.step(action)
             score += reward
+            print(score)
         print('Episode:{} Score:{}'.format(episode, score))
     env.close()
 
