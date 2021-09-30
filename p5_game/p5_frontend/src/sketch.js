@@ -70,10 +70,10 @@ function setup() {
     }
 
     pixelWidth = Math.max(obildbreite, obildhoehe) / pixel_clumps[0].length * faktor;
-    JUMP = pixelWidth - (pixelWidth/3);
-    SPEED = pixelWidth/4;
-    CLIMBINGSPEED = -(pixelWidth/4);
-    GRAVITY = -pixelWidth/25;
+    JUMP = pixelWidth - (pixelWidth / 3);
+    SPEED = pixelWidth / 4;
+    CLIMBINGSPEED = -(pixelWidth / 4);
+    GRAVITY = -pixelWidth / 25;
     environment = new Group();
     console.log(pixelWidth);
     for (let i = 0; i < pixel_clumps.length; i++) {
@@ -158,9 +158,9 @@ function createNewPlayer(data) {
     players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
     players[data.id].sprite.debug = true;
     players[data.id].sprite.addImage(img);
-    
+
     amogus = img;
-    if(data.id == socket.id) {
+    if (data.id == socket.id) {
       myPlayer = players[data.id];
     }
   });
@@ -212,7 +212,7 @@ function draw() {
     // https://morioh.com/p/d15a64da5d09
     visCopy = JSON.parse(JSON.stringify(visual));
     addSpriteToVisual(myPlayer.sprite, 2);
-    // console.log(visCopy);
+    // saveToCookies();
     bombPhysics();
     defaultAttackPhysics();
     blackHolePhysics();
@@ -250,6 +250,16 @@ function draw() {
     socket.emit('update', data);
   }
 }
+
+/**
+ * saves stats to cookies
+ */
+// function saveToCookies() {
+//   document.cookie = 'death=' + myPlayer.death;
+//   document.cookie = 'dmgDealt=' + myPlayer.dmgDealt;
+//   document.cookie = 'kills=' + myPlayer.kills;
+//   document.cookie = 'knockback=' + myPlayer.knockback;
+// }
 
 /**
  * it is what it is
@@ -360,31 +370,31 @@ function windowResized() {
 
 function init() {
   loadImage('assets/bomb.png', img => {
-    img.resize(pixelWidth*2, 0);
+    img.resize(pixelWidth * 2, 0);
     bombImg = img;
     loadImage('assets/item.png', img => {
-      img.resize(pixelWidth*2, 0);
+      img.resize(pixelWidth * 2, 0);
       itemImg = img;
       loadImage('assets/boogieBomb.png', img => {
-        img.resize(pixelWidth *2, 0);
+        img.resize(pixelWidth * 2, 0);
         boogieBombImg = img;
         loadImage('assets/item_blue.png', img => {
-          img.resize(pixelWidth  *2, 0);
+          img.resize(pixelWidth * 2, 0);
           itemImgBlue = img;
           loadImage('assets/piano.png', img => {
             img.resize(pixelWidth * 5, 0);
             pianoImg = img;
             loadImage('assets/item_yellow.png', img => {
-              img.resize(pixelWidth*2, 0);
+              img.resize(pixelWidth * 2, 0);
               itemImgYellow = img;
               loadImage('assets/item_orange.png', img => {
-                img.resize(pixelWidth*2, 0);
+                img.resize(pixelWidth * 2, 0);
                 itemImgOrange = img;
                 loadImage('assets/mine.png', img => {
-                  img.resize(pixelWidth*2, 0);
+                  img.resize(pixelWidth * 2, 0);
                   mineImg = img;
                   loadImage('assets/item_green.png', img => {
-                    img.resize(pixelWidth*2, 0);
+                    img.resize(pixelWidth * 2, 0);
                     itemImgGreen = img;
                     loadImage('assets/amogus_supreme.png', img => {
                       img.resize(imageFaktor, 0);
