@@ -41,40 +41,39 @@ function spawn() {
 function createItem(data) {
     let num = data.num;
     let x = data.x;
-    num = 4;
     let itemSize = 2 * pixelWidth;
     if (x != -1) {
         switch (num) {
             case 1:
                 i = createSprite(x, 0, itemSize, itemSize);
                 i.type = "bomb";
-                itemImg.resize(itemSize,itemSize);
+                itemImg.resize(itemSize, itemSize);
                 i.addImage(itemImg);
-                
+
                 break;
             case 2:
                 i = createSprite(x, 0, itemSize, itemSize);
                 i.type = "black_hole";
                 i.addImage(itemImgBlue);
-                itemImgBlue.resize(itemSize,itemSize);
+                itemImgBlue.resize(itemSize, itemSize);
                 break;
             case 3:
                 i = createSprite(x, 0, itemSize, itemSize);
                 i.type = "piano";
                 i.addImage(itemImgYellow);
-                itemImgYellow.resize(itemSize,itemSize);
+                itemImgYellow.resize(itemSize, itemSize);
                 break;
             case 4:
                 i = createSprite(x, 0, itemSize, itemSize);
                 i.type = "mine";
                 i.addImage(itemImgOrange);
-                itemImgOrange.resize(itemSize,itemSize);
+                itemImgOrange.resize(itemSize, itemSize);
                 break;
             case 5:
                 i = createSprite(x, 0, itemSize, itemSize);
                 i.type = "small";
                 i.addImage(itemImgGreen);
-                itemImgGreen.resize(itemSize,itemSize);
+                itemImgGreen.resize(itemSize, itemSize);
                 break;
         }
         i.maxSpeed = 10;
@@ -92,7 +91,7 @@ function itemPickUp() {
     if (items.length > 0) {
         items.forEach(item => {
             item.velocity.y -= GRAVITY;
-            
+
             switch (item.type) {
                 case "bomb":
                     itemString = "bomb";

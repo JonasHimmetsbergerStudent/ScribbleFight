@@ -29,8 +29,8 @@ class CustomEnv(gym.Env):
         obs = self.pygame.observe()
         return obs
 
-    def step(self, action):
-        self.pygame.action(action)
+    def step(self, actions):
+        self.pygame.action(actions)
         obs = self.pygame.observe()
         reward = self.pygame.evaluate()
         done = self.pygame.is_done()

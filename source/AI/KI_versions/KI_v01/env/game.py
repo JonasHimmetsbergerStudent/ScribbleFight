@@ -56,26 +56,32 @@ class ScribbleFight:
         self.dmgDealt, self.knockback, self.deaths, self.kills = getStats(
             self.driver)
 
+    def move(self, action):
+        if action == 0:
+            left(self.driver)
+        if action == 1:
+            right(self.driver)
+        if action == 2:
+            pass
+
     def action(self, action, angle):
         # down ('s') action not implemented
         if action == 0:
             jump(self.driver)
         if action == 1:
-            left(self.driver)
-        if action == 2:
-            right(self.driver)
-        if action == 3:
             bombAttack(self.driver)
-        if action == 4:
+        if action == 2:
             blackHoleAttack(self.driver)
-        if action == 5:
+        if action == 3:
             pianoTime(self.driver)
-        if action == 6:
+        if action == 4:
             placeMine(self.driver)
-        if action == 7:
+        if action == 5:
             makeMeSmall(self.driver)
-        if action == 8:
+        if action == 6:
             default(self.driver, angle)
+        if action == 7:
+            pass
 
 
 class Game:
@@ -93,23 +99,29 @@ class Game:
         self.previous_deaths = 0
         self.angle = 0  # angle in which the ai can shoot a bullet
 
-    def action(self, action):
+    def action(self, actions):
         # if current browser window has wrong url
         #   then dont execute action
         if (self.scribble_fight.isPlaying() is False):
             return
 
         # take action
-        if action < 9:
-            self.scribble_fight.action(action, self.angle)
-        if action == 9:
-            self.angle += 5
-            if self.angle > 360:
-                self.angle -= 360
-        if action == 10:
-            self.angle -= 5
-            if self.angle < 0:
-                self.angle += 360
+        for item in range(3):
+            if item == 0:
+                self.scribble_fight.move(actions[item])
+            if item == 1:
+                self.scribble_fight.action(actions[item], self.angle)
+            if item == 2:
+                if actions[item] == 0:
+                    self.angle += 5
+                    if self.angle > 360:
+                        self.angle -= 360
+                if actions[item] == 1:
+                    self.angle -= 5
+                    if self.angle < 0:
+                        self.angle += 360
+                if actions[item] == 2:
+                    pass
 
         # update and save in-game stats
         self.scribble_fight.update()

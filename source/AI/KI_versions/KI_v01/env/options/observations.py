@@ -9,6 +9,7 @@ def getStats(driver):
 
 
 def getStatsViaCookies(driver):
+    # cookies deactivated on client
     cookies = driver.get_cookies()
     dmgDealt, knockback, deaths, kills = 0, 0, 0, 0
     for i in range(4):
