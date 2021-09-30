@@ -3,7 +3,7 @@ import numpy as np
 import ast
 import cv2
 
-f = open("./testArray/test.txt", "r")
+f = open("./source/prototypes/testArray/test.txt", "r")
 iar = ast.literal_eval(f.read())
 
 rows = len(iar)
@@ -51,4 +51,4 @@ while y < rows:
 
 
 iar = np.asarray(newImg).tolist()
-cv2.imwrite('testArray/newImg.png', np.array(newImg))
+cv2.imwrite('./source/prototypes/testArray/newImg.png', np.array(newImg))

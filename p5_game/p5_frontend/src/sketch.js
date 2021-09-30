@@ -281,11 +281,11 @@ function createAndFillTwoDArray({ rows, columns, defaultValue }) {
  * @returns new visual array
  */
 function getVisualMap(paramarr) {
-  let visual = createAndFillTwoDArray({ rows: paramarr.length * 3, columns: paramarr.length * 3, defaultValue: [0] })
+  let visual = createAndFillTwoDArray({ rows: paramarr.length * 3, columns: paramarr.length * 3, defaultValue: 0 })
   for (let i = 0; i < visual.length; i++) {
     for (let j = 0; j < visual[0].length; j++) {
       if (paramarr[int(i / 3)][int(j / 3)][3] > 0) {
-        visual[i][j] = [1]
+        visual[i][j] = 1
       }
     }
   }
