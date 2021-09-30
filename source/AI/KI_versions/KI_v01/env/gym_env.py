@@ -1,5 +1,5 @@
 import gym
-from gym.spaces import Discrete, Box
+from gym.spaces import MultiDiscrete, Box
 from KI_v01.env.game import Game
 
 
@@ -12,15 +12,17 @@ class CustomEnv(gym.Env):
     #metadata = {'render.modes' : ['human']}
     def __init__(self):
         self.pygame = Game()
-        # "SPACE", "A", "D", "E", "Q", "R", "C", "F", "LEFTCLICK", ANGLE+, ANGLE-
-        self.action_space = Discrete(11)
+        '''DISCRETE[0]: ANGLE+, ANGLE-, idle
+        DISCRETE[1]: "SPACE", "E", "Q", "R", "C", "F", "LEFTCLICK", idle
+        DISCRETE[2]: "A", "D", idle'''
+        self.action_space = MultiDiscrete([3, 8, 3])
         '''random output when observation_space is sampled:
-        [[[0],[0],[0],...],
-         [[0],[1],[0],...],
+        [[0,0,0,...],
+         [0,1,0,...],
               .....,
-         [[0],[1],[3],...],
-         [[0],[1],[5],...]]'''
-        self.observation_space = Box(0, 10, (165, 165, 1), int)
+         [0,1,3,...],
+         [0,1,5,...]]'''
+        self.observation_space = Box(0, 10, (165, 165), int)
 
     def reset(self):
         self.pygame.reset()
