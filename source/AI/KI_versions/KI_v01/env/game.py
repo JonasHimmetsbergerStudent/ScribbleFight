@@ -57,37 +57,40 @@ class ScribbleFight:
             self.driver)
 
     def move(self, action):
+        actionString = ''
         if action == 0:
-            left(self.driver)
+            actionString = 'moveLeft(); mirrorSpriteLeft();'
         if action == 1:
-            # right(self.driver)
-            left(self.driver)
-
+            actionString = 'moveRight(); mirrorSpriteRight();'
         if action == 2:
             # idle state
-            left(self.driver)
-
             pass
+        return actionString
 
     def action(self, action, angle):
         # down ('s') action not implemented
+        actionString = ''
         if action == 0:
-            jump(self.driver)
+            actionString = 'jump()'
         if action == 1:
-            bombAttack(self.driver)
+            actionString = 'bombAttack()'
         if action == 2:
-            blackHoleAttack(self.driver)
+            actionString = 'blackHoleAttack()'
         if action == 3:
-            pianoTime(self.driver)
+            actionString = 'pianoTime()'
         if action == 4:
-            placeMine(self.driver)
+            actionString = 'placeMine()'
         if action == 5:
-            makeMeSmall(self.driver)
+            actionString = 'makeMeSmall()'
         if action == 6:
-            default(self.driver, angle)
+            actionString = 'shootAngle(%s)' % (angle)
         if action == 7:
             # idle state
             pass
+        return actionString
+
+    def execAction(self, actionString):
+        takeAction(self.driver, actionString)
 
 
 class Game:
@@ -115,11 +118,14 @@ class Game:
         '''DISCRETE[0]: "A", "D", idle
         DISCRETE[1]: "SPACE", "E", "Q", "R", "C", "F", "LEFTCLICK", idle     
         DISCRETE[2]: ANGLE+, ANGLE-, idle'''
+        actionString = ''
+
         for item in range(3):
             if item == 0:
-                self.scribble_fight.move(actions[item])
+                actionString += self.scribble_fight.move(actions[item])
             if item == 1:
-                self.scribble_fight.action(actions[item], self.angle)
+                actionString += self.scribble_fight.action(
+                    actions[item], self.angle)
             if item == 2:
                 if actions[item] == 0:
                     self.angle += 5
@@ -132,6 +138,9 @@ class Game:
                 if actions[item] == 2:
                     # idle state
                     pass
+
+        if actionString:
+            self.scribble_fight.execAction(actionString)
 
         # update and save in-game stats
         self.scribble_fight.update()
