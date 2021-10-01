@@ -60,8 +60,10 @@ class ScribbleFight:
         actionString = ''
         if action == 0:
             actionString = 'moveLeft(); mirrorSpriteLeft();'
+            # left(self.driver)
         if action == 1:
             actionString = 'moveRight(); mirrorSpriteRight();'
+            # right(self.driver)
         if action == 2:
             # idle state
             pass
@@ -72,18 +74,25 @@ class ScribbleFight:
         actionString = ''
         if action == 0:
             actionString = 'jump()'
+            # jump(self.driver)
         if action == 1:
             actionString = 'bombAttack()'
+            # bombAttack(self.driver)
         if action == 2:
             actionString = 'blackHoleAttack()'
+            # blackHoleAttack(self.driver)
         if action == 3:
             actionString = 'pianoTime()'
+            # pianoTime(self.driver)
         if action == 4:
             actionString = 'placeMine()'
+            # placeMine(self.driver)
         if action == 5:
             actionString = 'makeMeSmall()'
+            # makeMeSmall(self.driver)
         if action == 6:
             actionString = 'shootAngle(%s)' % (angle)
+            # default(self.driver, angle)
         if action == 7:
             # idle state
             pass
