@@ -271,10 +271,11 @@ function saveToCookies() {
  */
 function getVisualMap(paramarr) {
   let visual = []
-  for (let i = 0; i < paramarr.length * 3; i++) {
+  let factor = 3
+  for (let i = 0; i < paramarr.length * factor; i++) {
     visual.push([])
-    for (let j = 0; j < paramarr.length * 3; j++) {
-      if (paramarr[int(i / 3)][int(j / 3)][3] > 0) {
+    for (let j = 0; j < paramarr.length * factor; j++) {
+      if (paramarr[int(i / factor)][int(j / factor)][3] > 0) {
         visual[i].push(1)
       } else {
         visual[i].push(0)
@@ -316,11 +317,11 @@ function getVisualCoordinates(x, y) {
  */
 function addSpriteToVisual(sprite, num) {
   let maxWidthHeight = pixel_clumps[0].length * pixelWidth
-  let spriteWidth = sprite.collider.extents.x
-  let spriteHeight = sprite.collider.extents.y
-  let oriWidthInVisualUnit = spriteWidth * visual[0].length / (maxWidthHeight);
-  let oriHeightInVisualUnit = spriteHeight * visual[0].length / (maxWidthHeight);
-  let visualUnitCoordinates = getVisualCoordinates(sprite.position.x - spriteWidth / 2, sprite.position.y - spriteHeight / 2);
+  let spriteX = sprite.collider.extents.x
+  let spriteY = sprite.collider.extents.y
+  let oriWidthInVisualUnit = spriteX * visual[0].length / (maxWidthHeight);
+  let oriHeightInVisualUnit = spriteY * visual[0].length / (maxWidthHeight);
+  let visualUnitCoordinates = getVisualCoordinates(sprite.position.x - spriteX / 2, sprite.position.y - spriteY / 2);
   let visualUnitX = visualUnitCoordinates.x;
   let visualUnitY = visualUnitCoordinates.y;
   let maxXIterations = visualUnitX + oriWidthInVisualUnit;

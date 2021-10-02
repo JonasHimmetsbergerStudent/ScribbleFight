@@ -30,6 +30,7 @@ if __name__ == "__main__":
             env.render()
             actions = env.action_space.sample()
             # actions[0] = 1
+            # actions[1] = 1
             n_state, reward, done, info = env.step(actions)
             score += reward
             print(actions)
