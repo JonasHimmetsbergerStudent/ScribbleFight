@@ -83,7 +83,7 @@ def test_message(message):
 
         json_str = json.dumps(playerMap)
 
-        cv2.imwrite('./prototypes/streamFusion/output/input.png', img)
+        cv2.imwrite('./source/prototypes/streamFusion/output/input.png', img)
 
         emit('playable map', {'map': json_str})
     except:
