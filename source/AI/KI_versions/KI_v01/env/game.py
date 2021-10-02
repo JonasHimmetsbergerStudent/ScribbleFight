@@ -119,7 +119,7 @@ class Game:
 
     def action(self, actions):
         # if current browser window has wrong url
-        #   then dont execute action
+        #   then dont execute actions
         if (self.scribble_fight.isPlaying() is False):
             return
 

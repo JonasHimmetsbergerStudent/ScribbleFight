@@ -263,17 +263,6 @@ function saveToCookies() {
 }
 
 /**
- * it is what it is
- * @param {*} param0 
- * @returns 
- */
-function createAndFillTwoDArray({ rows, columns, defaultValue }) {
-  return Array.from({ length: rows }, () => (
-    Array.from({ length: columns }, () => defaultValue)
-  ))
-}
-
-/**
  * Converts standard map, which is 55x55 
  * into visual map which is 165x165 for better accuracy
  * 
@@ -281,11 +270,14 @@ function createAndFillTwoDArray({ rows, columns, defaultValue }) {
  * @returns new visual array
  */
 function getVisualMap(paramarr) {
-  let visual = createAndFillTwoDArray({ rows: paramarr.length * 3, columns: paramarr.length * 3, defaultValue: 0 })
-  for (let i = 0; i < visual.length; i++) {
-    for (let j = 0; j < visual[0].length; j++) {
+  let visual = []
+  for (let i = 0; i < paramarr.length * 3; i++) {
+    visual.push([])
+    for (let j = 0; j < paramarr.length * 3; j++) {
       if (paramarr[int(i / 3)][int(j / 3)][3] > 0) {
-        visual[i][j] = 1
+        visual[i].push(1)
+      } else {
+        visual[i].push(0)
       }
     }
   }
