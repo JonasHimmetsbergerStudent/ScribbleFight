@@ -1,6 +1,7 @@
 class Player {
     constructor(sprite) {
         this.sprite = sprite;
+        this.id = null;
         this.knockback = 1;
         this.death = 0;
         this.kills = 0;

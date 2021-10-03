@@ -158,7 +158,7 @@ function createNewPlayer(data) {
     players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
     players[data.id].sprite.debug = true;
     players[data.id].sprite.addImage(img);
-
+    players[data.id].id = data.id;
     amogus = img;
     if (data.id == socket.id) {
       myPlayer = players[data.id];
