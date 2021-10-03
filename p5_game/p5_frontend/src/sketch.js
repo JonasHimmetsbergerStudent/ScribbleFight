@@ -18,6 +18,8 @@ var background_path = "assets/komischer_smiley.png";
 var visual;
 var pixelWidth;
 var visCopy;
+var obildbreite = undefined;
+var obildhoehe = undefined;
 
 // Images
 var amogus;
@@ -39,10 +41,6 @@ var JUMP;
 if (GAMESPEED > 1) {
   JUMP = 15 * GAMESPEED / 1.435;
 }
-var SPEED = 5;
-var CLIMBINGSPEED;
-
-
 
 function setup() {
   var canvas = createCanvas(windowWidth, windowHeight);
@@ -51,11 +49,11 @@ function setup() {
   backgroundImage.src = background_path;
 
 
-  var obildbreite = 1;
-  var obildhoehe = 1;
+ 
   backgroundImage.onload = function () {
     obildbreite = this.width;
     obildhoehe = this.height;
+  
 
     if ((windowWidth / windowHeight) > (obildbreite / obildhoehe)) {
       let screenHeight = windowHeight;
@@ -68,6 +66,7 @@ function setup() {
       newImageHeight = faktor * obildhoehe;
       newImageWidth = faktor * obildbreite;
     }
+   
 
     pixelWidth = Math.max(obildbreite, obildhoehe) / pixel_clumps[0].length * faktor;
     JUMP = pixelWidth - (pixelWidth / 3);
@@ -153,7 +152,8 @@ function setup() {
 function createNewPlayer(data) {
   loadImage('assets/amogus.png', img => {
     img.resize(imageFaktor, 0);
-    players[data.id] = new Player(createSprite(windowWidth / 2, windowHeight / 2, player_width, player_height));
+    players[data.id] = new Player(createSprite(newImageWidth / 2, newImageHeight/2, player_width, player_height));
+    console.log(newImageWidth);
     players[data.id].sprite.maxSpeed = pixelWidth;
     players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
     players[data.id].sprite.debug = true;
@@ -174,9 +174,9 @@ function deletePlayer(id) {
 }
 
 function updatePosition(data) {
-  if (players[data.id] != undefined) {
-    players[data.id].sprite.position.x = data.x;
-    players[data.id].sprite.position.y = data.y;
+  if (players[data.id] != undefined && obildbreite!= undefined && obildhoehe != undefined) {
+    players[data.id].sprite.position.x = data.x * newImageWidth/obildbreite + (windowWidth-newImageWidth)/2;
+    players[data.id].sprite.position.y = data.y * newImageHeight/obildhoehe + (windowHeight-newImageHeight)/2;
     addSpriteToVisual(players[data.id].sprite, 3);
   }
 }
@@ -200,6 +200,7 @@ function addKill(data) {
 
 let damagedByTimer = 3;
 function draw() {
+  console.log(obildhoehe);
   touches_side = false;
   if (myPlayer != undefined && !youAreDead) {
     if (!flying && !noGravity) {
@@ -243,9 +244,15 @@ function draw() {
     mirrorSprite();
     deathCheck();
     drawSprites();
+    let relFaktor = {
+      x: obildbreite/newImageWidth,
+      y: obildhoehe/newImageHeight
+    }
+    let transferX = (myPlayer.sprite.position.x - (windowWidth-newImageWidth)/2) * relFaktor.x;
+    let transferY = (myPlayer.sprite.position.y - (windowHeight-newImageHeight)/2) * relFaktor.y;
     var data = {
-      x: myPlayer.sprite.position.x,
-      y: myPlayer.sprite.position.y
+      x: transferX,
+      y: transferY
     }
     socket.emit('update', data);
   }
@@ -395,6 +402,7 @@ function init() {
                       amogus_supreme = img;
                       socket.emit('newPlayer');
                       visual = getVisualMap(pixel_clumps);
+                      
                     })
                   })
                 })
