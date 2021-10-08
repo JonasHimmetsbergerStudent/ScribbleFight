@@ -2,6 +2,7 @@ var express = require("express");
 
 var app = express();
 var server = app.listen(3000);
+var kiServer = app.listen(3001);
 
 app.use(express.static('../p5_frontend/src'));
 
@@ -11,10 +12,15 @@ var socket = require('socket.io');
 
 var io = socket(server);
 
+
 var players = new Map();
 var xCoordinates = [];
 var xCoordinatesUsed = [];
 var items = [];
+
+
+
+
 
 
 io.sockets.on('connection', newConnection);
@@ -46,11 +52,14 @@ function newConnection(socket) {
     socket.on('updateDirection', updateDirection);
     socket.on('deleteItem', deleteItem);
     socket.on('attack', syncAttacks);
-    socket.on('kill',kill);
+    socket.on('kill', kill);
     socket.on('deleteAttack', deleteAttack);
     socket.on('xCoordinates', function (data) {
         xCoordinates = data;
     })
+    //for KI
+    socket.on('visCopy', sendVisCopy);
+    
 
     function updatePosition(data) {
         let dataWithId = {
@@ -102,7 +111,7 @@ function newConnection(socket) {
     }
 
     function deleteAttack(data) {
-        players.get(socket.id).knockback +=1;
+        players.get(socket.id).knockback += 1;
         console.log(players.get(socket.id));
         console.log(players);
         socket.broadcast.emit("deleteAttack", data);
@@ -110,7 +119,7 @@ function newConnection(socket) {
 
     function kill(data) {
         console.log(data.damagedBy);
-        io.to(data.damagedBy).emit('kill',1);
+        io.to(data.damagedBy).emit('kill', 1);
         players.get(socket.id).death += 1;
     }
 
@@ -145,6 +154,8 @@ function getItemSpawnPoint() {
     }
 }
 
+
+
 function getRandomInt(num) {
     return Math.floor(Math.random() * num + 1);
 }
@@ -157,4 +168,32 @@ class Player {
         this.item = [];
         this.direction = "";
     }
+}
+
+//// FOR KI
+var table = new Map();
+const io2 = require('socket.io')(kiServer, {
+    cors: {
+        origin: '*',
+    }
+});
+
+// Wie sendet man daten on connect?
+io2.sockets.on("connection", function (socket) {
+    table.set(socket.id, "jsClientId"); // gib ma id
+    console.log("moin");
+
+    socket.on("disconnect", function () {
+        table.delete(socket.id);
+    })
+
+})
+
+function sendVisCopy(data) {
+    console.log("successfull");
+    table.forEach((values, keys) => {
+       if(data.id == values) {
+        io.to(keys).emit(data.visCopy);
+       }
+    })
 }

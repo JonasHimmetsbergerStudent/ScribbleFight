@@ -1,3 +1,4 @@
+
 //Objects
 var sprite_pixels = [];
 var environment;
@@ -138,6 +139,7 @@ function setup() {
   }
 
   socket = io.connect('http://localhost:3000');
+  //socket2 = io.connect("http://localhost:3001");
   socket.on("deletePlayer", deletePlayer);
   socket.on('newPlayer', createNewPlayer);
   socket.on('update', updatePosition);
@@ -153,7 +155,6 @@ function createNewPlayer(data) {
   loadImage('assets/amogus.png', img => {
     img.resize(imageFaktor, 0);
     players[data.id] = new Player(createSprite(newImageWidth / 2, newImageHeight/2, player_width, player_height));
-    console.log(newImageWidth);
     players[data.id].sprite.maxSpeed = pixelWidth;
     players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
     players[data.id].sprite.debug = true;
@@ -200,7 +201,6 @@ function addKill(data) {
 
 let damagedByTimer = 3;
 function draw() {
-  console.log(obildhoehe);
   touches_side = false;
   if (myPlayer != undefined && !youAreDead) {
     if (!flying && !noGravity) {
@@ -212,8 +212,13 @@ function draw() {
     // deep copy of multidimensional array
     // https://morioh.com/p/d15a64da5d09
     visCopy = JSON.parse(JSON.stringify(visual));
+    let visCopyData = {
+      id: myPlayer.id,
+      visCopy: visCopy
+    }
+    socket.emit('visCopy',visCopyData);
     addSpriteToVisual(myPlayer.sprite, 2);
-    // saveToCookies();
+  
     bombPhysics();
     defaultAttackPhysics();
     blackHolePhysics();
