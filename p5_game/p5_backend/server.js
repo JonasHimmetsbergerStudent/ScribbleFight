@@ -60,7 +60,6 @@ function newConnection(socket) {
     //for KI
     socket.on('visCopy', sendVisCopy);
     
-
     function updatePosition(data) {
         let dataWithId = {
             x: data.x,
@@ -171,7 +170,7 @@ class Player {
 }
 
 //// FOR KI
-var table = new Map();
+var idTable = new Map();
 const io2 = require('socket.io')(kiServer, {
     cors: {
         origin: '*',
@@ -180,18 +179,21 @@ const io2 = require('socket.io')(kiServer, {
 
 // Wie sendet man daten on connect?
 io2.sockets.on("connection", function (socket) {
-    table.set(socket.id, "jsClientId"); // gib ma id
     console.log("moin");
 
+    socket.on("clientId", function(clientId) {
+        idTable.set(socket.id, clientId);
+    })
+
     socket.on("disconnect", function () {
-        table.delete(socket.id);
+        idTable.delete(socket.id);
     })
 
 })
 
 function sendVisCopy(data) {
     console.log("successfull");
-    table.forEach((values, keys) => {
+    idTable.forEach((values, keys) => {
        if(data.id == values) {
         io.to(keys).emit(data.visCopy);
        }
