@@ -59,7 +59,7 @@ function newConnection(socket) {
     })
     //for KI
     socket.on('visCopy', sendVisCopy);
-    
+
     function updatePosition(data) {
         let dataWithId = {
             x: data.x,
@@ -181,7 +181,7 @@ const io2 = require('socket.io')(kiServer, {
 io2.sockets.on("connection", function (socket) {
     console.log("moin");
 
-    socket.on("clientId", function(clientId) {
+    socket.on("clientId", function (clientId) {
         idTable.set(socket.id, clientId);
     })
 
@@ -192,10 +192,9 @@ io2.sockets.on("connection", function (socket) {
 })
 
 function sendVisCopy(data) {
-    console.log("successfull");
-    idTable.forEach((values, keys) => {
-       if(data.id == values) {
-        io.to(keys).emit(data.visCopy);
-       }
+    idTable.forEach((value, key) => {
+        if (data.id == value) {
+            io2.to(key).emit('visCopyToPython', data.visCopy);
+        }
     })
 }

@@ -33,8 +33,8 @@ if __name__ == "__main__":
             actions[1] = 1
             n_state, reward, done, info = env.step(actions)
             score += reward
-            print(actions)
         print('Episode:{} Score:{}'.format(episode, score))
+
     env.close()
 
 

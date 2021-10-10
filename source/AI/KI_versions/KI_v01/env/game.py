@@ -6,6 +6,13 @@ from KI_v01.env.options.observations import *
 # webdriver
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
+
+# socketio
+import socketio
 
 
 '''VARIABLES'''
@@ -22,6 +29,13 @@ BUTTONS = [  # not needed
     "LEFTCLICK",
 ]
 
+options = webdriver.ChromeOptions()
+options.add_argument("start-maximized")
+options.add_argument("disable-infobars")
+sio = socketio.Client()
+port = 3000
+url = 'http://localhost:%s' % (port)
+
 
 class ScribbleFight:
 
@@ -29,6 +43,8 @@ class ScribbleFight:
 
     def __init__(self):
         self.driver = None
+        self.playerId = 0
+        self.obs = None
         self.start()
         self.dmgDealt = 0
         self.knockback = 0
@@ -37,18 +53,23 @@ class ScribbleFight:
         self.just_died = False
 
     def start(self):
-        options = webdriver.ChromeOptions()
-        options.add_argument("start-maximized")
-        options.add_argument("disable-infobars")
         self.driver = webdriver.Chrome(chrome_options=options,
                                        executable_path=ChromeDriverManager().install())
-        url = 'http://localhost:3000/'
+
         self.driver.get(url)
 
+        while not self.playerId:
+            try:
+                self.playerId = self.driver.execute_script(
+                    'return myPlayer.id;')
+            except:
+                continue
+
+        sio.connect('http://localhost:3001')
+        sio.emit('clientId', self.playerId)
+        sio.on('visCopyToPython', self.setObs)
+
     def isPlaying(self):
-        port = 3000
-        url = '://localhost:%s' % (port)
-        # url = '://localhost:%s/fight' % (port)
         return url in self.driver.current_url
 
     def update(self):
@@ -100,6 +121,9 @@ class ScribbleFight:
 
     def execAction(self, actionString):
         takeAction(self.driver, actionString)
+
+    def setObs(self, data):
+        self.obs = data
 
 
 class Game:
@@ -156,7 +180,8 @@ class Game:
 
     def observe(self):
         # get computer vision
-        return getVisual(self.scribble_fight.driver)
+        return self.scribble_fight.obs
+        # return getVisual(self.scribble_fight.driver)
 
     def evaluate(self):
         reward = 0

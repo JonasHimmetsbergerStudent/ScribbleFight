@@ -50,11 +50,11 @@ function setup() {
   backgroundImage.src = background_path;
 
 
- 
+
   backgroundImage.onload = function () {
     obildbreite = this.width;
     obildhoehe = this.height;
-  
+
 
     if ((windowWidth / windowHeight) > (obildbreite / obildhoehe)) {
       let screenHeight = windowHeight;
@@ -67,7 +67,7 @@ function setup() {
       newImageHeight = faktor * obildhoehe;
       newImageWidth = faktor * obildbreite;
     }
-   
+
 
     pixelWidth = Math.max(obildbreite, obildhoehe) / pixel_clumps[0].length * faktor;
     JUMP = pixelWidth - (pixelWidth / 3);
@@ -154,7 +154,7 @@ function setup() {
 function createNewPlayer(data) {
   loadImage('assets/amogus.png', img => {
     img.resize(imageFaktor, 0);
-    players[data.id] = new Player(createSprite(newImageWidth / 2, newImageHeight/2, player_width, player_height));
+    players[data.id] = new Player(createSprite(newImageWidth / 2, newImageHeight / 2, player_width, player_height));
     players[data.id].sprite.maxSpeed = pixelWidth;
     players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
     players[data.id].sprite.debug = true;
@@ -175,9 +175,9 @@ function deletePlayer(id) {
 }
 
 function updatePosition(data) {
-  if (players[data.id] != undefined && obildbreite!= undefined && obildhoehe != undefined) {
-    players[data.id].sprite.position.x = data.x * newImageWidth/obildbreite + (windowWidth-newImageWidth)/2;
-    players[data.id].sprite.position.y = data.y * newImageHeight/obildhoehe + (windowHeight-newImageHeight)/2;
+  if (players[data.id] != undefined && obildbreite != undefined && obildhoehe != undefined) {
+    players[data.id].sprite.position.x = data.x * newImageWidth / obildbreite + (windowWidth - newImageWidth) / 2;
+    players[data.id].sprite.position.y = data.y * newImageHeight / obildhoehe + (windowHeight - newImageHeight) / 2;
     addSpriteToVisual(players[data.id].sprite, 3);
   }
 }
@@ -216,9 +216,9 @@ function draw() {
       id: myPlayer.id,
       visCopy: visCopy
     }
-    socket.emit('visCopy',visCopyData);
+    socket.emit('visCopy', visCopyData);
     addSpriteToVisual(myPlayer.sprite, 2);
-  
+
     bombPhysics();
     defaultAttackPhysics();
     blackHolePhysics();
@@ -250,11 +250,11 @@ function draw() {
     deathCheck();
     drawSprites();
     let relFaktor = {
-      x: obildbreite/newImageWidth,
-      y: obildhoehe/newImageHeight
+      x: obildbreite / newImageWidth,
+      y: obildhoehe / newImageHeight
     }
-    let transferX = (myPlayer.sprite.position.x - (windowWidth-newImageWidth)/2) * relFaktor.x;
-    let transferY = (myPlayer.sprite.position.y - (windowHeight-newImageHeight)/2) * relFaktor.y;
+    let transferX = (myPlayer.sprite.position.x - (windowWidth - newImageWidth) / 2) * relFaktor.x;
+    let transferY = (myPlayer.sprite.position.y - (windowHeight - newImageHeight) / 2) * relFaktor.y;
     var data = {
       x: transferX,
       y: transferY
@@ -407,7 +407,7 @@ function init() {
                       amogus_supreme = img;
                       socket.emit('newPlayer');
                       visual = getVisualMap(pixel_clumps);
-                      
+
                     })
                   })
                 })
