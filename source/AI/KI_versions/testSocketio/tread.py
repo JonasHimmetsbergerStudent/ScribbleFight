@@ -17,9 +17,9 @@ class Game(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         self.driver = None
-        self.run()
+        self.startBrowser()
 
-    def run(self):
+    def startBrowser(self):
         options = webdriver.ChromeOptions()
         options.add_argument("start-maximized")
         options.add_argument("disable-infobars")
@@ -27,9 +27,6 @@ class Game(threading.Thread):
                                        executable_path=ChromeDriverManager().install())
         url = 'http://localhost:3000/'
         self.driver.get(url)
-        time.sleep(3)
-        while True:
-            self.driver.execute_script('moveRight();')
 
     def isPlaying(self):
         try:
@@ -39,6 +36,10 @@ class Game(threading.Thread):
             return False
         return True
 
+    def run(self):
+        while True:
+            self.driver.execute_script('moveRight();')
+
 
 class SocketHandl(threading.Thread):
     def __init__(self, driver):
@@ -46,8 +47,6 @@ class SocketHandl(threading.Thread):
         self.obs = None
         self.sio = None
         self.driver = driver
-        time.sleep(3)
-        self.run()
 
     async def start_server(self):
         await self.sio.connect('http://localhost:3001')
@@ -67,19 +66,51 @@ class SocketHandl(threading.Thread):
         self.obs = data
 
     def run(self):
-        loop = asyncio.get_event_loop()
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         self.sio = socketio.AsyncClient(reconnection=True,
                                         logger=False,
                                         engineio_logger=False)
         loop.run_until_complete(self.start_server())
 
+    def get_or_create_eventloop(self):
+        try:
+            return asyncio.get_event_loop()
+        except RuntimeError as ex:
+            if "There is no current event loop in thread" in str(ex):
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                return asyncio.get_event_loop()
 
-# Create new threads
-thread1 = Game()
-thread2 = SocketHandl(thread1.driver)
 
-# Start new Threads
-print("now starting Thread 1")
-thread1.start()
-print("now starting Thread 2")
-thread2.start()
+class Fusion():
+    def init(self):
+        pass
+
+    def letsego(self):
+        threads = []
+        # Create new threads
+        thread1 = Game()
+
+        time.sleep(2)
+        thread2 = SocketHandl(thread1.driver)
+
+        # Start new Threads
+        print("now starting Thread 1")
+        thread1.start()
+        print("now starting Thread 2")
+        thread2.start()
+
+        threads.append(thread1)
+        threads.append(thread2)
+
+        for item in range(10):
+            time.sleep(1)
+            print(thread2.obs)
+
+        for t in threads:
+            t.join()
+
+
+fusion = Fusion()
+Fusion.letsego(fusion)

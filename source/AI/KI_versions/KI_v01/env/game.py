@@ -1,18 +1,15 @@
 '''DEPENDENCIES'''
+# selenium webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium import webdriver
+
 # options
 from KI_v01.env.options.actions import *
 from KI_v01.env.options.observations import *
 
-# webdriver
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
-
-# socketio
-import socketio
+# threading
+#   socketio handler
+from threads.socketHandler import *
 
 
 '''VARIABLES'''
@@ -29,10 +26,10 @@ BUTTONS = [  # not needed
     "LEFTCLICK",
 ]
 
+# selenium webdriver options
 options = webdriver.ChromeOptions()
 options.add_argument("start-maximized")
 options.add_argument("disable-infobars")
-sio = socketio.Client()
 port = 3000
 url = 'http://localhost:%s' % (port)
 
@@ -42,35 +39,37 @@ class ScribbleFight:
     '''SCRIBBLE FIGHT GAME'''
 
     def __init__(self):
+        self.socket_handler = None
         self.driver = None
         self.playerId = 0
         self.obs = None
-        self.start()
         self.dmgDealt = 0
         self.knockback = 0
         self.kills = 0
         self.deaths = 0
         self.just_died = False
+        self.readystate = False
+        self.startBrowser()
 
-    def start(self):
+    def startBrowser(self):
         self.driver = webdriver.Chrome(options=options,
                                        executable_path=ChromeDriverManager().install())
-
         self.driver.get(url)
 
-        while not self.playerId:
-            try:
-                self.playerId = self.driver.execute_script(
-                    'return myPlayer.id;')
-            except:
-                continue
+        while not self.readystate:
+            self.readystate = self.isReady()
 
-        sio.connect('http://localhost:3001')
-        sio.emit('clientId', self.playerId)
-        sio.on('visCopyToPython', self.setObs)
+        # self.socket_handler = SocketHandler(self.playerId)
 
     def isPlaying(self):
-        return url in self.driver.current_url
+        return url in self.driver.current_url  # and self.readystate
+
+    def isReady(self):
+        try:
+            self.playerId = self.driver.execute_script('return myPlayer.id;')
+            return True
+        except:
+            return False
 
     def update(self):
         # get stats
@@ -121,9 +120,6 @@ class ScribbleFight:
 
     def execAction(self, actionString):
         takeAction(self.driver, actionString)
-
-    def setObs(self, data):
-        self.obs = data
 
 
 class Game:
@@ -180,8 +176,8 @@ class Game:
 
     def observe(self):
         # get computer vision
-        return self.scribble_fight.obs
-        # return getVisual(self.scribble_fight.driver)
+        # return self.scribble_fight.socket_handler.obs
+        return None
 
     def evaluate(self):
         reward = 0
@@ -231,6 +227,7 @@ class Game:
         self.previous_kills = self.scribble_fight.kills  # should always be 0
         self.previous_deaths = self.scribble_fight.deaths
         self.scribble_fight.just_died = False
+        # self.scribble_fight.socket_handler.reset()
         self.nothingChanged = 0
         self.angle = 0
 

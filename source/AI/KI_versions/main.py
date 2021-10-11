@@ -8,34 +8,60 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import VecFrameStack
 from stable_baselines3.common.evaluation import evaluate_policy
 
+# threading
+import threading
+from threads.socketHandler import *
+
 # import env
 import KI_v01
 
 # other
-import numpy as np
-import random
-import os
 import time
+from KI_v01.env.gym_env import CustomEnv
+
+
+class KI(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.env = CustomEnv()
+
+    def run(self):
+        episodes = 100
+        for episode in range(1, episodes+1):
+            state = self.env.reset()
+            done = False
+            score = 0
+
+            while not done:
+                self.env.render()
+                actions = self.env.action_space.sample()
+                actions[0] = 1
+                actions[1] = 1
+                state, reward, done, info = self.env.step(actions)
+                score += reward
+            print('Episode:{} Score:{}'.format(episode, score))
+
+        self.env.close()
+
 
 if __name__ == "__main__":
-    env = gym.make("ScribbleFight-v0")
-    time.sleep(1)
-    episodes = 100
-    for episode in range(1, episodes+1):
-        state = env.reset()
-        done = False
-        score = 0
+    threads = []
+    thread1 = KI()
+    while not thread1.env.pygame.scribble_fight.readystate:
+        continue
+    thread2 = SocketHandler(thread1.env.pygame.scribble_fight.playerId)
 
-        while not done:
-            env.render()
-            actions = env.action_space.sample()
-            actions[0] = 1
-            actions[1] = 1
-            n_state, reward, done, info = env.step(actions)
-            score += reward
-        print('Episode:{} Score:{}'.format(episode, score))
+    # Start new Threads
+    print("now starting Game Thread")
+    thread1.start()
+    print("now starting Observation Thread")
+    thread2.start()
 
-    env.close()
+    threads.append(thread1)
+    threads.append(thread2)
+
+    for t in threads:
+        t.join()
 
 
 '''
@@ -51,45 +77,54 @@ TODO
 
 * implement view (render visual array)
 '''
+
 '''
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-from KI_v01.env.options.actions import *
-from KI_v01.env.options.observations import *
+# openai gym
+import gym
+from gym import Env
+from gym.spaces import Discrete, Box, Dict, Tuple, MultiBinary, MultiDiscrete
+
+# stable baselines
+from stable_baselines3 import PPO
+from stable_baselines3.common.vec_env import VecFrameStack
+from stable_baselines3.common.evaluation import evaluate_policy
+
+# threading
+import threading
+
+# import env
+import KI_v01
+
+# other
 import time
+from KI_v01.env.gym_env import CustomEnv
 
-def testMain():
-    # Auslagern
-    options = webdriver.ChromeOptions()
-    options.add_argument("start-maximized")
-    options.add_argument("disable-infobars")
-    driver = webdriver.Chrome(chrome_options=options,
-                              executable_path=ChromeDriverManager().install())
-    url = 'http://localhost:3000/'
-    driver.get(url)
 
-    # driver.set_window_position(10, 10)
-    # print(driver.get_window_size())
-    # print(driver.get_window_position())
-    # wenn url bestimmte form hat (zb '.../fight') dann startet ki
-    print(driver.current_url)
-    ''''''
+class KI:
+    def __init__(self):
+        pass
 
-    def test(driver):
-        x = 10
-        # time.sleep(3)
-        # for item in range(5):
-        # y = item * 3
-        time.sleep(3)
+    def run(self):
+        self.env = gym.make("ScribbleFight-v0")
+        time.sleep(2)
+        episodes = 100
+        for episode in range(1, episodes+1):
+            state = self.env.reset()
+            done = False
+            score = 0
 
-        # myDict = {"x": x, "y": y}
-        print(getStats(driver))
-        # print(getStats(driver))
-        # default(driver, myDict)
-        # left(driver)
+            while not done:
+                self.env.render()
+                actions = self.env.action_space.sample()
+                actions[0] = 1
+                actions[1] = 1
+                state, reward, done, info = self.env.step(actions)
+                score += reward
+            print('Episode:{} Score:{}'.format(episode, score))
 
-    test(driver)
-    driver.quit()
+        self.env.close()
 
-testMain()
-'''
+
+if __name__ == "__main__":
+    ki = KI()
+    ki.run()'''

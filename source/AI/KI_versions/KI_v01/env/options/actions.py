@@ -15,7 +15,10 @@ click(angle)DEFAULT
 
 
 def takeAction(driver, actions):
-    driver.execute_script(actions)
+    try:
+        driver.execute_script(actions)
+    except:
+        pass
 
 
 def jump(driver):

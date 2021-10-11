@@ -1,6 +1,5 @@
 import gym
 from gym.spaces import MultiDiscrete, Box
-import numpy as np
 from KI_v01.env.game import Game
 
 
