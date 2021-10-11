@@ -15,15 +15,23 @@ var diffDirection = false;
 var testKnockback = 3;
 var projectileIndex;
 
+
+function makeCordsRelative(x,y) {
+  return data = {
+    x: (x - (windowWidth - newImageWidth) / 2) * relFaktor.x,
+    y: (y - (windowHeight - newImageHeight) / 2) * relFaktor.y
+  }
+}
+
 function defaultAttack(x, y) {
  
-    projectile = createSprite(myPlayer.sprite.position.x, myPlayer.sprite.position.y, pixelWidth, pixelWidth);
+  projectile = createSprite(myPlayer.sprite.position.x, myPlayer.sprite.position.y, pixelWidth, pixelWidth);
 
   let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
 
   projectile.life = 100;
-  projectile.velocity.x = (x - myPlayer.sprite.position.x) * 100;
-  projectile.velocity.y = (y - myPlayer.sprite.position.y) * 100;
+  projectile.velocity.x = (x - myPlayer.sprite.position.x) * 1000;
+  projectile.velocity.y = (y - myPlayer.sprite.position.y) * 1000;
   // damit man den collider abrufen kann bei addSpriteToVisual
   projectile.setDefaultCollider();
   projectile.me = true;
@@ -35,8 +43,8 @@ function defaultAttack(x, y) {
   let data = {
     id: id,
     type: "default",
-    x: projectile.position.x,
-    y: projectile.position.y,
+    x: relPosData.x,
+    y: relPosData.y,
     velX: projectile.velocity.x,
     velY: projectile.velocity.y,
     playerId: socket.id
@@ -153,6 +161,7 @@ function bombAttack() {
           myPlayer.item["bomb"].sprite.position.x += 1;
         }
       }
+      
 
       let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
       myPlayer.item["bomb"].sprite.addImage(bombImg);
@@ -166,9 +175,8 @@ function bombAttack() {
         id: id,
         playerId: socket.id,
         type: "bomb",
-        x: myPlayer.item["bomb"].sprite.position.x,
-        y: myPlayer.item["bomb"].sprite.position.y,
-        v: myPlayer.item["bomb"].sprite.velocity.x
+        x: makeCordsRelative(myPlayer.item["bomb"].sprite.position.x,myPlayer.item["bomb"].sprite.position.y).x ,
+        y: makeCordsRelative(myPlayer.item["bomb"].sprite.position.x,myPlayer.item["bomb"].sprite.position.y).y,
       }
       socket.emit('attack', data);
     }
@@ -327,7 +335,7 @@ function pianoTime() {
     if (myPlayer.item["piano"] !== undefined && myPlayer.item["piano"].ammo > 0) {
       if (myPlayer.item["piano"].sprite === undefined) {
         let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
-        myPlayer.item["piano"].sprite = createSprite(xPos, 10, pixelWidth * 5, pixelWidth * 5);
+        myPlayer.item["piano"].sprite = createSprite(xPos, 0, pixelWidth * 5, pixelWidth * 5);
         myPlayer.item["piano"].sprite.addImage(pianoImg);
         myPlayer.item["piano"].sprite.setCollider("rectangle", 0, 0, pixelWidth*5, pixelWidth*5);
         myPlayer.item["piano"].sprite.debug = true;

@@ -40,6 +40,7 @@ function spawn() {
 
 function createItem(data) {
     let num = data.num;
+    num = 1;
     let x = data.x;
     let itemSize = 2 * pixelWidth;
     if (x != -1) {

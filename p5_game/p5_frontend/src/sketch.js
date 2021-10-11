@@ -21,6 +21,8 @@ var pixelWidth;
 var visCopy;
 var obildbreite = undefined;
 var obildhoehe = undefined;
+var relPosData;
+var relFaktor;
 
 // Images
 var amogus;
@@ -249,17 +251,17 @@ function draw() {
     mirrorSprite();
     deathCheck();
     drawSprites();
-    let relFaktor = {
+    relFaktor = {
       x: obildbreite / newImageWidth,
       y: obildhoehe / newImageHeight
     }
     let transferX = (myPlayer.sprite.position.x - (windowWidth - newImageWidth) / 2) * relFaktor.x;
     let transferY = (myPlayer.sprite.position.y - (windowHeight - newImageHeight) / 2) * relFaktor.y;
-    var data = {
+    relPosData = {
       x: transferX,
       y: transferY
     }
-    socket.emit('update', data);
+    socket.emit('update', relPosData);
   }
 }
 

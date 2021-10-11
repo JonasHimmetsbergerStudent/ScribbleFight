@@ -177,7 +177,6 @@ const io2 = require('socket.io')(kiServer, {
     }
 });
 
-// Wie sendet man daten on connect?
 io2.sockets.on("connection", function (socket) {
     console.log("moin");
 

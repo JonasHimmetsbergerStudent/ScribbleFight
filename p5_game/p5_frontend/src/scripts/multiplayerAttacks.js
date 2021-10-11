@@ -1,3 +1,4 @@
+
 function addAttack(data) {
     switch (data.type) {
         case "default": addDefaultAttack(data);
@@ -72,9 +73,18 @@ function deleteAttack(data) {
     }
 }
 
+function relCoordinates(x,y) {
+    return data = {
+        x: x * newImageWidth / obildbreite + (windowWidth - newImageWidth) / 2,
+        y: y * newImageHeight / obildhoehe + (windowHeight - newImageHeight) / 2
+    }
+}
+
+
 function addBomb(data) {
-    let bomb = createSprite(data.x, data.y, pixelWidth * 2, pixelWidth * 2);
-    bomb.velocity.x = data.v;
+    let bomb = createSprite(relCoordinates(data.x,data.y).x, relCoordinates(data.x,data.y).y, pixelWidth * 2, pixelWidth * 2);
+    bomb.velocity.x = pixelWidth/5;
+    bomb.limitSpeed(pixelWidth/5);
     bomb.addImage(bombImg);
     bomb.life = 1000;
     bomb.setDefaultCollider();
@@ -85,7 +95,7 @@ function addBomb(data) {
 }
 
 function addDefaultAttack(data) {
-    projectile = createSprite(data.x, data.y, pixelWidth, pixelWidth);
+    projectile = createSprite(relCoordinates(data.x,data.y).x, relCoordinates(data.x,data.y).y, pixelWidth, pixelWidth);
     projectile.life = 100;
     projectile.velocity.x = data.velX;
     projectile.velocity.y = data.velY;
@@ -98,7 +108,7 @@ function addDefaultAttack(data) {
 }
 
 function addBlackHole(data) {
-    let b = createSprite(data.x, data.y, pixelWidth * 2, pixelWidth * 2);
+    let b = createSprite(relCoordinates(data.x,data.y).x, relCoordinates(data.x,data.y).y, pixelWidth * 2, pixelWidth * 2);
     b.velocity.x = data.v;
     b.addImage(boogieBombImg);
     b.life = 500;
@@ -111,17 +121,17 @@ function addBlackHole(data) {
 
 
 function addPiano(data) {
-    let piano = createSprite(data.x, 10, pixelWidth * 4, pixelWidth * 4);
+    let piano = createSprite(relCoordinates(data.x,data.y).x, 0, pixelWidth * 5, pixelWidth * 5);
     piano.addImage(pianoImg);
     piano.rotation = data.rotation;
-    piano.setCollider("rectangle", 0, 0, pixelWidth*4, pixelWidth*4);
+    piano.setCollider("rectangle", 0, 0, pixelWidth*5, pixelWidth*5);
     piano.id = data.id;
     piano.playerId = data.playerId;
     pianos.push(piano);
 }
 
 function addMine(data) {
-    let mine = createSprite(data.x, data.y, pixelWidth * 2, pixelWidth * 2);
+    let mine = createSprite(relCoordinates(data.x,data.y).x, relCoordinates(data.x,data.y).y, pixelWidth * 2, pixelWidth * 2);
     mine.addImage(mineImg);
     mine.setDefaultCollider();
     mine.maxSpeed = pixelWidth / 5;
