@@ -16,6 +16,8 @@ driver = webdriver.Chrome(chrome_options=options,
                           executable_path=ChromeDriverManager().install())
 url = 'http://localhost:3000/'
 driver.get(url)
+
+
 obs = None
 
 loop = asyncio.get_event_loop()

@@ -53,7 +53,7 @@ class ScribbleFight:
         self.just_died = False
 
     def start(self):
-        self.driver = webdriver.Chrome(chrome_options=options,
+        self.driver = webdriver.Chrome(options=options,
                                        executable_path=ChromeDriverManager().install())
 
         self.driver.get(url)
