@@ -59,7 +59,7 @@ class ScribbleFight:
         while not self.readystate:
             self.readystate = self.isReady()
 
-        # self.socket_handler = SocketHandler(self.playerId)
+        self.socket_handler = SocketHandler(self.playerId)
 
     def isPlaying(self):
         return url in self.driver.current_url  # and self.readystate
@@ -176,8 +176,8 @@ class Game:
 
     def observe(self):
         # get computer vision
-        # return self.scribble_fight.socket_handler.obs
-        return None
+        return self.scribble_fight.socket_handler.obs
+        # return None
 
     def evaluate(self):
         reward = 0
@@ -227,7 +227,7 @@ class Game:
         self.previous_kills = self.scribble_fight.kills  # should always be 0
         self.previous_deaths = self.scribble_fight.deaths
         self.scribble_fight.just_died = False
-        # self.scribble_fight.socket_handler.reset()
+        self.scribble_fight.socket_handler.reset()
         self.nothingChanged = 0
         self.angle = 0
 
