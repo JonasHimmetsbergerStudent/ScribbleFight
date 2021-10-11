@@ -49,7 +49,8 @@ if __name__ == "__main__":
     thread1 = KI()
     while not thread1.env.pygame.scribble_fight.readystate:
         continue
-    thread2 = SocketHandler(thread1.env.pygame.scribble_fight.playerId)
+    thread2 = thread1.env.pygame.scribble_fight.socket_handler
+    # thread2 = SocketHandler(thread1.env.pygame.scribble_fight.playerId)
 
     # Start new Threads
     print("now starting Game Thread")
@@ -77,54 +78,3 @@ TODO
 
 * implement view (render visual array)
 '''
-
-'''
-# openai gym
-import gym
-from gym import Env
-from gym.spaces import Discrete, Box, Dict, Tuple, MultiBinary, MultiDiscrete
-
-# stable baselines
-from stable_baselines3 import PPO
-from stable_baselines3.common.vec_env import VecFrameStack
-from stable_baselines3.common.evaluation import evaluate_policy
-
-# threading
-import threading
-
-# import env
-import KI_v01
-
-# other
-import time
-from KI_v01.env.gym_env import CustomEnv
-
-
-class KI:
-    def __init__(self):
-        pass
-
-    def run(self):
-        self.env = gym.make("ScribbleFight-v0")
-        time.sleep(2)
-        episodes = 100
-        for episode in range(1, episodes+1):
-            state = self.env.reset()
-            done = False
-            score = 0
-
-            while not done:
-                self.env.render()
-                actions = self.env.action_space.sample()
-                actions[0] = 1
-                actions[1] = 1
-                state, reward, done, info = self.env.step(actions)
-                score += reward
-            print('Episode:{} Score:{}'.format(episode, score))
-
-        self.env.close()
-
-
-if __name__ == "__main__":
-    ki = KI()
-    ki.run()'''
