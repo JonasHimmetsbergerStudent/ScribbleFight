@@ -136,6 +136,7 @@ function defaultAttackPhysics() {
 
 
 function bombAttack() {
+  let vel;
   if (myPlayer.item["bomb"] !== undefined && myPlayer.item["bomb"].ammo > 0) {
     // man kann nur eine bombe gleichzeitig aussenden
     if (myPlayer.item["bomb"].sprite === undefined) {
@@ -146,6 +147,7 @@ function bombAttack() {
           myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x + player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
         myPlayer.item["bomb"].sprite.velocity.x += pixelWidth/5 * GAMESPEED;
+        vel = 1;
         while ((environment.overlap(myPlayer.item["bomb"].sprite))) {
           myPlayer.item["bomb"].sprite.position.x -= 1;
         }
@@ -157,6 +159,7 @@ function bombAttack() {
           myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, pixelWidth, pixelWidth);
         }
         myPlayer.item["bomb"].sprite.velocity.x -=  pixelWidth/5 * GAMESPEED;
+        vel = -1;
         while ((environment.overlap(myPlayer.item["bomb"].sprite))) {
           myPlayer.item["bomb"].sprite.position.x += 1;
         }
@@ -177,6 +180,7 @@ function bombAttack() {
         type: "bomb",
         x: makeCordsRelative(myPlayer.item["bomb"].sprite.position.x,myPlayer.item["bomb"].sprite.position.y).x ,
         y: makeCordsRelative(myPlayer.item["bomb"].sprite.position.x,myPlayer.item["bomb"].sprite.position.y).y,
+        vel: vel
       }
       socket.emit('attack', data);
     }
@@ -243,25 +247,28 @@ function bombPhysics() {
 
 
 function blackHoleAttack() {
+  let vel;
   if (myPlayer.item["black_hole"] !== undefined && myPlayer.item["black_hole"].ammo > 0) {
     if (myPlayer.item["black_hole"].sprite === undefined) {
       if (myPlayer.direction == "right") {
+        vel = 1;
         if (imSmall) {
           myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x + player_width / 2, myPlayer.sprite.position.y - pixelWidth, pixelWidth * 2, pixelWidth * 2);
         } else {
           myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x + player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
-        myPlayer.item["black_hole"].sprite.velocity.x += pixelWidth/5 * GAMESPEED;
+        myPlayer.item["black_hole"].sprite.velocity.x += pixelWidth / 5 * GAMESPEED;
         while ((environment.overlap(myPlayer.item["black_hole"].sprite))) {
           myPlayer.item["black_hole"].sprite.position.x -= 1;
         }
       } else if (myPlayer.direction == "left") {
+        vel = -1;
         if (imSmall) {
           myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x - player_width / 2, myPlayer.sprite.position.y - pixelWidth, pixelWidth * 2, pixelWidth * 2);
         } else {
           myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
-        myPlayer.item["black_hole"].sprite.velocity.x -= pixelWidth/5 * GAMESPEED;
+        myPlayer.item["black_hole"].sprite.velocity.x -= pixelWidth / 5 * GAMESPEED;
         while ((environment.overlap(myPlayer.item["black_hole"].sprite))) {
           myPlayer.item["black_hole"].sprite.position.x += 1;
 
@@ -271,16 +278,15 @@ function blackHoleAttack() {
       myPlayer.item["black_hole"].sprite.addImage(boogieBombImg);
       myPlayer.item["black_hole"].sprite.life = 500;
       myPlayer.item["black_hole"].sprite.debug = true;
-      myPlayer.item["black_hole"].sprite.maxSpeed = pixelWidth-pixelWidth/5;
       myPlayer.item["black_hole"].sprite.me = true;
       blackHoles.push(myPlayer.item["black_hole"].sprite);
       let data = {
         id: id,
         playerId: socket.id,
         type: "blackHole",
-        x: myPlayer.item["black_hole"].sprite.position.x,
-        y: myPlayer.item["black_hole"].sprite.position.y,
-        v: myPlayer.item["black_hole"].sprite.velocity.x
+        x: makeCordsRelative(myPlayer.item["black_hole"].sprite.position.x,myPlayer.item["black_hole"].sprite.position.y).x,
+        y: makeCordsRelative(myPlayer.item["black_hole"].sprite.position.x,myPlayer.item["black_hole"].sprite.position.y).y,
+        vel: vel
       }
       socket.emit('attack', data);
     }
@@ -349,7 +355,7 @@ function pianoTime() {
           id: id,
           playerId: socket.id,
           type: "piano",
-          x: myPlayer.item["piano"].sprite.position.x,
+          x: makeCordsRelative(myPlayer.item["piano"].sprite.position.x,0).x,
           rotation: myPlayer.item["piano"].sprite.rotation
         }
         socket.emit('attack', data);
@@ -424,8 +430,8 @@ function placeMine() {
       id: id,
       playerId: socket.id,
       type: "mine",
-      x: mine.position.x,
-      y: mine.position.y
+      x:  makeCordsRelative(mine.position.x,0).x,
+      y:  makeCordsRelative(0,mine.position.y).y
     }
     socket.emit("attack", data);
   }

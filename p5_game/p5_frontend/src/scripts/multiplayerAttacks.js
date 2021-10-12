@@ -83,8 +83,7 @@ function relCoordinates(x,y) {
 
 function addBomb(data) {
     let bomb = createSprite(relCoordinates(data.x,data.y).x, relCoordinates(data.x,data.y).y, pixelWidth * 2, pixelWidth * 2);
-    bomb.velocity.x = pixelWidth/5;
-    bomb.limitSpeed(pixelWidth/5);
+    bomb.velocity.x = pixelWidth/5 * data.vel;
     bomb.addImage(bombImg);
     bomb.life = 1000;
     bomb.setDefaultCollider();
@@ -109,12 +108,11 @@ function addDefaultAttack(data) {
 
 function addBlackHole(data) {
     let b = createSprite(relCoordinates(data.x,data.y).x, relCoordinates(data.x,data.y).y, pixelWidth * 2, pixelWidth * 2);
-    b.velocity.x = data.v;
+    b.velocity.x =  pixelWidth / 5 * data.vel;
     b.addImage(boogieBombImg);
     b.life = 500;
     b.setDefaultCollider();
     b.debug = true;
-    b.maxSpeed = pixelWidth - pixelWidth / 5;
     b.me = false;
     blackHoles.push(b);
 }
