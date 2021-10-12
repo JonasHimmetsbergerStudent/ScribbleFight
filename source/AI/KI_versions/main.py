@@ -35,8 +35,6 @@ class KI(threading.Thread):
             while not done:
                 self.env.render()
                 actions = self.env.action_space.sample()
-                actions[0] = 1
-                actions[1] = 1
                 state, reward, done, info = self.env.step(actions)
                 score += reward
             print('Episode:{} Score:{}'.format(episode, score))
@@ -60,6 +58,10 @@ if __name__ == "__main__":
 
     threads.append(thread1)
     threads.append(thread2)
+
+    # for item in range(100):
+    #     time.sleep(1)
+    #     print(thread2.obs)
 
     for t in threads:
         t.join()
