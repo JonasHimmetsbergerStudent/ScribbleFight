@@ -96,8 +96,8 @@ function addBomb(data) {
 function addDefaultAttack(data) {
     projectile = createSprite(relCoordinates(data.x,data.y).x, relCoordinates(data.x,data.y).y, pixelWidth, pixelWidth);
     projectile.life = 100;
-    projectile.velocity.x = data.velX;
-    projectile.velocity.y = data.velY;
+    projectile.velocity.x = data.velX * 1000;
+    projectile.velocity.y = data.velY * 1000;
     projectile.limitSpeed(pixelWidth - pixelWidth/2);
     projectile.setDefaultCollider();
     projectile.id = data.id;
