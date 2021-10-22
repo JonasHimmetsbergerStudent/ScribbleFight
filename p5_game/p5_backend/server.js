@@ -19,10 +19,6 @@ var xCoordinatesUsed = [];
 var items = [];
 
 
-
-
-
-
 io.sockets.on('connection', newConnection);
 
 function newConnection(socket) {

@@ -72,6 +72,10 @@ function setup() {
 
 
     pixelWidth = Math.max(obildbreite, obildhoehe) / pixel_clumps[0].length * faktor;
+    relFaktor = {
+      x: obildbreite / newImageWidth,
+      y: obildhoehe / newImageHeight
+    }
     JUMP = pixelWidth - (pixelWidth / 3);
     SPEED = pixelWidth / 4;
     CLIMBINGSPEED = -(pixelWidth / 4);
@@ -98,7 +102,7 @@ function setup() {
             sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].immovable = true;
             environment.add(sprite_pixels[i][j]);
-            sprite_pixels[i][j].visible = false;
+            sprite_pixels[i][j].visible = true;
           }
         }
       }
@@ -202,6 +206,8 @@ function addKill(data) {
 }
 
 let damagedByTimer = 3;
+
+//// DRAW FUNCTION
 function draw() {
   touches_side = false;
   if (myPlayer != undefined && !youAreDead) {
@@ -251,10 +257,7 @@ function draw() {
     mirrorSprite();
     deathCheck();
     drawSprites();
-    relFaktor = {
-      x: obildbreite / newImageWidth,
-      y: obildhoehe / newImageHeight
-    }
+   
     let transferX = (myPlayer.sprite.position.x - (windowWidth - newImageWidth) / 2) * relFaktor.x;
     let transferY = (myPlayer.sprite.position.y - (windowHeight - newImageHeight) / 2) * relFaktor.y;
     relPosData = {
@@ -381,28 +384,23 @@ function init() {
     img.resize(pixelWidth * 2, 0);
     bombImg = img;
     loadImage('assets/item.png', img => {
-      img.resize(pixelWidth * 2, 0);
       itemImg = img;
       loadImage('assets/boogieBomb.png', img => {
         img.resize(pixelWidth * 2, 0);
         boogieBombImg = img;
         loadImage('assets/item_blue.png', img => {
-          img.resize(pixelWidth * 2, 0);
           itemImgBlue = img;
           loadImage('assets/piano.png', img => {
             img.resize(pixelWidth * 5, 0);
             pianoImg = img;
             loadImage('assets/item_yellow.png', img => {
-              img.resize(pixelWidth * 2, 0);
               itemImgYellow = img;
               loadImage('assets/item_orange.png', img => {
-                img.resize(pixelWidth * 2, 0);
                 itemImgOrange = img;
                 loadImage('assets/mine.png', img => {
                   img.resize(pixelWidth * 2, 0);
                   mineImg = img;
                   loadImage('assets/item_green.png', img => {
-                    img.resize(pixelWidth * 2, 0);
                     itemImgGreen = img;
                     loadImage('assets/amogus_supreme.png', img => {
                       img.resize(imageFaktor, 0);

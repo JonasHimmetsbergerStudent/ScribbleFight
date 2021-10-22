@@ -40,46 +40,47 @@ function spawn() {
 
 function createItem(data) {
     let num = data.num;
-    let x = data.x;
+    // scaling
+    let x =  relCoordinates(data.x,0).x;
+    let y = (windowHeight - newImageHeight) / 2;
     let itemSize = 2 * pixelWidth;
     if (x != -1) {
         switch (num) {
             case 1:
-                i = createSprite(x, 0, itemSize, itemSize);
+                i = createSprite(x, y, itemSize, itemSize);
                 i.type = "bomb";
                 itemImg.resize(itemSize, itemSize);
                 i.addImage(itemImg);
-
                 break;
             case 2:
-                i = createSprite(x, 0, itemSize, itemSize);
+                i = createSprite(x, y, itemSize, itemSize);
                 i.type = "black_hole";
                 i.addImage(itemImgBlue);
                 itemImgBlue.resize(itemSize, itemSize);
                 break;
             case 3:
-                i = createSprite(x, 0, itemSize, itemSize);
+                i = createSprite(x, y, itemSize, itemSize);
                 i.type = "piano";
                 i.addImage(itemImgYellow);
                 itemImgYellow.resize(itemSize, itemSize);
                 break;
             case 4:
-                i = createSprite(x, 0, itemSize, itemSize);
+                i = createSprite(x, y, itemSize, itemSize);
                 i.type = "mine";
                 i.addImage(itemImgOrange);
                 itemImgOrange.resize(itemSize, itemSize);
                 break;
             case 5:
-                i = createSprite(x, 0, itemSize, itemSize);
+                i = createSprite(x, y, itemSize, itemSize);
                 i.type = "small";
                 i.addImage(itemImgGreen);
                 itemImgGreen.resize(itemSize, itemSize);
                 break;
         }
-        i.maxSpeed = 10;
+        i.maxSpeed = pixelWidth/2;
         i.setDefaultCollider();
+        i.debug = true;
         i.id = data.id;
-        console.log(items);
         items.push(i);
     }
 
@@ -148,25 +149,32 @@ function getRandomInt(num) {
 
 function getXCoordinates() {
     let sprite;
+    let transferXCoordinates = [];
     for (let i = 0; i < sprite_pixels.length; i++) {
         for (let j = 0; j < sprite_pixels[i].length; j++) {
             sprite = sprite_pixels[i][j];
-            if (sprite !== undefined && sprite.width >= 100) {
-                for (let index = 0; index < sprite.width / 2; index += 50) {
+           
+            if (sprite !== undefined && sprite.width >= pixelWidth * 4) {
+                for (let index = 0; index < sprite.width / 2; index += pixelWidth * 2) {
                     if (sprite.position.x + index < sprite.position.x + sprite.width / 2) {
-                        xCoordinates.push((sprite.position.x + index));
+                        let x = sprite.position.x + index;
+                        xCoordinates.push(x);
+                        transferXCoordinates.push(makeCordsRelative(x,0).x);
                     }
                 }
-                for (let index = sprite.width; index > sprite.width / 2; index -= 50) {
+                for (let index = sprite.width; index > sprite.width / 2; index -= pixelWidth * 2) {
                     if (sprite.position.x + index > sprite.position.x + sprite.width / 2) {
-                        xCoordinates.push((sprite.position.x + index - sprite.width));
+                        let x = sprite.position.x + index - sprite.width;
+                        xCoordinates.push(x);
+                        transferXCoordinates.push(makeCordsRelative(x,0).x);
                     }
                 }
                 // doing this eliminates duplicates
                 xCoordinates = Array.from(new Set(xCoordinates));
+                transferXCoordinates = Array.from(new Set(transferXCoordinates));
             }
         }
     }
     console.log(xCoordinates);
-    socket.emit('xCoordinates', xCoordinates);
+    socket.emit('xCoordinates', transferXCoordinates);
 }
