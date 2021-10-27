@@ -33,10 +33,10 @@ class KI(threading.Thread):
             score = 0
 
             while not done:
-                self.env.render()
+                # self.env.render()
                 actions = self.env.action_space.sample()
-                actions[0] = 1 
-                actions[1] = 1
+                # actions[0] = 1
+                # actions[1] = 1
                 state, reward, done, info = self.env.step(actions)
                 score += reward
             print('Episode:{} Score:{}'.format(episode, score))
