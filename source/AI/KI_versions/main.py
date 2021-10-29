@@ -51,12 +51,13 @@ class KI(threading.Thread):
         threading.Thread.__init__(self)
         # self.env = CustomEnv()
         self.env = gym.make('ScribbleFight-v0')
+        # self.env = make_vec_env('ScribbleFight-v0', n_envs=1)
 
     def run(self):
         log_path = os.path.join('Traning', 'Logs')
 
-        model = A2C("MlpPolicy", self.env, verbose=1)
-        model.learn(total_timesteps=25000)
+        model = A2C("MlpPolicy", self.env, verbose=1, tensorboard_log=log_path)
+        model.learn(total_timesteps=5)
 
 
 if __name__ == "__main__":
