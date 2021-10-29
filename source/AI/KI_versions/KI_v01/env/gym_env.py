@@ -32,6 +32,9 @@ class CustomEnv(gym.Env):
     def step(self, actions):
         self.pygame.action(actions)
         obs = self.pygame.observe()
+        # comparison = obs == Box(0, 0, (165, 165), int).sample()
+        # equal_arrays = comparison.all()
+        # print(equal_arrays)
         # obs = self.observation_space.sample()
         reward = self.pygame.evaluate()
         done = self.pygame.is_done()
