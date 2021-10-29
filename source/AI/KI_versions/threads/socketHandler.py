@@ -1,12 +1,13 @@
 import threading
 import asyncio
 import socketio
+from gym.spaces import Box
 
 
 class SocketHandler(threading.Thread):
     def __init__(self, playerID):
         threading.Thread.__init__(self)
-        self.obs = None
+        self.obs = Box(0, 0, (165, 165), int).sample()
         self.sio = None
         self.playerID = playerID
 
@@ -35,4 +36,4 @@ class SocketHandler(threading.Thread):
         loop.run_until_complete(self.start_server())
 
     def reset(self):
-        self.obs = None
+        self.obs = Box(0, 0, (165, 165), int).sample()
