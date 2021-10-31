@@ -45,7 +45,7 @@ class KI(threading.Thread):
     def run(self):
         log_path = os.path.join('Traning', 'Logs')
         model = A2C("MlpPolicy", self.env, verbose=1, tensorboard_log=log_path)
-        model.learn(total_timesteps=9000000)
+        model.learn(total_timesteps=400)
 
 
 if __name__ == "__main__":
