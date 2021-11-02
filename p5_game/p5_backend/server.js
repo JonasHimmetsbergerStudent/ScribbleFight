@@ -27,7 +27,7 @@ function newConnection(socket) {
     if (players.size > 0) {
         players.forEach((values, keys) => {
             let data = {
-                id: values.id
+                id: values.id,
             }
             socket.emit('newPlayer', data);
         })
@@ -50,6 +50,7 @@ function newConnection(socket) {
     socket.on('attack', syncAttacks);
     socket.on('kill', kill);
     socket.on('deleteAttack', deleteAttack);
+    socket.on('death',death);
     socket.on('xCoordinates', function (data) {
         xCoordinates = data;
     })
@@ -82,12 +83,13 @@ function newConnection(socket) {
     }
 
     function createPlayer() {
+        players.set(socket.id, new Player(socket.id));
         let data = {
-            id: socket.id
+            id: socket.id,
         }
         // damit es auch an mich sendet, benutze ich io.emit
         io.emit('newPlayer', data);
-        players.set(socket.id, new Player(socket.id));
+      
     }
 
     function deleteItem(data) {
@@ -112,10 +114,24 @@ function newConnection(socket) {
         socket.broadcast.emit("deleteAttack", data);
     }
 
+    function death(data) {
+        players.get(data.deadPlayer).death++;
+        console.log(players.get(data.deadPlayer).death);
+        if(players.get(data.deadPlayer).death>=3) {
+            players.delete(data.deadPlayer);
+            let transferData = {
+                id: data.deadPlayer
+            }
+            io.emit('death', transferData);
+        }
+        if(players.size<=1) {
+            socket.broadcast.emit("win",data.deadPlayer);
+        }
+    }
+
     function kill(data) {
-        console.log(data.damagedBy);
         io.to(data.damagedBy).emit('kill', 1);
-        players.get(socket.id).death += 1;
+        players.get(data.damagedBy).kill +=1;
     }
 
 }

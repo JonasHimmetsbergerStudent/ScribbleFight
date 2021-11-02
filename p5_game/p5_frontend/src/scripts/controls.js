@@ -1,56 +1,60 @@
 function controls() {
-    // Controls
-    //Spacebar
-    if (keyWentDown(32)) {
-        jump()
-    }
-    //A
-    if (keyIsDown(65)) {
-        moveLeft()
-    }
-    //D
-    if (keyIsDown(68)) {
-        moveRight()
-    }
-    //S
-    // if (keyIsDown(83)) {
-    //  sprite.velocity.y -= GRAVITY;
-    //}
+    if (!youAreDead) {
 
-    /*if (keyWentDown(69)) {
-        if (player_direction == "left") {
-            sprite.setCollider("rectangle", -10, 0, player_width + 5, player_height);
-        } else {
-            sprite.setCollider("rectangle", 10, 0, player_width + 5, player_height);
+
+        // Controls
+        //Spacebar
+        if (keyWentDown(32)) {
+            jump()
         }
-        hit = true;
-    }*/
+        //A
+        if (keyIsDown(65)) {
+            moveLeft()
+        }
+        //D
+        if (keyIsDown(68)) {
+            moveRight()
+        }
+        //S
+        // if (keyIsDown(83)) {
+        //  sprite.velocity.y -= GRAVITY;
+        //}
 
-    // mirrors the sprite 
+        /*if (keyWentDown(69)) {
+            if (player_direction == "left") {
+                sprite.setCollider("rectangle", -10, 0, player_width + 5, player_height);
+            } else {
+                sprite.setCollider("rectangle", 10, 0, player_width + 5, player_height);
+            }
+            hit = true;
+        }*/
+
+        // mirrors the sprite 
 
 
-    // E
-    if (keyWentDown(69)) {
-        bombAttack();
-    }
+        // E
+        if (keyWentDown(69)) {
+            bombAttack();
+        }
 
-    // Q
-    if (keyWentDown(81)) {
-        blackHoleAttack();
-    }
+        // Q
+        if (keyWentDown(81)) {
+            blackHoleAttack();
+        }
 
-    // R
-    if (keyWentDown(82)) {
-        pianoTime();
-    }
+        // R
+        if (keyWentDown(82)) {
+            pianoTime();
+        }
 
-    // C
-    if (keyWentDown(67)) {
-        placeMine();
-    }
-    // F
-    if (keyWentDown(70)) {
-        makeMeSmall();
+        // C
+        if (keyWentDown(67)) {
+            placeMine();
+        }
+        // F
+        if (keyWentDown(70)) {
+            makeMeSmall();
+        }
     }
 
 

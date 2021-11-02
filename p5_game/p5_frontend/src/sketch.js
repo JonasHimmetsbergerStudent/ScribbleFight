@@ -154,6 +154,8 @@ function setup() {
   socket.on('deleteItem', syncItems);
   socket.on('attack', addAttack);
   socket.on('kill', addKill);
+  socket.on('death',someoneDied);
+  socket.on("win",win);
   socket.on('deleteAttack', deleteAttack);
 }
 
@@ -211,7 +213,6 @@ let damagedByTimer = 3;
 function draw() {
   touches_side = false;
   if (myPlayer != undefined && !youAreDead) {
-    console.log(myPlayer.knockback);
     if (!flying && !noGravity) {
       myPlayer.sprite.velocity.y -= GRAVITY;
     } else if (flying) {
