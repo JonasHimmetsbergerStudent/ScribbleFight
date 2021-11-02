@@ -1,6 +1,7 @@
 class Item {
     constructor(type) {
         this.type = type;
+        this.dropped = false;
         switch (this.type) {
             case "bomb":
                 this.ammo = 5;

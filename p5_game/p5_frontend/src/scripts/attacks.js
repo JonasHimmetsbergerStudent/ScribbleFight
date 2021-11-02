@@ -104,11 +104,11 @@ function defaultAttackPhysics() {
             diffDirection = false;
           }
           if (!diffDirection) {
-            myPlayer.sprite.velocity.x = projectile.velocity.x;
-            myPlayer.sprite.velocity.y = projectile.velocity.y;
+            myPlayer.sprite.velocity.x = projectile.velocity.x + pixelWidth/5;
+            myPlayer.sprite.velocity.y = projectile.velocity.y  + pixelWidth/5;
           } else {
-            myPlayer.sprite.velocity.x = -projectile.velocity.x;
-            myPlayer.sprite.velocity.y = -projectile.velocity.y;
+            myPlayer.sprite.velocity.x = -projectile.velocity.x  + pixelWidth/5;
+            myPlayer.sprite.velocity.y = -projectile.velocity.y  + pixelWidth/5;
           }
           let data = {
             playerId: socket.id,

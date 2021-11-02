@@ -41,7 +41,7 @@ function spawn() {
 function createItem(data) {
     let num = data.num;
     // scaling
-    let x =  relCoordinates(data.x,0).x;
+    let x = relCoordinates(data.x, 0).x;
     let y = (windowHeight - newImageHeight) / 2;
     let itemSize = 2 * pixelWidth;
     if (x != -1) {
@@ -77,10 +77,11 @@ function createItem(data) {
                 itemImgGreen.resize(itemSize, itemSize);
                 break;
         }
-        i.maxSpeed = pixelWidth/2;
+        i.maxSpeed = pixelWidth / 2;
         i.setDefaultCollider();
         i.debug = true;
         i.id = data.id;
+        i.dropped = false;
         items.push(i);
     }
 
@@ -91,7 +92,6 @@ let itemString;
 function itemPickUp() {
     if (items.length > 0) {
         items.forEach(item => {
-            item.velocity.y -= GRAVITY;
 
             switch (item.type) {
                 case "bomb":
@@ -115,7 +115,15 @@ function itemPickUp() {
                     addSpriteToVisual(item, 8);
                     break;
             }
-            item.collide(environment);
+
+
+            if(item.collide(environment)) {
+                item.dropped = true;
+            };
+            if(!item.dropped) {
+                item.velocity.y -= GRAVITY;
+            }
+
             if (item.overlap(myPlayer.sprite)) {
                 myPlayer.item[itemString] = new Item(itemString);
                 deleteItem(item);
@@ -153,20 +161,20 @@ function getXCoordinates() {
     for (let i = 0; i < sprite_pixels.length; i++) {
         for (let j = 0; j < sprite_pixels[i].length; j++) {
             sprite = sprite_pixels[i][j];
-           
+
             if (sprite !== undefined && sprite.width >= pixelWidth * 4) {
                 for (let index = 0; index < sprite.width / 2; index += pixelWidth * 2) {
                     if (sprite.position.x + index < sprite.position.x + sprite.width / 2) {
                         let x = sprite.position.x + index;
                         xCoordinates.push(x);
-                        transferXCoordinates.push(makeCordsRelative(x,0).x);
+                        transferXCoordinates.push(makeCordsRelative(x, 0).x);
                     }
                 }
                 for (let index = sprite.width; index > sprite.width / 2; index -= pixelWidth * 2) {
                     if (sprite.position.x + index > sprite.position.x + sprite.width / 2) {
                         let x = sprite.position.x + index - sprite.width;
                         xCoordinates.push(x);
-                        transferXCoordinates.push(makeCordsRelative(x,0).x);
+                        transferXCoordinates.push(makeCordsRelative(x, 0).x);
                     }
                 }
                 // doing this eliminates duplicates

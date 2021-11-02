@@ -46,7 +46,6 @@ if (GAMESPEED > 1) {
 }
 
 function setup() {
-  var canvas = createCanvas(windowWidth, windowHeight);
   background('FFFFFF');
   var backgroundImage = new Image();
   backgroundImage.src = background_path;
@@ -70,7 +69,10 @@ function setup() {
       newImageWidth = faktor * obildbreite;
     }
 
-
+    var canvas = createCanvas(newImageWidth, newImageHeight);
+    
+    console.log(newImageWidth + ", " + newImageHeight);
+    console.log(canvas);
     pixelWidth = Math.max(obildbreite, obildhoehe) / pixel_clumps[0].length * faktor;
     relFaktor = {
       x: obildbreite / newImageWidth,
@@ -88,7 +90,7 @@ function setup() {
         if (pixel_clumps[i][j][3] > 0) {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
-            sprite_pixels[i][j] = createSprite((j - ((same_x_counter) / 2) + 0.5) * pixelWidth + ((windowWidth - newImageWidth) / 2) + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth * (same_x_counter), pixelWidth);
+            sprite_pixels[i][j] = createSprite((j - ((same_x_counter) / 2) + 0.5) * pixelWidth + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth * (same_x_counter), pixelWidth);
             //sprite_pixels[i][j].visible = false;
             sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].depth = 10;
@@ -98,7 +100,7 @@ function setup() {
             sprite_pixels[i][j - 1] = undefined;
           } else {
             same_x_counter = 1;
-            sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth - newImageWidth) / 2) + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth, pixelWidth);
+            sprite_pixels[i][j] = createSprite(j * pixelWidth + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth, pixelWidth);
             sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].immovable = true;
             environment.add(sprite_pixels[i][j]);
@@ -131,9 +133,10 @@ function setup() {
     div.style('background-size','contain');
     div.center(); */
 
-    let background = createSprite(windowWidth / 2, windowHeight / 2, newImageWidth, newImageHeight);
+    let background = createSprite(newImageWidth/2 , windowHeight / 2, newImageWidth, newImageHeight);
     loadImage(background_path, img => {
       img.resize(newImageWidth, newImageHeight);
+      console.log(newImageWidth + ", " + newImageHeight);
       background.addImage(img);
       background.depth = -1;
       player_width = pixelWidth * 9 / 4;
@@ -144,7 +147,7 @@ function setup() {
 
   }
 
-  socket = io.connect('http://localhost:3000');
+  socket = io.connect('http://10.0.0.1:3000');
   //socket2 = io.connect("http://localhost:3001");
   socket.on("deletePlayer", deletePlayer);
   socket.on('newPlayer', createNewPlayer);
@@ -236,7 +239,7 @@ function draw() {
     spawn();
 
 
-    background('FFFFFF');
+    background('#000000');
 
     checkForCollisions();
 
