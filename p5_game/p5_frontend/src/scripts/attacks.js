@@ -104,11 +104,11 @@ function defaultAttackPhysics() {
             diffDirection = false;
           }
           if (!diffDirection) {
-            myPlayer.sprite.velocity.x = projectile.velocity.x + pixelWidth/5;
-            myPlayer.sprite.velocity.y = projectile.velocity.y  + pixelWidth/5;
+            myPlayer.sprite.velocity.x = projectile.velocity.x / 2 * myPlayer.knockback;
+            myPlayer.sprite.velocity.y = projectile.velocity.y / 2 * myPlayer.knockback;
           } else {
-            myPlayer.sprite.velocity.x = -projectile.velocity.x  + pixelWidth/5;
-            myPlayer.sprite.velocity.y = -projectile.velocity.y  + pixelWidth/5;
+            myPlayer.sprite.velocity.x = -projectile.velocity.x / 2 * myPlayer.knockback;
+            myPlayer.sprite.velocity.y = -projectile.velocity.y / 2 * myPlayer.knockback;
           }
           let data = {
             playerId: socket.id,
@@ -117,7 +117,7 @@ function defaultAttackPhysics() {
           }
 
           myPlayer.damagedBy = projectile.playerId;
-          myPlayer.knockback += 1;
+          myPlayer.knockback += 0.05;
 
           flying = true;
           flyingDuration = 10;
@@ -208,11 +208,11 @@ function bombPhysics() {
           diffDirection = true;
         }
         if (!diffDirection) {
-          myPlayer.sprite.velocity.x = bomb.velocity.x * pixelWidth / 5;
-          myPlayer.sprite.velocity.y = bomb.velocity.y * pixelWidth / 5;
+          myPlayer.sprite.velocity.x = bomb.velocity.x * pixelWidth / 5 * myPlayer.knockback;
+          myPlayer.sprite.velocity.y = bomb.velocity.y * pixelWidth / 5 * myPlayer.knockback;
         } else {
-          myPlayer.sprite.velocity.x = -bomb.velocity.x * pixelWidth/5;
-          myPlayer.sprite.velocity.y = -bomb.velocity.y * pixelWidth/5;
+          myPlayer.sprite.velocity.x = -bomb.velocity.x * pixelWidth/5 * myPlayer.knockback;
+          myPlayer.sprite.velocity.y = -bomb.velocity.y * pixelWidth/5 * myPlayer.knockback;
         }
         flying = true;
         flyingDuration = 50 / GAMESPEED;
@@ -393,9 +393,9 @@ function pianoPhysics() {
         pianos.splice(pianos.indexOf(p), 1);
 
         if (p.position.x <= myPlayer.sprite.position.x) {
-          myPlayer.sprite.velocity.x += pixelWidth/10;
+          myPlayer.sprite.velocity.x += pixelWidth/10 * myPlayer.knockback;
         } else {
-          myPlayer.sprite.velocity.x -= pixelWidth/10;
+          myPlayer.sprite.velocity.x -= pixelWidth/10 * myPlayer.knockback;
         }
         flying = true;
         flyingDuration = 20;
@@ -449,7 +449,7 @@ function minePhysics() {
         m.set = true;
       }
       if (m.overlap(myPlayer.sprite) && m.set) {
-        myPlayer.sprite.velocity.y = -pixelWidth * 7;
+        myPlayer.sprite.velocity.y = -pixelWidth * 7 * myPlayer.knockback;
         myPlayer.sprite.velocity.x *= -1;
         flying = true;
         flyingDuration = 50;
@@ -459,7 +459,7 @@ function minePhysics() {
         m.remove();
         myPlayer.damagedBy = m.playerId;
         socket.emit("deleteAttack", data);
-        myPlayer.knockback += 1;
+        myPlayer.knockback += 0.5;
         if (m.me && myPlayer.item["mine"] != undefined) {
           myPlayer.item["mine"].sprite.splice(myPlayer.item["mine"].sprite.indexOf(m), 1);
         }

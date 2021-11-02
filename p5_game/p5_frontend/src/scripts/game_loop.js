@@ -3,7 +3,7 @@ let youAreDead = false;
 let gameOver;
 let alivePlayerCount = 0;
 function deathCheck() {
-    if (myPlayer.sprite.position.x > windowWidth || myPlayer.sprite.position.y > windowHeight) {
+    if (myPlayer.sprite.position.x > newImageWidth || myPlayer.sprite.position.y > newImageHeight) {
         if(myPlayer.item != undefined && myPlayer.item.sprite != undefined) {
             myPlayer.item.sprite = undefined;
         }
@@ -12,7 +12,7 @@ function deathCheck() {
         } 
         if(spawnTimer==0) {
             myPlayer.death++;
-            DeathUpdate();
+            deathUpdate();
             let data = {
                 damagedBy : myPlayer.damagedBy,
             }
@@ -36,7 +36,7 @@ function deathCheck() {
     
 }
 
-function DeathUpdate() {
+function deathUpdate() {
     myPlayer.dmgDealt = 0;
     myPlayer.kills= 0;
     myPlayer.knockback = 1;
