@@ -16,7 +16,7 @@ var testKnockback = 3;
 var projectileIndex;
 
 
-function makeCordsRelative(x,y) {
+function makeCordsRelative(x, y) {
   return data = {
     x: (x - (windowWidth - newImageWidth) / 2) * relFaktor.x,
     y: (y - (windowHeight - newImageHeight) / 2) * relFaktor.y
@@ -24,7 +24,7 @@ function makeCordsRelative(x,y) {
 }
 
 function defaultAttack(x, y) {
- 
+
   projectile = createSprite(myPlayer.sprite.position.x, myPlayer.sprite.position.y, pixelWidth, pixelWidth);
 
   let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
@@ -36,7 +36,7 @@ function defaultAttack(x, y) {
   projectile.setDefaultCollider();
   projectile.me = true;
   projectile.id = id;
-  projectile.limitSpeed(pixelWidth - pixelWidth/2);
+  projectile.limitSpeed(pixelWidth - pixelWidth / 2);
   projectile.playerId = socket.id;
 
   projectiles.push(projectile);
@@ -145,7 +145,7 @@ function bombAttack() {
         } else {
           myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x + player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
-        myPlayer.item["bomb"].sprite.velocity.x += pixelWidth/5 * GAMESPEED;
+        myPlayer.item["bomb"].sprite.velocity.x += pixelWidth / 5 * GAMESPEED;
         vel = 1;
         while ((environment.overlap(myPlayer.item["bomb"].sprite))) {
           myPlayer.item["bomb"].sprite.position.x -= 1;
@@ -157,13 +157,13 @@ function bombAttack() {
         } else {
           myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, pixelWidth, pixelWidth);
         }
-        myPlayer.item["bomb"].sprite.velocity.x -=  pixelWidth/5 * GAMESPEED;
+        myPlayer.item["bomb"].sprite.velocity.x -= pixelWidth / 5 * GAMESPEED;
         vel = -1;
         while ((environment.overlap(myPlayer.item["bomb"].sprite))) {
           myPlayer.item["bomb"].sprite.position.x += 1;
         }
       }
-      
+
 
       let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
       myPlayer.item["bomb"].sprite.addImage(bombImg);
@@ -177,8 +177,8 @@ function bombAttack() {
         id: id,
         playerId: socket.id,
         type: "bomb",
-        x: makeCordsRelative(myPlayer.item["bomb"].sprite.position.x,myPlayer.item["bomb"].sprite.position.y).x ,
-        y: makeCordsRelative(myPlayer.item["bomb"].sprite.position.x,myPlayer.item["bomb"].sprite.position.y).y,
+        x: makeCordsRelative(myPlayer.item["bomb"].sprite.position.x, myPlayer.item["bomb"].sprite.position.y).x,
+        y: makeCordsRelative(myPlayer.item["bomb"].sprite.position.x, myPlayer.item["bomb"].sprite.position.y).y,
         vel: vel
       }
       socket.emit('attack', data);
@@ -190,7 +190,7 @@ function bombPhysics() {
   diffDirection = false;
   if (bombs.length >= 1) {
     bombs.forEach(bomb => {
-      if (bomb.velocity.y <= pixelWidth-pixelWidth/5) {
+      if (bomb.velocity.y <= pixelWidth - pixelWidth / 5) {
         bomb.velocity.y -= GRAVITY * GAMESPEED;
       }
       bomb.bounce(environment);
@@ -210,8 +210,8 @@ function bombPhysics() {
           myPlayer.sprite.velocity.x = bomb.velocity.x * pixelWidth / 5 * myPlayer.knockback;
           myPlayer.sprite.velocity.y = bomb.velocity.y * pixelWidth / 5 * myPlayer.knockback;
         } else {
-          myPlayer.sprite.velocity.x = -bomb.velocity.x * pixelWidth/5 * myPlayer.knockback;
-          myPlayer.sprite.velocity.y = -bomb.velocity.y * pixelWidth/5 * myPlayer.knockback;
+          myPlayer.sprite.velocity.x = -bomb.velocity.x * pixelWidth / 5 * myPlayer.knockback;
+          myPlayer.sprite.velocity.y = -bomb.velocity.y * pixelWidth / 5 * myPlayer.knockback;
         }
         flying = true;
         flyingDuration = 50 / GAMESPEED;
@@ -283,8 +283,8 @@ function blackHoleAttack() {
         id: id,
         playerId: socket.id,
         type: "blackHole",
-        x: makeCordsRelative(myPlayer.item["black_hole"].sprite.position.x,myPlayer.item["black_hole"].sprite.position.y).x,
-        y: makeCordsRelative(myPlayer.item["black_hole"].sprite.position.x,myPlayer.item["black_hole"].sprite.position.y).y,
+        x: makeCordsRelative(myPlayer.item["black_hole"].sprite.position.x, myPlayer.item["black_hole"].sprite.position.y).x,
+        y: makeCordsRelative(myPlayer.item["black_hole"].sprite.position.x, myPlayer.item["black_hole"].sprite.position.y).y,
         vel: vel
       }
       socket.emit('attack', data);
@@ -308,7 +308,7 @@ function blackHolePhysics() {
   if (blackHoles.length >= 1) {
     blackHoles.forEach(b => {
       if (b.life <= 400) {
-        b.setCollider("circle", 0, 0, pixelWidth*8);
+        b.setCollider("circle", 0, 0, pixelWidth * 8);
         attraction(b);
         b.velocity.y = 0;
         b.velocity.x = 0;
@@ -342,9 +342,9 @@ function pianoTime() {
         let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
         myPlayer.item["piano"].sprite = createSprite(xPos, 0, pixelWidth * 5, pixelWidth * 5);
         myPlayer.item["piano"].sprite.addImage(pianoImg);
-        myPlayer.item["piano"].sprite.setCollider("rectangle", 0, 0, pixelWidth*5, pixelWidth*5);
+        myPlayer.item["piano"].sprite.setCollider("rectangle", 0, 0, pixelWidth * 5, pixelWidth * 5);
         myPlayer.item["piano"].sprite.debug = true;
-        myPlayer.item["piano"].sprite.maxSpeed = pixelWidth-pixelWidth/5;
+        myPlayer.item["piano"].sprite.maxSpeed = pixelWidth - pixelWidth / 5;
         myPlayer.item["piano"].sprite.rotation = getRandomInt(360);
         myPlayer.item["piano"].sprite.me = true;
         myPlayer.item["piano"].sprite.id = id;
@@ -354,7 +354,7 @@ function pianoTime() {
           id: id,
           playerId: socket.id,
           type: "piano",
-          x: makeCordsRelative(myPlayer.item["piano"].sprite.position.x,0).x,
+          x: makeCordsRelative(myPlayer.item["piano"].sprite.position.x, 0).x,
           rotation: myPlayer.item["piano"].sprite.rotation
         }
         socket.emit('attack', data);
@@ -392,9 +392,9 @@ function pianoPhysics() {
         pianos.splice(pianos.indexOf(p), 1);
 
         if (p.position.x <= myPlayer.sprite.position.x) {
-          myPlayer.sprite.velocity.x += pixelWidth/10 * myPlayer.knockback;
+          myPlayer.sprite.velocity.x += pixelWidth / 10 * myPlayer.knockback;
         } else {
-          myPlayer.sprite.velocity.x -= pixelWidth/10 * myPlayer.knockback;
+          myPlayer.sprite.velocity.x -= pixelWidth / 10 * myPlayer.knockback;
         }
         flying = true;
         flyingDuration = 20;
@@ -418,7 +418,7 @@ function placeMine() {
 
     let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
     mine.addImage(mineImg);
-    mine.maxSpeed = pixelWidth/5;
+    mine.maxSpeed = pixelWidth / 5;
     mine.debug = true;
     mine.me = true;
     mine.playerId = socket.id;
@@ -429,8 +429,8 @@ function placeMine() {
       id: id,
       playerId: socket.id,
       type: "mine",
-      x:  makeCordsRelative(mine.position.x,0).x,
-      y:  makeCordsRelative(0,mine.position.y).y
+      x: makeCordsRelative(mine.position.x, 0).x,
+      y: makeCordsRelative(0, mine.position.y).y
     }
     socket.emit("attack", data);
   }
