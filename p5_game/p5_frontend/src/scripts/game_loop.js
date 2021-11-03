@@ -4,30 +4,34 @@ let gameOver;
 let alivePlayerCount = 0;
 function deathCheck() {
     if (myPlayer.sprite.position.y > windowHeight) {
-        if(myPlayer.item != undefined && myPlayer.item.sprite != undefined) {
-            myPlayer.item.sprite = undefined;
-        }
-        if (frameCount % 60 == 0 && spawnTimer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
-            spawnTimer--;
-        } 
-        if(spawnTimer==0) {
-            deathUpdate();
-            let data = {
-                deadPlayer: myPlayer.id,
-                damagedBy : myPlayer.damagedBy
-            }
-            if(myPlayer.damagedBy != null && myPlayer.damagedBy != socket.id) {
-                socket.emit("kill",data);
-            }
-            socket.emit("death",data);
-            if(myPlayer.death<3) {
-                myPlayer.sprite.position.x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
-                myPlayer.sprite.position.y = 0;
-                spawnTimer = 3;
-            }
-        }
+       youDied();
     }
     
+}
+
+function youDied() {
+    if(myPlayer.item != undefined && myPlayer.item.sprite != undefined) {
+        myPlayer.item.sprite = undefined;
+    }
+    if (frameCount % 60 == 0 && spawnTimer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
+        spawnTimer--;
+    } 
+    if(spawnTimer==0) {
+        deathUpdate();
+        let data = {
+            deadPlayer: myPlayer.id,
+            damagedBy : myPlayer.damagedBy
+        }
+        if(myPlayer.damagedBy != null && myPlayer.damagedBy != socket.id) {
+            socket.emit("kill",data);
+        }
+        socket.emit("death",data);
+        if(myPlayer.death<3) {
+            myPlayer.sprite.position.x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
+            myPlayer.sprite.position.y = 0;
+            spawnTimer = 3;
+        }
+    }
 }
 
 function someoneDied(data) {
@@ -37,8 +41,13 @@ function someoneDied(data) {
         youAreDead = true;
         myPlayer.sprite.remove();
         alert("You died!");
-        myPlayer.sprite.remove();
         stop();
+    }
+}
+
+function fatalHit() {
+    if(myPlayer.knockback>=100) {
+        youDied();
     }
 }
 

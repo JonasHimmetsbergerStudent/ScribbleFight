@@ -118,6 +118,7 @@ function defaultAttackPhysics() {
 
           myPlayer.damagedBy = projectile.playerId;
           myPlayer.knockback += 0.05;
+          fatalHit();
 
           flying = true;
           flyingDuration = 10;
@@ -229,6 +230,7 @@ function bombPhysics() {
         myPlayer.damagedBy = bomb.playerId;
         socket.emit("deleteAttack", data);
         myPlayer.knockback += 1;
+        fatalHit();
 
       } else if (bomb.position.x > windowWidth || bomb.position.y > windowHeight || bomb.life == 0) {
         bomb.remove();
@@ -386,6 +388,7 @@ function pianoPhysics() {
         socket.emit("deleteAttack", data);
         myPlayer.damagedBy = p.playerId;
         myPlayer.knockback += 1;
+        fatalHit();
         if (p.me) {
           myPlayer.item["piano"].sprite = undefined;
           ammoCheck("piano");
@@ -460,6 +463,7 @@ function minePhysics() {
         myPlayer.damagedBy = m.playerId;
         socket.emit("deleteAttack", data);
         myPlayer.knockback += 0.5;
+        fatalHit();
         if (m.me && myPlayer.item["mine"] != undefined) {
           myPlayer.item["mine"].sprite.splice(myPlayer.item["mine"].sprite.indexOf(m), 1);
         }
