@@ -50,7 +50,6 @@ function defaultAttack(x, y) {
     playerId: socket.id
   }
   socket.emit("attack", data);
-
 }
 
 
