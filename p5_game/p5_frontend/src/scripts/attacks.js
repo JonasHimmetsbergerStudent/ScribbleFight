@@ -54,7 +54,7 @@ function defaultAttack(x, y) {
 }
 
 
-/**
+/** test
  * Default attack from angle relative to player
  * for AI to use
   * Mit freundlichen Grüßen :)
