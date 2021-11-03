@@ -89,7 +89,6 @@ function newConnection(socket) {
         }
         // damit es auch an mich sendet, benutze ich io.emit
         io.emit('newPlayer', data);
-      
     }
 
     function deleteItem(data) {
