@@ -1,7 +1,7 @@
 var express = require("express");
 
 var app = express();
-var server = app.listen(3000, "10.0.0.1");
+var server = app.listen(3000, "10.0.0.2");
 var kiServer = app.listen(3001);
 
 app.use(express.static('../p5_frontend/src'));
@@ -23,16 +23,14 @@ io.sockets.on('connection', newConnection);
 
 function newConnection(socket) {
     console.log("New connection: " + socket.id);
-
-    if (players.size > 0) {
-        players.forEach((values, keys) => {
-            let data = {
-                id: values.id,
-            }
-            socket.emit('newPlayer', data);
-        })
-    }
-
+        if (players.size > 0) {
+            players.forEach((values, keys) => {
+                let data = {
+                    id: values.id,
+                }
+                socket.emit('newPlayer', data);
+            })
+        } 
     socket.on('disconnect', function () {
         console.log('user disconnected: ' + socket.id);
         players.delete(socket.id);
@@ -50,7 +48,7 @@ function newConnection(socket) {
     socket.on('attack', syncAttacks);
     socket.on('kill', kill);
     socket.on('deleteAttack', deleteAttack);
-    socket.on('death',death);
+    socket.on('death', death);
     socket.on('xCoordinates', function (data) {
         xCoordinates = data;
     })
@@ -77,6 +75,9 @@ function newConnection(socket) {
             socket.broadcast.emit('updateDirection', dataWithId);
         } else if (data == "right") {
             dataWithId.direction = "right";
+            if (players.get(socket.id) == undefined) {
+                console.log(players + socket.id);
+            }
             players.get(socket.id).direction = "right";
             socket.broadcast.emit('updateDirection', dataWithId);
         }
@@ -116,21 +117,21 @@ function newConnection(socket) {
     function death(data) {
         players.get(data.deadPlayer).death++;
         console.log(players.get(data.deadPlayer).death);
-        if(players.get(data.deadPlayer).death>=3) {
+        if (players.get(data.deadPlayer).death >= 3) {
             players.delete(data.deadPlayer);
             let transferData = {
                 id: data.deadPlayer
             }
             io.emit('death', transferData);
         }
-        if(players.size<=1) {
-            socket.broadcast.emit("win",data.deadPlayer);
+        if (players.size <= 1) {
+            socket.broadcast.emit("win", data.deadPlayer);
         }
     }
 
     function kill(data) {
         io.to(data.damagedBy).emit('kill', 1);
-        players.get(data.damagedBy).kill +=1;
+        players.get(data.damagedBy).kill += 1;
     }
 
 }

@@ -144,7 +144,7 @@ function setup() {
 
   }
 
-  socket = io.connect('http://10.0.0.1:3000/');
+  socket = io.connect('http://10.0.0.2:3000/');
   //socket2 = io.connect("http://localhost:3001");
   socket.on("deletePlayer", deletePlayer);
   socket.on('newPlayer', createNewPlayer);
@@ -154,25 +154,29 @@ function setup() {
   socket.on('deleteItem', syncItems);
   socket.on('attack', addAttack);
   socket.on('kill', addKill);
-  socket.on('death',someoneDied);
-  socket.on("win",win);
+  socket.on('death', someoneDied);
+  socket.on("win", win);
   socket.on('deleteAttack', deleteAttack);
 }
 
 function createNewPlayer(data) {
-  loadImage('assets/amogus.png', img => {
-    img.resize(imageFaktor, 0);
-    players[data.id] = new Player(createSprite(newImageWidth / 2, newImageHeight / 2, player_width, player_height));
-    players[data.id].sprite.maxSpeed = pixelWidth;
-    players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
-    players[data.id].sprite.debug = true;
-    players[data.id].sprite.addImage(img);
-    players[data.id].id = data.id;
-    amogus = img;
-    if (data.id == socket.id) {
-      myPlayer = players[data.id];
-    }
-  });
+  //time to init
+    loadImage('assets/amogus.png', img => {
+      setTimeout(() => {
+        img.resize(imageFaktor, 0);
+        players[data.id] = new Player(createSprite(newImageWidth / 2, newImageHeight / 2, player_width, player_height));
+        players[data.id].sprite.maxSpeed = pixelWidth;
+        players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
+        players[data.id].sprite.debug = true;
+        players[data.id].sprite.addImage(img);
+        players[data.id].id = data.id;
+        amogus = img;
+        if (data.id == socket.id) {
+          myPlayer = players[data.id];
+        }
+      }, 500);
+    
+    });
 }
 
 function deletePlayer(id) {
@@ -226,7 +230,7 @@ function draw() {
       id: myPlayer.id,
       visCopy: visCopy
     }
-    socket.emit('visCopy', visCopyData);
+    //socket.emit('visCopy', visCopyData);
     addSpriteToVisual(myPlayer.sprite, 2);
 
     bombPhysics();
@@ -259,7 +263,7 @@ function draw() {
     mirrorSprite();
     deathCheck();
     drawSprites();
-   
+
     let transferX = (myPlayer.sprite.position.x - (windowWidth - newImageWidth) / 2) * relFaktor.x;
     let transferY = (myPlayer.sprite.position.y - (windowHeight - newImageHeight) / 2) * relFaktor.y;
     relPosData = {
@@ -335,40 +339,42 @@ function getVisualCoordinates(x, y) {
  * @returns 
  */
 function addSpriteToVisual(sprite, num) {
-  let maxWidthHeight = pixel_clumps[0].length * pixelWidth
-  let spriteX = sprite.collider.extents.x
-  let spriteY = sprite.collider.extents.y
-  let oriWidthInVisualUnit = spriteX * visual[0].length / (maxWidthHeight);
-  let oriHeightInVisualUnit = spriteY * visual[0].length / (maxWidthHeight);
-  let visualUnitCoordinates = getVisualCoordinates(sprite.position.x - spriteX / 2, sprite.position.y - spriteY / 2);
-  let visualUnitX = visualUnitCoordinates.x;
-  let visualUnitY = visualUnitCoordinates.y;
-  let maxXIterations = visualUnitX + oriWidthInVisualUnit;
-  let maxYIterations = visualUnitY + oriHeightInVisualUnit;
-
-  // set x and y cooridnates if out of bounds
-  if ((visualUnitX + oriWidthInVisualUnit < 0)
-    || (visualUnitX >= visual[0].length)
-    || (visualUnitY + oriHeightInVisualUnit < 0)
-    || (visualUnitY >= visual[0].length))
-    return;
-  if (visualUnitX < 0)
-    visualUnitX = 0
-  if (visualUnitY < 0)
-    visualUnitY = 0
-  if ((visualUnitX + oriWidthInVisualUnit) >= visual[0].length) {
-    maxXIterations = visual[0].length - 1;
-  }
-  if ((visualUnitY + oriHeightInVisualUnit) >= visual[0].length) {
-    maxYIterations = visual[0].length - 1;
-  }
-
-  for (let i = visualUnitX; i < maxXIterations; i++) {
-    for (let j = visualUnitY; j < maxYIterations; j++) {
-      if ((visCopy[j][i] != 2
-        && visCopy[j][i] != 3)
-        || num == 2)
-        visCopy[j][i] = num;
+  if(visual != undefined && visCopy!=undefined) {
+    let maxWidthHeight = pixel_clumps[0].length * pixelWidth
+    let spriteX = sprite.collider.extents.x
+    let spriteY = sprite.collider.extents.y
+    let oriWidthInVisualUnit = spriteX * visual[0].length / (maxWidthHeight);
+    let oriHeightInVisualUnit = spriteY * visual[0].length / (maxWidthHeight);
+    let visualUnitCoordinates = getVisualCoordinates(sprite.position.x - spriteX / 2, sprite.position.y - spriteY / 2);
+    let visualUnitX = visualUnitCoordinates.x;
+    let visualUnitY = visualUnitCoordinates.y;
+    let maxXIterations = visualUnitX + oriWidthInVisualUnit;
+    let maxYIterations = visualUnitY + oriHeightInVisualUnit;
+  
+    // set x and y cooridnates if out of bounds
+    if ((visualUnitX + oriWidthInVisualUnit < 0)
+      || (visualUnitX >= visual[0].length)
+      || (visualUnitY + oriHeightInVisualUnit < 0)
+      || (visualUnitY >= visual[0].length))
+      return;
+    if (visualUnitX < 0)
+      visualUnitX = 0
+    if (visualUnitY < 0)
+      visualUnitY = 0
+    if ((visualUnitX + oriWidthInVisualUnit) >= visual[0].length) {
+      maxXIterations = visual[0].length - 1;
+    }
+    if ((visualUnitY + oriHeightInVisualUnit) >= visual[0].length) {
+      maxYIterations = visual[0].length - 1;
+    }
+  
+    for (let i = visualUnitX; i < maxXIterations; i++) {
+      for (let j = visualUnitY; j < maxYIterations; j++) {
+        if ((visCopy[j][i] != 2
+          && visCopy[j][i] != 3)
+          || num == 2)
+          visCopy[j][i] = num;
+      }
     }
   }
 }
@@ -407,9 +413,8 @@ function init() {
                     loadImage('assets/amogus_supreme.png', img => {
                       img.resize(imageFaktor, 0);
                       amogus_supreme = img;
-                      socket.emit('newPlayer');
                       visual = getVisualMap(pixel_clumps);
-
+                      socket.emit('newPlayer');
                     })
                   })
                 })
