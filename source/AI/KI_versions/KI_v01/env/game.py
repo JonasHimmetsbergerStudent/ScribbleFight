@@ -89,6 +89,9 @@ class ScribbleFight:
             pass
         return actionString
 
+    def resetPlayer(self):
+        self.execAction('resetPlayer();')
+
     def action(self, action, angle):
         # down ('s') action not implemented
         actionString = ''
@@ -220,6 +223,8 @@ class Game:
     def reset(self):
         # reset in-game varibales
         self.scribble_fight.update()
+        # reset position
+        self.scribble_fight.resetPlayer()
         # reset variables
         # they should always be 0 because a reset only accures after death or as initialisation
         self.previous_damage_dealt = self.scribble_fight.dmgDealt  # should always be 0
