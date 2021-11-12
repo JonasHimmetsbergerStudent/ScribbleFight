@@ -69,17 +69,19 @@ function newConnection(socket) {
             id: socket.id,
             direction: ""
         }
-        if (data == "left") {
-            dataWithId.direction = "left";
-            players.get(socket.id).direction = "left";
-            socket.broadcast.emit('updateDirection', dataWithId);
-        } else if (data == "right") {
-            dataWithId.direction = "right";
-            if (players.get(socket.id) == undefined) {
-                console.log(players + socket.id);
+        if(players.get(socket.id) != undefined) {
+            if (data == "left") {
+                dataWithId.direction = "left";
+                players.get(socket.id).direction = "left";
+                socket.broadcast.emit('updateDirection', dataWithId);
+            } else if (data == "right") {
+                dataWithId.direction = "right";
+                if (players.get(socket.id) == undefined) {
+                    console.log(players + socket.id);
+                }
+                players.get(socket.id).direction = "right";
+                socket.broadcast.emit('updateDirection', dataWithId);
             }
-            players.get(socket.id).direction = "right";
-            socket.broadcast.emit('updateDirection', dataWithId);
         }
     }
 
@@ -131,7 +133,11 @@ function newConnection(socket) {
 
     function kill(data) {
         io.to(data.damagedBy).emit('kill', 1);
-        players.get(data.damagedBy).kill += 1;
+        // player could leave before getting the kill
+        if(players.get(data.damagedBy)!=undefined) {
+            players.get(data.damagedBy).kill += 1;
+        }
+        
     }
 
 }

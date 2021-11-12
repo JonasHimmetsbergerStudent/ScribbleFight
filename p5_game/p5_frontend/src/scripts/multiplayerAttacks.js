@@ -102,7 +102,11 @@ function addDefaultAttack(data) {
     projectile.setDefaultCollider();
     projectile.id = data.id;
     projectile.playerId = data.playerId;
-    projectile.me = false;
+    if(data.playerId == myPlayer.id) {
+        projectile.me = true;
+    } else {
+        projectile.me = false;
+    }
     projectiles.push(projectile);
 }
 

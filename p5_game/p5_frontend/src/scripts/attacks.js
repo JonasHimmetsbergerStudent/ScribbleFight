@@ -29,6 +29,7 @@ function defaultAttack(x, y) {
 
   let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
 
+  
   projectile.life = 100;
   projectile.velocity.x = (x - myPlayer.sprite.position.x) * 1000;
   projectile.velocity.y = (y - myPlayer.sprite.position.y) * 1000;
@@ -38,6 +39,7 @@ function defaultAttack(x, y) {
   projectile.id = id;
   projectile.limitSpeed(pixelWidth - pixelWidth / 2);
   projectile.playerId = socket.id;
+  
 
   projectiles.push(projectile);
   let data = {
@@ -46,7 +48,7 @@ function defaultAttack(x, y) {
     x: relPosData.x,
     y: relPosData.y,
     velX: projectile.velocity.x,
-    velY: projectile.velocity.y,
+    velY:  projectile.velocity.y,
     playerId: socket.id
   }
   socket.emit("attack", data);
@@ -77,9 +79,9 @@ function defaultAttackPhysics() {
     projectiles.forEach(projectile => {
       projectileIndex = projectiles.indexOf(projectile);
       if (projectile.me) {
-        addSpriteToVisual(projectile, 4);
+        //addSpriteToVisual(projectile, 4);
       } else {
-        addSpriteToVisual(projectile, 5);
+        //addSpriteToVisual(projectile, 5);
       }
 
       //and hits the map, destroy it
@@ -146,7 +148,7 @@ function bombAttack() {
         } else {
           myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x + player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
-        myPlayer.item["bomb"].sprite.velocity.x += pixelWidth / 5 * GAMESPEED;
+        myPlayer.item["bomb"].sprite.velocity.x = pixelWidth / 5 * GAMESPEED;
         vel = 1;
         while ((environment.overlap(myPlayer.item["bomb"].sprite))) {
           myPlayer.item["bomb"].sprite.position.x -= 1;
@@ -158,7 +160,7 @@ function bombAttack() {
         } else {
           myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, pixelWidth, pixelWidth);
         }
-        myPlayer.item["bomb"].sprite.velocity.x -= pixelWidth / 5 * GAMESPEED;
+        myPlayer.item["bomb"].sprite.velocity.x = -pixelWidth / 5 * GAMESPEED;
         vel = -1;
         while ((environment.overlap(myPlayer.item["bomb"].sprite))) {
           myPlayer.item["bomb"].sprite.position.x += 1;
@@ -195,7 +197,7 @@ function bombPhysics() {
         bomb.velocity.y -= GRAVITY * GAMESPEED;
       }
       bomb.bounce(environment);
-      addSpriteToVisual(bomb, 5);
+     // addSpriteToVisual(bomb, 5);
       let data = {
         type: "bomb",
         id: bomb.id,
@@ -258,7 +260,7 @@ function blackHoleAttack() {
         } else {
           myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x + player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
-        myPlayer.item["black_hole"].sprite.velocity.x += pixelWidth / 5 * GAMESPEED;
+        myPlayer.item["black_hole"].sprite.velocity.x = pixelWidth / 5 * GAMESPEED;
         while ((environment.overlap(myPlayer.item["black_hole"].sprite))) {
           myPlayer.item["black_hole"].sprite.position.x -= 1;
         }
@@ -269,7 +271,7 @@ function blackHoleAttack() {
         } else {
           myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
-        myPlayer.item["black_hole"].sprite.velocity.x -= pixelWidth / 5 * GAMESPEED;
+        myPlayer.item["black_hole"].sprite.velocity.x = -pixelWidth / 5 * GAMESPEED;
         while ((environment.overlap(myPlayer.item["black_hole"].sprite))) {
           myPlayer.item["black_hole"].sprite.position.x += 1;
 
@@ -320,7 +322,7 @@ function blackHolePhysics() {
         b.velocity.y -= GRAVITY;
         b.bounce(environment);
       }
-      addSpriteToVisual(b, 5);
+      //addSpriteToVisual(b, 5);
 
       if (b.position.x > windowWidth || b.position.y > windowHeight || b.life == 0) {
         b.remove();
@@ -405,7 +407,7 @@ function pianoPhysics() {
         sendHimFlying();
       }
       p.velocity.y -= GRAVITY;
-      addSpriteToVisual(p, 5);
+      //addSpriteToVisual(p, 5);
     });
   }
 }
@@ -468,7 +470,7 @@ function minePhysics() {
         }
       }
       m.velocity.y -= GRAVITY;
-      addSpriteToVisual(m, 5);
+     // addSpriteToVisual(m, 5);
     });
   }
 }
