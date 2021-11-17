@@ -1,7 +1,8 @@
 var express = require("express");
 
 var app = express();
-var server = app.listen(3000, "10.0.0.2");
+//var server = app.listen(3000, "10.0.0.2");
+var server = app.listen(3000);
 var kiServer = app.listen(3001);
 
 app.use(express.static('../p5_frontend/src'));
@@ -117,17 +118,18 @@ function newConnection(socket) {
     }
 
     function death(data) {
+        if(players.get(data.deadPlayer) != undefined) {
         players.get(data.deadPlayer).death++;
-        console.log(players.get(data.deadPlayer).death);
-        if (players.get(data.deadPlayer).death >= 3) {
-            players.delete(data.deadPlayer);
-            let transferData = {
-                id: data.deadPlayer
+            if (players.get(data.deadPlayer).death >= 3) {
+                players.delete(data.deadPlayer);
+                let transferData = {
+                    id: data.deadPlayer
+                }
+               // io.emit('death', transferData);
             }
-            io.emit('death', transferData);
-        }
-        if (players.size <= 1) {
-            socket.broadcast.emit("win", data.deadPlayer);
+            if (players.size <= 1) {
+                socket.broadcast.emit("win", data.deadPlayer);
+            }
         }
     }
 
