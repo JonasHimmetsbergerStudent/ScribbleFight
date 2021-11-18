@@ -186,6 +186,7 @@ class Player {
         this.death = 0;
         this.item = [];
         this.direction = "";
+        this.kill = 0;
     }
 }
 
