@@ -7,8 +7,9 @@ from selenium import webdriver
 from KI_v01.env.options.actions import *
 from KI_v01.env.options.observations import *
 
-# openai gym
-from gym.spaces import Box
+# threading
+#   socketio handler
+from threads.socketHandler import *
 
 
 '''VARIABLES'''
@@ -38,9 +39,10 @@ class ScribbleFight:
     '''SCRIBBLE FIGHT GAME'''
 
     def __init__(self):
+        self.socket_handler = None
         self.driver = None
         self.playerId = 0
-        self.obs = Box(0, 0, (165, 165), int).sample()
+        self.obs = None
         self.dmgDealt = 0
         self.knockback = 0
         self.kills = 0
@@ -56,6 +58,8 @@ class ScribbleFight:
 
         while not self.readystate:
             self.readystate = self.isReady()
+
+        self.socket_handler = SocketHandler(self.playerId)
 
     def isPlaying(self):
         return url in self.driver.current_url  # and self.readystate
@@ -87,8 +91,6 @@ class ScribbleFight:
 
     def resetPlayer(self):
         self.execAction('resetPlayer();')
-        self.just_died = False
-        self.obs = Box(0, 0, (165, 165), int).sample()
 
     def action(self, action, angle):
         # down ('s') action not implemented
@@ -118,13 +120,6 @@ class ScribbleFight:
             # idle state
             pass
         return actionString
-
-    def observe(self):
-        visCopy = readFromClient(self.driver, 'return visCopy;')
-        if visCopy:
-            self.obs = visCopy
-        if not visCopy:
-            self.obs = Box(0, 0, (165, 165), int).sample()
 
     def execAction(self, actionString):
         takeAction(self.driver, actionString)
@@ -184,8 +179,7 @@ class Game:
 
     def observe(self):
         # get computer vision
-        self.scribble_fight.observe()
-        return self.scribble_fight.obs
+        return self.scribble_fight.socket_handler.obs
         # return None
 
     def evaluate(self):
@@ -227,16 +221,18 @@ class Game:
         return self.scribble_fight.just_died or self.just_won or self.nothingChanged == self.min_game_length
 
     def reset(self):
-        # reset position
-        self.scribble_fight.resetPlayer()
         # reset in-game varibales
         self.scribble_fight.update()
+        # reset position
+        self.scribble_fight.resetPlayer()
         # reset variables
         # they should always be 0 because a reset only accures after death or as initialisation
         self.previous_damage_dealt = self.scribble_fight.dmgDealt  # should always be 0
         self.previous_knockback = self.scribble_fight.knockback  # should always be 0
         self.previous_kills = self.scribble_fight.kills  # should always be 0
         self.previous_deaths = self.scribble_fight.deaths
+        self.scribble_fight.just_died = False
+        self.scribble_fight.socket_handler.reset()
         self.nothingChanged = 0
         self.angle = 0
 

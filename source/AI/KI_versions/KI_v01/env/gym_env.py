@@ -6,7 +6,8 @@ from KI_v01.env.game import Game
 class CustomEnv(gym.Env):
 
     '''
-    This is an environment in wich an AI learns to play ScribbleFight
+    This class is a custom open-ai gym environment
+    It has helper functions which are implemented below
     '''
 
     #metadata = {'render.modes' : ['human']}
@@ -32,10 +33,12 @@ class CustomEnv(gym.Env):
     def step(self, actions):
         self.pygame.action(actions)
         obs = self.pygame.observe()
-        # comparison = obs == Box(0, 0, (165, 165), int).sample()
-        # equal_arrays = comparison.all()
-        # print(equal_arrays)
+
+        comparison = obs == Box(0, 0, (165, 165), int).sample()
+        equal_arrays = comparison.all()
+        print(equal_arrays)
         # obs = self.observation_space.sample()
+
         reward = self.pygame.evaluate()
         done = self.pygame.is_done()
         # info = self.pygame.info()  # not really needed

@@ -21,6 +21,13 @@ def takeAction(driver, actions):
         pass
 
 
+def readFromClient(driver, valueToRead):
+    try:
+        return driver.execute_script(valueToRead)
+    except:
+        return False
+
+
 def jump(driver):
     driver.execute_script('jump()')
 
