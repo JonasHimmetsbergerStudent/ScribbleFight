@@ -227,8 +227,9 @@ class Game:
         return self.scribble_fight.just_died or self.just_won or self.nothingChanged == self.min_game_length
 
     def reset(self):
-        # reset position
-        self.scribble_fight.resetPlayer()
+        # reset position and observation
+        if not self.scribble_fight.just_died:
+            self.scribble_fight.resetPlayer()
         # reset in-game varibales
         self.scribble_fight.update()
         # reset variables

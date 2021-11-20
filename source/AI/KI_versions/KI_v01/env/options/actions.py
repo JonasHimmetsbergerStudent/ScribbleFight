@@ -15,6 +15,7 @@ click(angle)DEFAULT
 
 
 def takeAction(driver, actions):
+    # executes action string
     try:
         driver.execute_script(actions)
     except:
@@ -22,6 +23,7 @@ def takeAction(driver, actions):
 
 
 def readFromClient(driver, valueToRead):
+    # reads value form client
     try:
         return driver.execute_script(valueToRead)
     except:
