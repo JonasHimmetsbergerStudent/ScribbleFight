@@ -1,8 +1,16 @@
 var express = require("express");
 
 var app = express();
-//var server = app.listen(3000, "10.0.0.2");
-var server = app.listen(3000);
+
+const PORT = 3000;
+const HOST = '0.0.0.0';
+
+/*app.get('/', (req, res) => {
+    res.send('Hello World');
+  }); */
+
+var server = app.listen(PORT, HOST);
+//var server = app.listen(3000);
 var kiServer = app.listen(3001);
 
 app.use(express.static('../p5_frontend/src'));

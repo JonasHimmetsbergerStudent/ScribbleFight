@@ -15,7 +15,7 @@ var JUMP_COUNT = 0;
 var same_x_counter = 1;
 const MAX_JUMP = 3;
 var touches_side;
-var background_path = "assets/komischer_smiley.png";
+var background_path = "assets/smiley_bg.png";
 var visual;
 var pixelWidth;
 var visCopy;
@@ -89,7 +89,7 @@ function setup() {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
             sprite_pixels[i][j] = createSprite((j - ((same_x_counter) / 2) + 0.5) * pixelWidth + ((windowWidth - newImageWidth) / 2) + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth * (same_x_counter), pixelWidth);
-            //sprite_pixels[i][j].visible = false;
+            sprite_pixels[i][j].visible = false;
             sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].depth = 10;
             sprite_pixels[i][j].immovable = true;
@@ -102,7 +102,7 @@ function setup() {
             sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].immovable = true;
             environment.add(sprite_pixels[i][j]);
-            sprite_pixels[i][j].visible = true;
+            sprite_pixels[i][j].visible = false;
           }
         }
       }
@@ -144,8 +144,8 @@ function setup() {
 
   }
 
-  //socket = io.connect('http://10.0.0.2:3000/');
   socket = io.connect('http://localhost:3000/');
+  //socket = io.connect('http://localhost:3000/');
   //socket2 = io.connect("http://localhost:3001");
   socket.on("deletePlayer", deletePlayer);
   socket.on('newPlayer', createNewPlayer);
