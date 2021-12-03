@@ -1,19 +1,20 @@
 var express = require("express");
 
 var app = express();
+const path = require('path');
 
 const PORT = 3000;
-const HOST = '0.0.0.0';
+const HOST = 'localhost';
 
 /*app.get('/', (req, res) => {
     res.send('Hello World');
   }); */
 
-var server = app.listen(PORT, HOST);
+var server = app.listen(PORT);
 //var server = app.listen(3000);
 var kiServer = app.listen(3001);
 
-app.use(express.static('../p5_frontend/src'));
+app.use(express.static(path.join(__dirname, '/../p5_frontend/src')));
 
 console.log("my server is running");
 
