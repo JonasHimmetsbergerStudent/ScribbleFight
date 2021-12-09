@@ -21,7 +21,8 @@ class KI():
     def run(self):
         log_path = os.path.join('Traning', 'Logs')
         model = A2C("MlpPolicy", self.env, verbose=1, tensorboard_log=log_path)
-        model.learn(total_timesteps=400)
+        model.learn(total_timesteps=10)
+        self.env.close()
 
 
 if __name__ == "__main__":
