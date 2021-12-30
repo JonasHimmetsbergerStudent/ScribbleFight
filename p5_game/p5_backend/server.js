@@ -138,7 +138,7 @@ function newConnection(socket) {
                 let transferData = {
                     id: data.deadPlayer
                 }
-               // io.emit('death', transferData);
+                io.emit('death', transferData);
             }
             if (players.size <= 1) {
                 socket.broadcast.emit("win", data.deadPlayer);

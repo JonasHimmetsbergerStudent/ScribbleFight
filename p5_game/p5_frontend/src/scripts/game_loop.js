@@ -29,13 +29,13 @@ function youDied() {
         if (myPlayer.damagedBy != null && myPlayer.damagedBy != socket.id) {
             socket.emit("kill", data);
         }
-       // socket.emit("death", data);
+       socket.emit("death", data);
         
-       // if (myPlayer.death < 3) {
+        if (myPlayer.death < 3) {
             myPlayer.sprite.position.x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
             myPlayer.sprite.position.y = 0;
             spawnTimer = 3;
-        //} 
+        } 
     }
 }
 
@@ -45,7 +45,7 @@ function someoneDied(data) {
     if (data.id == myPlayer.id) {
         youAreDead = true;
         myPlayer.sprite.remove();
-        alert("You died!");
+        alert("You died!\nYour kills: " + myPlayer.kills + "\n" + "Your damage: " + myPlayer.dmgDealt + "\n" + "Your knockback: " + myPlayer.knockback   );
         stop();
     } 
 }
@@ -58,7 +58,7 @@ function fatalHit() {
 
 function win(data) {
     if (myPlayer.id != data) {
-       //alert("You won!");
+        alert("You won!\nYour kills: " + myPlayer.kills + "\n" + "Your damage: " + myPlayer.dmgDealt + "\n" + "Your knockback: " + myPlayer.knockback + "\n" + "Your deaths: " + myPlayer.death);
     }
 }
 

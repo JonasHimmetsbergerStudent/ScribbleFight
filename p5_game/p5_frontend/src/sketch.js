@@ -38,15 +38,26 @@ var mineImg;
 var amogus_supreme;
 
 //Forces
-const GAMESPEED = 1;
 var GRAVITY;
 var JUMP;
-if (GAMESPEED > 1) {
-  JUMP = 15 * GAMESPEED / 1.435;
+
+function sockets() {
+  socket.on("deletePlayer", deletePlayer);
+  socket.on('newPlayer', createNewPlayer);
+  socket.on('update', updatePosition);
+  socket.on('updateDirection', updateDirection);
+  socket.on('spawnItem', createItem);
+  socket.on('deleteItem', syncItems);
+  socket.on('attack', addAttack);
+  socket.on('kill', addKill);
+  socket.on('death', someoneDied);
+  socket.on("win", win);
+  socket.on('deleteAttack', deleteAttack);
 }
 
 function setup() {
   var canvas = createCanvas(windowWidth, windowHeight);
+  sockets();
   background('FFFFFF');
   var backgroundImage = new Image();
   backgroundImage.src = background_path;
@@ -82,6 +93,8 @@ function setup() {
     GRAVITY = -pixelWidth / 25;
     environment = new Group();
     console.log(pixelWidth);
+
+    // creating pixel environment
     for (let i = 0; i < pixel_clumps.length; i++) {
       sprite_pixels[i] = [];
       for (let j = 0; j < pixel_clumps[0].length; j++) {
@@ -123,13 +136,6 @@ function setup() {
          }
        } */
 
-    //for background
-    /*let div = createDiv('').size(newImageWidth, newImageHeight);
-    div.style('background-color', 'orange');
-    div.style('background', 'url("assets/komischer_smiley.png")');
-    div.style('background-repeat', 'no-repeat');
-    div.style('background-size','contain');
-    div.center(); */
 
     let background = createSprite(windowWidth / 2, windowHeight / 2, newImageWidth, newImageHeight);
     loadImage(background_path, img => {
@@ -144,25 +150,14 @@ function setup() {
 
   }
 
-  //socket = io.connect('http://localhost:3000/');
+  //socket = io.connect('http://10.0.0.8:3000/');
   //socket2 = io.connect("http://localhost:3001");
-  socket.on("deletePlayer", deletePlayer);
-  socket.on('newPlayer', createNewPlayer);
-  socket.on('update', updatePosition);
-  socket.on('updateDirection', updateDirection);
-  socket.on('spawnItem', createItem);
-  socket.on('deleteItem', syncItems);
-  socket.on('attack', addAttack);
-  socket.on('kill', addKill);
-  socket.on('death', someoneDied);
-  socket.on("win", win);
-  socket.on('deleteAttack', deleteAttack);
+
 }
 
 function createNewPlayer(data) {
   //time to init
     loadImage('assets/amogus.png', img => {
-      setTimeout(() => {
         img.resize(imageFaktor, 0);
         players[data.id] = new Player(createSprite(newImageWidth / 2, newImageHeight / 2, player_width, player_height));
         players[data.id].sprite.maxSpeed = pixelWidth;
@@ -174,8 +169,6 @@ function createNewPlayer(data) {
         if (data.id == socket.id) {
           myPlayer = players[data.id];
         }
-      }, 500);
-    
     });
 }
 

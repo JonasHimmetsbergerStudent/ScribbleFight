@@ -148,7 +148,7 @@ function bombAttack() {
         } else {
           myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x + player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
-        myPlayer.item["bomb"].sprite.velocity.x = pixelWidth / 5 * GAMESPEED;
+        myPlayer.item["bomb"].sprite.velocity.x = pixelWidth / 5;
         vel = 1;
         while ((environment.overlap(myPlayer.item["bomb"].sprite))) {
           myPlayer.item["bomb"].sprite.position.x -= 1;
@@ -160,7 +160,7 @@ function bombAttack() {
         } else {
           myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, pixelWidth, pixelWidth);
         }
-        myPlayer.item["bomb"].sprite.velocity.x = -pixelWidth / 5 * GAMESPEED;
+        myPlayer.item["bomb"].sprite.velocity.x = -pixelWidth / 5;
         vel = -1;
         while ((environment.overlap(myPlayer.item["bomb"].sprite))) {
           myPlayer.item["bomb"].sprite.position.x += 1;
@@ -194,7 +194,7 @@ function bombPhysics() {
   if (bombs.length >= 1) {
     bombs.forEach(bomb => {
       if (bomb.velocity.y <= pixelWidth - pixelWidth / 5) {
-        bomb.velocity.y -= GRAVITY * GAMESPEED;
+        bomb.velocity.y -= GRAVITY;
       }
       bomb.bounce(environment);
      // addSpriteToVisual(bomb, 5);
@@ -217,7 +217,7 @@ function bombPhysics() {
           myPlayer.sprite.velocity.y = -bomb.velocity.y * pixelWidth / 5 * myPlayer.knockback;
         }
         flying = true;
-        flyingDuration = 50 / GAMESPEED;
+        flyingDuration = 50;
         timeFlying = flyingDuration;
         bomb.remove();
 
@@ -260,7 +260,7 @@ function blackHoleAttack() {
         } else {
           myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x + player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
-        myPlayer.item["black_hole"].sprite.velocity.x = pixelWidth / 5 * GAMESPEED;
+        myPlayer.item["black_hole"].sprite.velocity.x = pixelWidth / 5;
         while ((environment.overlap(myPlayer.item["black_hole"].sprite))) {
           myPlayer.item["black_hole"].sprite.position.x -= 1;
         }
@@ -271,7 +271,7 @@ function blackHoleAttack() {
         } else {
           myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
-        myPlayer.item["black_hole"].sprite.velocity.x = -pixelWidth / 5 * GAMESPEED;
+        myPlayer.item["black_hole"].sprite.velocity.x = -pixelWidth / 5;
         while ((environment.overlap(myPlayer.item["black_hole"].sprite))) {
           myPlayer.item["black_hole"].sprite.position.x += 1;
 
