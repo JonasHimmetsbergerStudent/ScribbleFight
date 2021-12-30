@@ -144,7 +144,6 @@ function setup() {
 
   }
 
-  socket = io.connect('http://localhost:3000/');
   //socket = io.connect('http://localhost:3000/');
   //socket2 = io.connect("http://localhost:3001");
   socket.on("deletePlayer", deletePlayer);
@@ -191,7 +190,7 @@ function updatePosition(data) {
   if (players[data.id] != undefined && obildbreite != undefined && obildhoehe != undefined) {
     players[data.id].sprite.position.x = data.x * newImageWidth / obildbreite + (windowWidth - newImageWidth) / 2;
     players[data.id].sprite.position.y = data.y * newImageHeight / obildhoehe + (windowHeight - newImageHeight) / 2;
-    addSpriteToVisual(players[data.id].sprite, 3);
+    //addSpriteToVisual(players[data.id].sprite, 3);
   }
 }
 
@@ -226,13 +225,13 @@ function draw() {
 
     // deep copy of multidimensional array
     // https://morioh.com/p/d15a64da5d09
-    visCopy = JSON.parse(JSON.stringify(visual));
+    /*visCopy = JSON.parse(JSON.stringify(visual));
     let visCopyData = {
       id: myPlayer.id,
       visCopy: visCopy
     }
     socket.emit('visCopy', visCopyData);
-    addSpriteToVisual(myPlayer.sprite, 2);
+    //addSpriteToVisual(myPlayer.sprite, 2); */
 
     bombPhysics();
     defaultAttackPhysics();

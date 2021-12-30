@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scribble-fight-deployment
+spec:
+  selector:
+    matchLabels:
+      app: scribble-fight
+  replicas: 1 # tells deployment to run 1 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: scribble-fight
+    spec:
+      containers:
+      - name: scribble-fight
+        image: registry.cloud.htl-leonding.ac.at/t.rafetseder/scribble-fight/v10
+        imagePullPolicy: Always
+        resources: 
+          limits: 
+            memory: '1Gi'
+            cpu: '0.3'
+        ports:
+        - containerPort: 3000

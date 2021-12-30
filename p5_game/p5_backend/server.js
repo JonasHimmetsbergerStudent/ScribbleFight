@@ -1,26 +1,28 @@
-var express = require("express");
-
+var express = require( "express" );
 var app = express();
+var http = require( "http" ).createServer( app );
+var io = require( "socket.io" )( http, {
+    cors: {
+        origin: '*',
+    }
+} );
+
 const path = require('path');
 
-const PORT = 3000;
-const HOST = 'localhost';
+app.use(express.static(path.join(__dirname, '/../p5_frontend/src')));
+
 
 /*app.get('/', (req, res) => {
     res.send('Hello World');
   }); */
 
-var server = app.listen(PORT);
-//var server = app.listen(3000);
-var kiServer = app.listen(3001);
+//var server = app.listen(PORT);
+http.listen(3000);
 
-app.use(express.static(path.join(__dirname, '/../p5_frontend/src')));
+
+//var kiServer = app.listen(3001);
 
 console.log("my server is running");
-
-var socket = require('socket.io');
-
-var io = socket(server);
 
 
 var players = new Map();
@@ -63,7 +65,9 @@ function newConnection(socket) {
         xCoordinates = data;
     })
     //for KI
+    /*
     socket.on('visCopy', sendVisCopy);
+*/
 
     function updatePosition(data) {
         let dataWithId = {
@@ -200,6 +204,7 @@ class Player {
 }
 
 //// FOR KI
+/*
 var idTable = new Map();
 const io2 = require('socket.io')(kiServer, {
     cors: {
@@ -226,4 +231,4 @@ function sendVisCopy(data) {
             io2.to(key).emit('visCopyToPython', data.visCopy);
         }
     })
-}
+} */
