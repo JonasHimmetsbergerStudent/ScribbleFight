@@ -6,16 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scribble Fight</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
-  <script>
-    var socket = io({
-      path: "/t.rafetseder/scribble-fight/socket.io"
-    });
-  </script>
+  <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"
+    integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg"
+    crossorigin="anonymous"></script>
   <script src="model/player.js"></script>
   <script src="model/item.js"></script>
   <script src="lib/p5.js"></script>
   <script src="lib/p5.play.js"></script>
+  <script>
+  var socket = io({
+    path: "/t.rafetseder/scribble-fight/socket.io"
+  }); 
+</script>
   <script src="sketch.js"></script>
   <!-- <script src="../addons/p5.sound.js"></script> -->
   <script src="scripts/pixel_clump.js"></script>

@@ -79,7 +79,7 @@ function createItem(data) {
         }
         i.maxSpeed = pixelWidth / 2;
         i.setDefaultCollider();
-        i.debug = true;
+        //i.debug = true;
         i.id = data.id;
         i.dropped = false;
         items.push(i);

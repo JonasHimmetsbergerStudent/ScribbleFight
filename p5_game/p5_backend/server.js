@@ -1,11 +1,11 @@
-var express = require( "express" );
+var express = require("express");
 var app = express();
-var http = require( "http" ).createServer( app );
-var io = require( "socket.io" )( http, {
+var http = require("http").createServer(app);
+var io = require("socket.io")(http, {
     cors: {
         origin: '*',
     }
-} );
+});
 
 const path = require('path');
 
@@ -35,6 +35,8 @@ io.sockets.on('connection', newConnection);
 
 function newConnection(socket) {
     console.log("New connection: " + socket.id);
+
+    function sendPlayers() {
         if (players.size > 0) {
             players.forEach((values, keys) => {
                 let data = {
@@ -42,7 +44,10 @@ function newConnection(socket) {
                 }
                 socket.emit('newPlayer', data);
             })
-        } 
+        }
+    }
+  
+
     socket.on('disconnect', function () {
         console.log('user disconnected: ' + socket.id);
         players.delete(socket.id);
@@ -54,6 +59,7 @@ function newConnection(socket) {
         }
     });
     socket.on('newPlayer', createPlayer);
+    socket.on('getPlayers',sendPlayers);
     socket.on('update', updatePosition);
     socket.on('updateDirection', updateDirection);
     socket.on('deleteItem', deleteItem);
@@ -83,7 +89,7 @@ function newConnection(socket) {
             id: socket.id,
             direction: ""
         }
-        if(players.get(socket.id) != undefined) {
+        if (players.get(socket.id) != undefined) {
             if (data == "left") {
                 dataWithId.direction = "left";
                 players.get(socket.id).direction = "left";
@@ -131,8 +137,8 @@ function newConnection(socket) {
     }
 
     function death(data) {
-        if(players.get(data.deadPlayer) != undefined) {
-        players.get(data.deadPlayer).death++;
+        if (players.get(data.deadPlayer) != undefined) {
+            players.get(data.deadPlayer).death++;
             if (players.get(data.deadPlayer).death >= 3) {
                 players.delete(data.deadPlayer);
                 let transferData = {
@@ -149,10 +155,10 @@ function newConnection(socket) {
     function kill(data) {
         io.to(data.damagedBy).emit('kill', 1);
         // player could leave before getting the kill
-        if(players.get(data.damagedBy)!=undefined) {
+        if (players.get(data.damagedBy) != undefined) {
             players.get(data.damagedBy).kill += 1;
         }
-        
+
     }
 
 }

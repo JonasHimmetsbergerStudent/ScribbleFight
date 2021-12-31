@@ -41,7 +41,10 @@ var amogus_supreme;
 var GRAVITY;
 var JUMP;
 
+
+
 function sockets() {
+  //socket = io.connect('http://localhost:3000/');
   socket.on("deletePlayer", deletePlayer);
   socket.on('newPlayer', createNewPlayer);
   socket.on('update', updatePosition);
@@ -103,7 +106,7 @@ function setup() {
             same_x_counter++;
             sprite_pixels[i][j] = createSprite((j - ((same_x_counter) / 2) + 0.5) * pixelWidth + ((windowWidth - newImageWidth) / 2) + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth * (same_x_counter), pixelWidth);
             sprite_pixels[i][j].visible = false;
-            sprite_pixels[i][j].debug = true;
+           // sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].depth = 10;
             sprite_pixels[i][j].immovable = true;
             environment.add(sprite_pixels[i][j]);
@@ -112,7 +115,7 @@ function setup() {
           } else {
             same_x_counter = 1;
             sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth - newImageWidth) / 2) + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth, pixelWidth);
-            sprite_pixels[i][j].debug = true;
+            //sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].immovable = true;
             environment.add(sprite_pixels[i][j]);
             sprite_pixels[i][j].visible = false;
@@ -150,19 +153,17 @@ function setup() {
 
   }
 
-  //socket = io.connect('http://10.0.0.8:3000/');
   //socket2 = io.connect("http://localhost:3001");
 
 }
 
 function createNewPlayer(data) {
-  //time to init
     loadImage('assets/amogus.png', img => {
         img.resize(imageFaktor, 0);
         players[data.id] = new Player(createSprite(newImageWidth / 2, newImageHeight / 2, player_width, player_height));
         players[data.id].sprite.maxSpeed = pixelWidth;
         players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
-        players[data.id].sprite.debug = true;
+       // players[data.id].sprite.debug = true;
         players[data.id].sprite.addImage(img);
         players[data.id].id = data.id;
         amogus = img;
@@ -408,6 +409,8 @@ function init() {
                       img.resize(imageFaktor, 0);
                       amogus_supreme = img;
                       visual = getVisualMap(pixel_clumps);
+
+                      socket.emit('getPlayers');
                       socket.emit('newPlayer');
                     })
                   })

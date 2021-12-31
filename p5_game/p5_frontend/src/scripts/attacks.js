@@ -280,7 +280,7 @@ function blackHoleAttack() {
       let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
       myPlayer.item["black_hole"].sprite.addImage(boogieBombImg);
       myPlayer.item["black_hole"].sprite.life = 500;
-      myPlayer.item["black_hole"].sprite.debug = true;
+     // myPlayer.item["black_hole"].sprite.debug = true;
       myPlayer.item["black_hole"].sprite.me = true;
       blackHoles.push(myPlayer.item["black_hole"].sprite);
       let data = {
@@ -347,7 +347,7 @@ function pianoTime() {
         myPlayer.item["piano"].sprite = createSprite(xPos, 0, pixelWidth * 5, pixelWidth * 5);
         myPlayer.item["piano"].sprite.addImage(pianoImg);
         myPlayer.item["piano"].sprite.setCollider("rectangle", 0, 0, pixelWidth * 5, pixelWidth * 5);
-        myPlayer.item["piano"].sprite.debug = true;
+       // myPlayer.item["piano"].sprite.debug = true;
         myPlayer.item["piano"].sprite.maxSpeed = pixelWidth - pixelWidth / 5;
         myPlayer.item["piano"].sprite.rotation = getRandomInt(360);
         myPlayer.item["piano"].sprite.me = true;
@@ -424,7 +424,7 @@ function placeMine() {
     let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
     mine.addImage(mineImg);
     mine.maxSpeed = pixelWidth / 5;
-    mine.debug = true;
+    //mine.debug = true;
     mine.me = true;
     mine.playerId = socket.id;
     myPlayer.item["mine"].sprite.push(mine);

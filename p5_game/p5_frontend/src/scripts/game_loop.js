@@ -16,12 +16,14 @@ function resetPlayer() {
 function youDied() {
     if (myPlayer.item != undefined && myPlayer.item.sprite != undefined) {
         myPlayer.item.sprite = undefined;
+        myPlayer.item = undefined;
     }
     if (frameCount % 60 == 0 && spawnTimer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
         spawnTimer--;
     }
     if (spawnTimer == 0) {
-        deathUpdate();
+       // deathUpdate();
+       myPlayer.death++;
         let data = {
             deadPlayer: myPlayer.id,
             damagedBy: myPlayer.damagedBy
@@ -40,7 +42,6 @@ function youDied() {
 }
 
 function someoneDied(data) {
-    //off for KI
     players[data.id].sprite.remove();
     if (data.id == myPlayer.id) {
         youAreDead = true;
