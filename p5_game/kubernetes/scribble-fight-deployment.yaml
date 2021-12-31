@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: scribble-fight
-        image: registry.cloud.htl-leonding.ac.at/t.rafetseder/scribble-fight/v10
+        image: registry.cloud.htl-leonding.ac.at/t.rafetseder/scribble-fight/v19
         imagePullPolicy: Always
         resources: 
           limits: 

@@ -137,7 +137,7 @@ function addMine(data) {
     mine.addImage(mineImg);
     mine.setDefaultCollider();
     mine.maxSpeed = pixelWidth / 5;
-    mine.debug = true;
+    //mine.debug = true;
     mine.me = false;
     mine.playerId = data.playerId;
     mines.push(mine);

@@ -280,7 +280,7 @@ function blackHoleAttack() {
       let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
       myPlayer.item["black_hole"].sprite.addImage(boogieBombImg);
       myPlayer.item["black_hole"].sprite.life = 500;
-     // myPlayer.item["black_hole"].sprite.debug = true;
+      myPlayer.item["black_hole"].sprite.debug = true;
       myPlayer.item["black_hole"].sprite.me = true;
       blackHoles.push(myPlayer.item["black_hole"].sprite);
       let data = {

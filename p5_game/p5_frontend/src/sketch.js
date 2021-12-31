@@ -245,7 +245,7 @@ function draw() {
       controls();
     }
 
-    if (frameCount == 60 && damagedByTimer > 0) {
+    if (frameCount % 120 == 0 && damagedByTimer > 0 && myPlayer.damagedBy != null) {
       damagedByTimer--;
     }
 
