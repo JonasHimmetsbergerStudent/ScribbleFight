@@ -2,8 +2,9 @@ let spawnTimer = 3;
 let youAreDead = false;
 let gameOver;
 let alivePlayerCount = 0;
+let respawnTime = false;
 function deathCheck() {
-    if (myPlayer.sprite.position.y > windowHeight) {
+    if (myPlayer.sprite.position.y - player_height > windowHeight && !respawnTime) {
         youDied();
     }
 }
@@ -18,26 +19,25 @@ function youDied() {
         myPlayer.item.sprite = undefined;
         myPlayer.item = undefined;
     }
-    if (frameCount % 60 == 0 && spawnTimer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
-        spawnTimer--;
-    }
-    if (spawnTimer == 0) {
-        deathUpdate();
-        let data = {
-            deadPlayer: myPlayer.id,
-            damagedBy: myPlayer.damagedBy
-        }
-        if (myPlayer.damagedBy != null && myPlayer.damagedBy != socket.id) {
-            socket.emit("kill", data);
-        }
-        socket.emit("death", data);
 
+    deathUpdate();
+    respawnTime = true;
+    let data = {
+        deadPlayer: myPlayer.id,
+        damagedBy: myPlayer.damagedBy
+    }
+    if (myPlayer.damagedBy != null && myPlayer.damagedBy != socket.id) {
+        socket.emit("kill", data);
+    }
+    socket.emit("death", data);
+
+    setTimeout(() => {
         if (myPlayer.death < 3) {
             myPlayer.sprite.position.x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
             myPlayer.sprite.position.y = 0;
-            spawnTimer = 3;
+            respawnTime = false;
         }
-    }
+    }, 3000);
 }
 
 function someoneDied(data) {
