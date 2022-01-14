@@ -1,5 +1,5 @@
 # stable baselines
-from stable_baselines3 import A2C
+from stable_baselines3 import A2C, PPO
 from stable_baselines3.common.env_util import make_vec_env
 
 # threading
@@ -21,7 +21,8 @@ class KI():
     def run(self):
         log_path = os.path.join('Traning', 'Logs')
         model = A2C("MlpPolicy", self.env, verbose=1, tensorboard_log=log_path)
-        model.learn(total_timesteps=10)
+        model = PPO("MlpPolicy", self.env, verbose=1, tensorboard_log=log_path)
+        model.learn(total_timesteps=4500000)
         self.env.close()
 
 
