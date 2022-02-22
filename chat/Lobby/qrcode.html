@@ -2,6 +2,27 @@
 
 <script>
 
-    let localClient = localStorage.getItem("localClient")
+    
+    
+
+
+</script>
+
+<script>
+    let ws = new WebSocket("ws://localhost:9090")
+    const localClient = localStorage.getItem("localClient")
     console.log(localClient)
+    const localGame = localStorage.getItem("localGame")
+    // Code dafür wenn jemand das Bild hochgeladen hat
+    // AKA wenn hochgeladen
+    window.onload = function(){
+        
+        const payLoad = {
+            "method": "picUploaded",
+            "clientId": localClient,
+            "gameId": localGame
+        }
+               
+        ws.send(JSON.stringify(payLoad));
+    }
 </script>

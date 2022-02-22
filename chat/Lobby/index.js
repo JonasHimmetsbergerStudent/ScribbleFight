@@ -13,6 +13,7 @@ app.get("/index.html", (req,res) => res.sendFile(__dirname + "/index.html"));
 
 const clients = {};
 let games = {};
+let picGames = {};
 const wsServer = new websocketServer({
     "httpServer": httpServer
 })
@@ -34,7 +35,12 @@ wsServer.on("request", request => {
                 "clients": []
                 // ??
             }
-            console.log(games)
+            picGames[gameId] = {
+                "id": gameId,
+                "clients": []
+                // ??
+            }
+            //console.log(games)
 
             const payLoad = {
                 "method": "create",
@@ -65,9 +71,13 @@ wsServer.on("request", request => {
                     games[gameId].clients.push({
                         "clientId": clientId
                     })
+                    picGames[gameId].clients.push({
+                        "clientId": clientId
+                    })
                     const payLoadNew = {
                         "method": "newClient",
-                        "newClient": clientId
+                        "newClient": clientId,
+                        "gameId": games[gameId].id
                     }
                     clients[clientId].connection.send(JSON.stringify(payLoadNew))
                     const payLoad = {
@@ -78,7 +88,7 @@ wsServer.on("request", request => {
                     games[gameId].clients.forEach(c => {
                         clients[c.clientId].connection.send(JSON.stringify(payLoad))
                     })
-                    console.log(games)
+                    //console.log(games)
                 }
             } else {
                 console.log("error")
@@ -88,6 +98,20 @@ wsServer.on("request", request => {
                 }
                 connection.send(JSON.stringify(payLoad))
             } 
+        }
+        if(result.method === "picUploaded"){
+            console.log(result.clientId)
+            console.log(picGames[result.gameId].clients[0].clientId)
+            console.log(picGames[result.gameId])
+            var i = 0;
+            picGames[result.gameId].clients.forEach( c => {
+                if(picGames[result.gameId].clients[i].clientId == result.clientId){
+                    console.log("yesss")
+                    picGames[result.gameId].clients.splice(i,1)
+                }
+                i++;
+            })
+            console.log(picGames[result.gameId])
         }
     })
 

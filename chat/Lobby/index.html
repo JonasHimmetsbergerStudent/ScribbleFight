@@ -13,6 +13,7 @@
         let ws = new WebSocket("ws://localhost:9090")
         let clientId = null;
         let gameId = null;
+        
 
        // ws.send(JSON.stringify(payLoad));
         ws.onmessage = message => {
@@ -39,12 +40,20 @@
                 const game = response.game;
                 localStorage.setItem("game",response.game)
                 localStorage.setItem("player",response.clientId)
-
+                var i = 0;
+                const playerlist = document.getElementById('playerlist');
+                playerlist.innerHTML = "";
+                game.clients.forEach(c => {
+                    playerlist.innerHTML += "User: " + game.clients[i].clientId + ", ";
+                    i++;
+                });
             }
             if(response.method === "newClient"){
                 console.log(response.newClient)
                 let localClient = response.newClient;
+                let localGame = response.gameId;
                 localStorage.setItem("localClient", localClient)
+                localStorage.setItem("localGame", localGame)
             }
             if(response.method === "error"){
                 console.log("Error: " + response.message)
