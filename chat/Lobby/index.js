@@ -6,7 +6,11 @@ const websocketServer = require("websocket").server
 const httpServer = http.createServer();
 httpServer.listen(9090, () => console.log("Listening.. on 9090"))
 
-app.get("/jquery-min.js", (req,res) => res.sendFile(__dirname + "/jquery-min.js"));
+app.get("/jquery.min.js", (req,res) => res.sendFile(__dirname + "/jquery.min.js"));
+app.get("/qrcode.html/:gameId/:clientId", function (req,res) {
+    res.sendFile(__dirname + "/qrcode.html")
+} );
+app.get("/amogusss.png", (req,res) => res.sendFile(__dirname + "/amogusss.png"));
 app.get("/qrcode.js", (req,res) => res.sendFile(__dirname + "/qrcode.js"));
 app.get("/qrcode.html", (req,res) => res.sendFile(__dirname + "/qrcode.html"));
 app.get("/index.html", (req,res) => res.sendFile(__dirname + "/index.html"));
@@ -100,6 +104,9 @@ wsServer.on("request", request => {
             } 
         }
         if(result.method === "picUploaded"){
+            // picGames = Dummy für games wo alle die hochgeladen haben entfernt werden
+            const gameId = result.gameId;
+            const game = games[gameId];
             console.log(result.clientId)
             console.log(picGames[result.gameId].clients[0].clientId)
             console.log(picGames[result.gameId])
@@ -112,6 +119,17 @@ wsServer.on("request", request => {
                 i++;
             })
             console.log(picGames[result.gameId])
+
+            // Wenn User upgeloaded hat dann sollen alle genotified werden?
+            const payLoad = {
+                "method": "picUploaded",
+                "game": games[gameId],
+                "picGame": picGames[gameId]
+            }
+            games[gameId].clients.forEach(c => {
+                clients[c.clientId].connection.send(JSON.stringify(payLoad))
+            })
+
         }
     })
 

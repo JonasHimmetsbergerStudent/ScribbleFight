@@ -2,27 +2,32 @@
 
 <script>
 
-    
-    
+
+
 
 
 </script>
 
 <script>
     let ws = new WebSocket("ws://localhost:9090")
-    const localClient = localStorage.getItem("localClient")
-    console.log(localClient)
-    const localGame = localStorage.getItem("localGame")
     // Code dafür wenn jemand das Bild hochgeladen hat
     // AKA wenn hochgeladen
-    window.onload = function(){
-        
+    const queryString = window.location.pathname;
+    console.log(queryString);
+    // BSP http://localhost:9091/qrcode.html/3947/3541
+    // String wird in Parts gesplittet (3947 = Game, 3541 = User)
+    var pathArray = window.location.pathname.split('/');
+    console.log(pathArray[2] + "   " + pathArray[3])
+    var gameId = pathArray[2];
+    var clientId = pathArray[3];
+    window.onload = function () {
+
         const payLoad = {
             "method": "picUploaded",
-            "clientId": localClient,
-            "gameId": localGame
+            "clientId": clientId,
+            "gameId": gameId
         }
-               
+
         ws.send(JSON.stringify(payLoad));
     }
 </script>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,26 +8,31 @@
     <title>Scribblefight Lobby</title>
     <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
 </head>
-<body>       
 
+<body>
+
+    
     <script>
+        // Websocket Stuff
         let ws = new WebSocket("ws://localhost:9090")
         let clientId = null;
         let gameId = null;
-        
 
-       // ws.send(JSON.stringify(payLoad));
+
+        // ws.send(JSON.stringify(payLoad));
         ws.onmessage = message => {
             const response = JSON.parse(message.data);
-            if(response.method === "connect"){
+            if (response.method === "connect") {
+                // Seite wurde aufgemacht
                 clientId = response.clientId;
                 console.log("Client id succesfully set" + clientId);
             }
-            if(response.method === "create"){
+            if (response.method === "create") {
+                // Game wurde erstellt
                 console.log("Game succesfully created with " + response.game.id);
                 let gamecode = document.getElementById("gamecode");
                 gameId = response.game.id;
-                gamecode.innerHTML = "Gamecode: " +  gameId;
+                gamecode.innerHTML = "Gamecode: " + gameId;
                 const payLoad = {
                     "method": "join",
                     "clientId": clientId,
@@ -35,59 +41,120 @@
 
                 ws.send(JSON.stringify(payLoad));
             }
-            if (response.method === "join"){
-                console.log(response.game.clients[response.game.clients.length-1])
+            if (response.method === "join") {
+                // Wenn ein neuer User joind (für alle)
+                //console.log(response.game.clients[response.game.clients.length - 1]) <= neueseter User
                 const game = response.game;
-                localStorage.setItem("game",response.game)
-                localStorage.setItem("player",response.clientId)
+                localStorage.setItem("game", response.game)
+                localStorage.setItem("player", response.clientId)
                 var i = 0;
                 const playerlist = document.getElementById('playerlist');
                 playerlist.innerHTML = "";
+                // Schleife um gejointe User anzuzeigen
                 game.clients.forEach(c => {
-                    playerlist.innerHTML += "User: " + game.clients[i].clientId + ", ";
-                    i++;
+                    //playerlist.innerHTML += "User: " + game.clients[i].clientId + ", ";
+                    //i++;
+
+                    playerlist.innerHTML += "<div><img src='\amogusss.png' style='width:10vw;height=10vh'><p>User: " + game.clients[i].clientId + "</p></div>,"
+                    i++
                 });
             }
-            if(response.method === "newClient"){
-                console.log(response.newClient)
-                let localClient = response.newClient;
-                let localGame = response.gameId;
+            if (response.method === "newClient") {
+                // Wenn ein neuer User joind
+                //console.log(response.newClient)
+                // Weiß noch nicht ob das noch gebraucht wird
+                var localClient = response.newClient;
                 localStorage.setItem("localClient", localClient)
-                localStorage.setItem("localGame", localGame)
+                const qrLink = document.getElementById("qrLink");
+                qrLink.href += "/" + response.gameId + "/" + response.newClient
+                console.log(qrLink.href)
             }
-            if(response.method === "error"){
+            if (response.method === "picUploaded") {
+                // Wenn man jemand in der Lobby ein Bild Hochgeladen hat
+                var picGame = response.picGame
+                var game = response.game
+                //console.log(game)
+                //console.log("Ja Mannnn" + picGame.clients.clientId);
+                var missingPlayers = document.getElementById("missingPlayers");
+                var info = document.getElementById("info");
+                info.innerHTML = game.id
+                console.log(info.innerHTML);
+                // Schleife um noch fehlende User anzuzeigen
+                var i = 0;
+                missingPlayers.innerHTML = "Missing Players: "
+                picGame.clients.forEach(c => {
+                    missingPlayers.innerHTML += "Missing: " + picGame.clients[i].clientId + ", ";
+                    i++;
+                })
+                i=0;
+                game.clients.forEach(c => {
+                    //console.log(game.clients[i].clientId)
+                    info.innerHTML += "," + game.clients[i].clientId;
+                    i++;
+                })
+                console.log(info.innerHTML)
+                // Wenn hochgeladen soll QR Code verschwinden
+                // So gehts ned weil sonst QR Code bei Alle weg wäre
+                // TODO
+                /*
+                var QR = document.getElementById("QR");
+                QR.innerHTML = ""; */
+                //console.log(i);
+                var buttonBox = document.getElementById("buttonBox");
+                // Wenn alle User was hochgeladen haben soll Button erscheinen (i=0)
+                if (i == 0) {
+                    buttonBox.innerHTML = '<button id="startVoting" onClick="startVoting()">Start Voting</button>'
+                } else {
+                    buttonBox.innerHTML = ''
+                }
+            }
+            if (response.method === "error") {
+                // Irgend a schlecht is passiert
                 console.log("Error: " + response.message)
             }
             console.log(response);
         }
+        
     </script>
-    <div id="lobby" style="visibility: visible;">
-    <h1>Scribblefight Lobby</h1>
-    <button id="btnCreate">Create</button>
-    <button id="btnJoin">Join</button>
-    <input type="text" id="txtGameId">
+    <div id="body">
+        <div id="lobby" style="visibility: visible;">
+            <h1>Scribblefight Lobby</h1>
+            <button id="btnCreate">Create</button>
+            <button id="btnJoin">Join</button>
+            <input type="text" id="txtGameId">
         </div>
         <p id="gamecode"></p>
-    <!-- Chat Connected => Visibility visible -->
-    <div id ="chat" style="visibility: hidden;">
-        <div id="message-container"></div>
-        <form id="send-container">
-            <input type="text" id="message-input" placeholder="Chat...">
-            <button type="submit" id="send-button">Send</button>
-        </form>
-        <div id="playerlist"></div>
+        <!-- Chat Connected => Visibility visible -->
+        <div id="chat" style="visibility: hidden;">
+            <div id="message-container"></div>
+            <form id="send-container">
+                <input type="text" id="message-input" placeholder="Chat...">
+                <button type="submit" id="send-button">Send</button>
+            </form>
+            <div id="playerlist"></div>
+            <div>
+                <p id="missingPlayers"></p>
+                <div id="buttonBox">
+                </div>
+            </div>
         </div>
 
         <div id="QR" style="visibility: hidden;">
-        <a href="http://localhost:9091/qrcode.html"><div id="qrcode"></div></a>
+            <a href="http://localhost:9091/qrcode.html" id="qrLink" target="_blank">
+                <div id="qrcode"></div>
+            </a>
         </div>
-        <script src="jquery.min.js"></script>
-        <script type="text/javascript" src="qrcode.js"></script>
-        <script type="text/javascript">
+        <div id="info"></div>
+    </div>
+
+    <script src="jquery.min.js"></script>
+    <script type="text/javascript" src="qrcode.js"></script>
+    <script type="text/javascript">
         new QRCode(document.getElementById("qrcode"), "http://localhost:9091/qrcode.html");
-</script>
+    </script>
     <script>
-        window.onload = function(){
+        //Anderer Stuff
+        window.onload = function () {
             const playerlist = document.getElementById('playerlist');
             const lobby = document.getElementById('lobby');
             const QR = document.getElementById('QR');
@@ -98,7 +165,7 @@
             const messageContainer = document.getElementById('message-container')
             const messageForm = document.getElementById("send-container")
             const messageInput = document.getElementById("message-input")
-                        
+
             socket.on('chat-message', data => {
                 appendMessage(`${data.name}: ${data.message}`)
             })
@@ -133,7 +200,7 @@
 
             });
             btnJoin.addEventListener("click", e => {
-                if(gameId === null)
+                if (gameId === null)
                     gameId = txtGameId.value;
                 const payLoad = {
                     "method": "join",
@@ -144,31 +211,42 @@
                 newUser(clientId)
 
                 ws.send(JSON.stringify(payLoad));
-            })  
+            })
+
             function appendMessage(message) {
                 const messageElement = document.createElement('div')
                 messageElement.innerText = message
 
                 messageContainer.append(messageElement)
             }
-            function newUser(clientId){
-            const name = prompt('What is your name?')
+
+            function newUser(clientId) {
+                const name = prompt('What is your name?')
                 players.push(name, clientId);
-                console.log(players)
+                //console.log(players)
                 appendMessage('You joined')
                 socket.emit('new-user', name)
                 lobby.style.visibility = "hidden";
                 chat.style.visibility = "visible";
                 QR.style.visibility = "visible";
             }
-             
-        }      
-        
-        
+
+        }
+
+        function startVoting(){
+            //console.log("suss")
+            var playerlist = document.getElementById("playerlist")
+            var playerlistArray = playerlist.innerHTML.split(',')
+            console.log(playerlistArray);
+            var body = document.getElementById("body")
+            body.innerHTML = playerlist.innerHTML
+        }
+
     </script>
 
     <script>
-        
+
     </script>
 </body>
+
 </html>
