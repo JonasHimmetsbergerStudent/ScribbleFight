@@ -312,10 +312,10 @@ function blackHolePhysics() {
   if (blackHoles.length >= 1) {
     blackHoles.forEach(b => {
       if (b.life <= 400) {
-        b.setCollider("circle", 0, 0, pixelWidth * 8);
-        attraction(b);
         b.velocity.y = 0;
         b.velocity.x = 0;
+        b.setCollider("circle", 0, 0, pixelWidth * 8);
+        attraction(b);
       }
 
       if (b.life > 400) {

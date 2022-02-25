@@ -51,6 +51,7 @@ function newConnection(socket) {
     socket.on('disconnect', function () {
         console.log('user disconnected: ' + socket.id);
         players.delete(socket.id);
+        console.log(players);
         socket.broadcast.emit("deletePlayer", socket.id);
         if (players.size < 1) {
             xCoordinates = [];
@@ -145,6 +146,7 @@ function newConnection(socket) {
                     id: data.deadPlayer
                 }
                 io.emit('death', transferData);
+                socket.disconnect();
             }
             if (players.size <= 1) {
                 socket.broadcast.emit("win", data.deadPlayer);

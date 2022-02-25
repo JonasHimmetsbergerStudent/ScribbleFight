@@ -43,10 +43,11 @@ function youDied() {
 function someoneDied(data) {
     players[data.id].sprite.remove();
     if (data.id == myPlayer.id) {
+        console.log(data.id);
         youAreDead = true;
         myPlayer.sprite.remove();
         alert("You died!\nYour kills: " + myPlayer.kills + "\n" + "Your damage: " + myPlayer.dmgDealt + "\n" + "Your knockback: " + myPlayer.knockback);
-        stop();
+        noLoop();
     }
 }
 
