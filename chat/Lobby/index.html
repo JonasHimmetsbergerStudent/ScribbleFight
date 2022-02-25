@@ -11,7 +11,9 @@
 
 <body>
 
-    
+    <div id="chartContainer" style="position: relative; height:50vh; width:50vw" style="visibility: hidden;">
+        <canvas id="myChart"></canvas>
+    </div>
     <script>
         // Websocket Stuff
         let ws = new WebSocket("ws://localhost:9090")
@@ -55,7 +57,9 @@
                     //playerlist.innerHTML += "User: " + game.clients[i].clientId + ", ";
                     //i++;
 
-                    playerlist.innerHTML += "<div><img src='\amogusss.png' style='width:10vw;height=10vh'><p>User: " + game.clients[i].clientId + "</p></div>,"
+                    playerlist.innerHTML +=
+                        "<div><img src='\amogusss.png' style='width:10vw;height=10vh'><p>User: " + game
+                        .clients[i].clientId + "</p></div>,"
                     i++
                 });
             }
@@ -81,18 +85,20 @@
                 console.log(info.innerHTML);
                 // Schleife um noch fehlende User anzuzeigen
                 var i = 0;
-                missingPlayers.innerHTML = "Missing Players: "
-                picGame.clients.forEach(c => {
-                    missingPlayers.innerHTML += "Missing: " + picGame.clients[i].clientId + ", ";
-                    i++;
-                })
-                i=0;
+
                 game.clients.forEach(c => {
                     //console.log(game.clients[i].clientId)
                     info.innerHTML += "," + game.clients[i].clientId;
                     i++;
                 })
                 console.log(info.innerHTML)
+                i = 0;
+                missingPlayers.innerHTML = "Missing Players: "
+                picGame.clients.forEach(c => {
+                    missingPlayers.innerHTML += "Missing: " + picGame.clients[i].clientId + ", ";
+                    i++;
+                })
+
                 // Wenn hochgeladen soll QR Code verschwinden
                 // So gehts ned weil sonst QR Code bei Alle weg wäre
                 // TODO
@@ -108,13 +114,117 @@
                     buttonBox.innerHTML = ''
                 }
             }
+            if (response.method === "startVoting") {
+                // Wenn ein alle mit Upload fertig sind und jemand auf start Voting gedrückt hat :thumbsup:
+                var info = document.getElementById("info")
+                var game = response.game;
+                var gameId = response.game.id;
+                // Warum keine gameId??
+                var infoArray = info.innerHTML.split(',')
+                console.log(infoArray)
+                var playerlistArray = playerlist.innerHTML.split(',')
+                console.log(playerlistArray);
+                var body = document.getElementById("body")
+                //body.innerHTML = playerlist.innerHTML
+                body.innerHTML = ""
+                i = 0;
+                var clients = infoArray.splice(0, 1);
+                console.log(clients)
+                /*infoArray.forEach(c => {
+                    body.innerHTML += "<div class='votingPicture'>" + infoArray[i] + "</div>";
+                    i++;
+                })*/
+
+                //Voting Chart
+                const ctx = document.getElementById('myChart').getContext('2d');
+                const myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: '# of Votes',
+                            data: [],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                },
+                                max: 8
+                            }
+                        }
+                    }
+                });
+
+
+                var chartContainer = document.getElementById("myChart");
+                chartContainer.style.visibility = "visible";
+                var i = 0;
+
+                body.style.marginTop = "50vh";
+                infoArray.forEach(c => {
+                    myChart.data.labels.push(infoArray[i])
+                    myChart.data.datasets.forEach((dataset) => {
+                        dataset.data.push(0);
+                    });
+                    body.innerHTML += "<div class='votingBox'><button class='votingButton' onclick=voted(" +
+                        i + ")>Vote for " + infoArray[i] + "</div>";
+                    localStorage.setItem("gameId", gameId)
+                    i++;
+                    //console.log("I =================================== " + i)
+                })
+                myChart.update();
+
+
+            }
+            if (response.method === "voted") {
+                console.log(response.votedPlayer)
+                const myChart = Chart.getChart('myChart')
+                var voteGame = response.voteGame;
+                var i = response.votedPlayer;
+                myChart.data.datasets[0].data[i] = voteGame.votes[i].amount;
+                myChart.update();
+                /*voteGame.votes.forEach(c => {
+                    myChart.data.datasets.forEach((dataset) => {
+                        dataset.data = voteGame.votes[i].amount;
+                        console.log(voteGame.votes[i].amount)
+                        console.log(dataset.data)
+                    });
+                    i++;
+                })
+                myChart.update();*/
+            }
             if (response.method === "error") {
                 // Irgend a schlecht is passiert
                 console.log("Error: " + response.message)
             }
             console.log(response);
         }
-        
     </script>
     <div id="body">
         <div id="lobby" style="visibility: visible;">
@@ -145,6 +255,7 @@
             </a>
         </div>
         <div id="info"></div>
+
     </div>
 
     <script src="jquery.min.js"></script>
@@ -152,6 +263,7 @@
     <script type="text/javascript">
         new QRCode(document.getElementById("qrcode"), "http://localhost:9091/qrcode.html");
     </script>
+    <script src="chart.js"></script>
     <script>
         //Anderer Stuff
         window.onload = function () {
@@ -233,15 +345,46 @@
 
         }
 
-        function startVoting(){
+        function startVoting() {
             //console.log("suss")
-            var playerlist = document.getElementById("playerlist")
-            var playerlistArray = playerlist.innerHTML.split(',')
-            console.log(playerlistArray);
-            var body = document.getElementById("body")
-            body.innerHTML = playerlist.innerHTML
+            /* var playerlist = document.getElementById("playerlist")
+             var info = document.getElementById("info")
+             var infoArray = info.innerHTML.split(',')
+             console.log(infoArray)
+             var playerlistArray = playerlist.innerHTML.split(',')
+             console.log(playerlistArray);
+             var body = document.getElementById("body")
+             //body.innerHTML = playerlist.innerHTML
+             body.innerHTML = ""
+             i = 0;
+             infoArray.forEach(c => {
+                 if (i != 0) {
+                     body.innerHTML += "User: " + infoArray[i] + ", ";
+                 }
+             i++;
+             }) */
+            var info = document.getElementById("info");
+            var infoArray = info.innerHTML.split(',')
+            var gameId = infoArray[0];
+            console.log(gameId)
+            const payLoad = {
+                "method": "startVoting",
+                "gameId": gameId
+            }
+            ws.send(JSON.stringify(payLoad));
         }
 
+        function voted(i) {
+            var gameId = localStorage.getItem("gameId");
+            console.log(gameId)
+            const payLoad = {
+                "method": "voted",
+                "votedPlayer": i,
+                "gameId": gameId
+            }
+            ws.send(JSON.stringify(payLoad));
+            console.log("breuh")
+        }
     </script>
 
     <script>

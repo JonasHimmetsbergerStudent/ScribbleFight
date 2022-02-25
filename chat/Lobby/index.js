@@ -12,12 +12,14 @@ app.get("/qrcode.html/:gameId/:clientId", function (req,res) {
 } );
 app.get("/amogusss.png", (req,res) => res.sendFile(__dirname + "/amogusss.png"));
 app.get("/qrcode.js", (req,res) => res.sendFile(__dirname + "/qrcode.js"));
+app.get("/chart.js", (req,res) => res.sendFile(__dirname + "/chart.js"));
 app.get("/qrcode.html", (req,res) => res.sendFile(__dirname + "/qrcode.html"));
 app.get("/index.html", (req,res) => res.sendFile(__dirname + "/index.html"));
 
 const clients = {};
 let games = {};
 let picGames = {};
+let voteGames = {};
 const wsServer = new websocketServer({
     "httpServer": httpServer
 })
@@ -43,6 +45,11 @@ wsServer.on("request", request => {
                 "id": gameId,
                 "clients": []
                 // ??
+            }
+            voteGames[gameId] = {
+                "id": gameId,
+                "clients": [],
+                "votes": []
             }
             //console.log(games)
 
@@ -77,6 +84,12 @@ wsServer.on("request", request => {
                     })
                     picGames[gameId].clients.push({
                         "clientId": clientId
+                    })
+                    voteGames[gameId].clients.push({
+                        "clientId": clientId,
+                    })
+                    voteGames[gameId].votes.push({
+                        "amount": 0,
                     })
                     const payLoadNew = {
                         "method": "newClient",
@@ -129,8 +142,42 @@ wsServer.on("request", request => {
             games[gameId].clients.forEach(c => {
                 clients[c.clientId].connection.send(JSON.stringify(payLoad))
             })
+        }
+        if(result.method === "startVoting"){
+            // Wenn ein alle mit Upload fertig sind und jemand auf start Voting gedrückt hat :thumbsup:
+            const gameId = result.gameId;
+            const game = games[gameId];
+            console.log("testt")
+            const payLoad = {
+                "method": "startVoting",
+                "game": games[gameId],
+            }
+            games[gameId].clients.forEach(c => {
+                clients[c.clientId].connection.send(JSON.stringify(payLoad))
+            })
+        }
+        if(result.method === "voted"){
+            const gameId = result.gameId;
+            const game = games[gameId];
+            const votedPlayer = result.votedPlayer;
+            const voteGame = voteGames[gameId];
+
+            voteGame.votes[votedPlayer].amount++;
+            console.log("VotedPlayer:" + votedPlayer)
+            console.log("VotedPlayer Amount: " + voteGame.votes[votedPlayer].amount);
+            const payLoad = {
+                "method": "voted",
+                "voteGame": voteGames[gameId],
+                "game": game,
+                "votedPlayer": votedPlayer
+            }
+            games[gameId].clients.forEach(c => {
+                clients[c.clientId].connection.send(JSON.stringify(payLoad))
+                console.log("thsjhaldsladjs")
+            })
 
         }
+        
     })
 
     const clientId = guid();
