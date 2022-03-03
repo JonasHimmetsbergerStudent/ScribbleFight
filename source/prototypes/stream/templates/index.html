@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta id="theme-color" name="theme-color" content="#ffffff">
+
+    <base target="_blank">
+    <title>(:</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" type="text/css">
+
+</head>
+
+<body>
+    <main>
+        <div class="controls">
+            <button id="camera-facing-flip">flipp</button>
+            <input type="range" min="0" max="100" id="zoom-slider" step="2" value="0">
+        </div>
+
+        <video id="video" playsinline></video>
+        <p id="error">please use mobile device</p>
+    </main>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/camera.js') }}"></script>
+
+</body>
+
+</html>
