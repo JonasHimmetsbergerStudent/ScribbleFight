@@ -83,6 +83,8 @@ def test_message(message):
 
         json_str = json.dumps(playerMap)
 
+        # NOTE für di Ben
+        # iar = np.asarray(playerMap).tolist()
         cv2.imwrite('./source/prototypes/streamFusion/output/input.png', img)
 
         emit('playable map', {'map': json_str})
