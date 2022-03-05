@@ -40,7 +40,6 @@ function spawn() {
 
 function createItem(data) {
     let num = data.num;
-    num = 2;
     // scaling
     let x = relCoordinates(data.x, 0).x;
     let y = (windowHeight - newImageHeight) / 2;

@@ -59,6 +59,7 @@ function sockets() {
 }
 
 function setup() {
+  frameRate(60);
   var canvas = createCanvas(windowWidth, windowHeight);
   sockets();
   background('FFFFFF');
@@ -105,9 +106,11 @@ function setup() {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
             sprite_pixels[i][j] = createSprite((j - ((same_x_counter) / 2) + 0.5) * pixelWidth + ((windowWidth - newImageWidth) / 2) + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth * (same_x_counter), pixelWidth);
-            sprite_pixels[i][j].visible = false;
-           // sprite_pixels[i][j].debug = true;
+            sprite_pixels[i][j].visible = true;
+            //sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].depth = 10;
+            console.log(sprite_pixels[i][j].mass);
+            console.log(sprite_pixels[i][j].restitution);
             sprite_pixels[i][j].immovable = true;
             environment.add(sprite_pixels[i][j]);
             sprite_pixels[i][j - 1].remove();
@@ -115,14 +118,18 @@ function setup() {
           } else {
             same_x_counter = 1;
             sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth - newImageWidth) / 2) + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth, pixelWidth);
-            //sprite_pixels[i][j].debug = true;
+            sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].immovable = true;
+            console.log(sprite_pixels[i][j].mass);
+            console.log(sprite_pixels[i][j].restitution);
             environment.add(sprite_pixels[i][j]);
-            sprite_pixels[i][j].visible = false;
+            sprite_pixels[i][j].visible = true;
           }
         }
       }
     }
+    console.log(sprite_pixels);
+    console.log(pixel_clumps);
     // X Coordinates for the item drops
     getXCoordinates();
 
@@ -209,6 +216,7 @@ let damagedByTimer = 3;
 
 //// DRAW FUNCTION
 function draw() {
+  frameRate(60);
   touches_side = false;
   if (myPlayer != undefined && !youAreDead) {
     if (!flying && !noGravity) {

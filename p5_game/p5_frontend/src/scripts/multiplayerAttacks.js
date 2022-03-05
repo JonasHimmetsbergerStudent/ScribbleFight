@@ -114,7 +114,7 @@ function addBlackHole(data) {
     let b = createSprite(relCoordinates(data.x,data.y).x, relCoordinates(data.x,data.y).y, pixelWidth * 2, pixelWidth * 2);
     b.velocity.x =  pixelWidth / 5 * data.vel;
     b.addImage(boogieBombImg);
-    b.life = 500;
+    b.life = 300;
     b.setDefaultCollider();
     b.debug = true;
     b.me = false;

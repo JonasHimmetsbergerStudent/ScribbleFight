@@ -144,7 +144,7 @@ function bombAttack() {
     if (myPlayer.item["bomb"].sprite === undefined) {
       if (myPlayer.direction == "right") {
         if (imSmall) {
-          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x + player_width / 2, myPlayer.sprite.position.y - pixelWidth, pixelWidth * 2, pixelWidth * 2);
+          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x + player_width / 2 + 15 , myPlayer.sprite.position.y - pixelWidth, pixelWidth * 2, pixelWidth * 2);
         } else {
           myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x + player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
@@ -156,7 +156,7 @@ function bombAttack() {
 
       } if (myPlayer.direction == "left") {
         if (imSmall) {
-          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width / 2, myPlayer.sprite.position.y - pixelWidth, pixelWidth, pixelWidth);
+          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width / 2 - 15, myPlayer.sprite.position.y - pixelWidth, pixelWidth, pixelWidth);
         } else {
           myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, pixelWidth, pixelWidth);
         }
@@ -279,7 +279,7 @@ function blackHoleAttack() {
       }
       let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
       myPlayer.item["black_hole"].sprite.addImage(boogieBombImg);
-      myPlayer.item["black_hole"].sprite.life = 500;
+      myPlayer.item["black_hole"].sprite.life = 300;
       myPlayer.item["black_hole"].sprite.debug = true;
       myPlayer.item["black_hole"].sprite.me = true;
       blackHoles.push(myPlayer.item["black_hole"].sprite);
@@ -311,15 +311,17 @@ function blackHolePhysics() {
   noGravity = false;
   if (blackHoles.length >= 1) {
     blackHoles.forEach(b => {
-      if (b.life <= 400) {
+      if (b.life <= 250) {
         b.velocity.y = 0;
         b.velocity.x = 0;
         b.setCollider("circle", 0, 0, pixelWidth * 8);
         attraction(b);
       }
 
-      if (b.life > 400) {
-        b.velocity.y -= GRAVITY;
+      if (b.life > 250) {
+        if (b.velocity.y <= pixelWidth - pixelWidth / 5) {
+          b.velocity.y -= GRAVITY;
+        }
         b.bounce(environment);
       }
       //addSpriteToVisual(b, 5);
