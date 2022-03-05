@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scribblefight Lobby</title>
-    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script defer src="http://localhost:3001/socket.io/socket.io.js"></script>
 </head>
 
 <body>
@@ -27,6 +27,7 @@
             if (response.method === "connect") {
                 // Seite wurde aufgemacht
                 clientId = response.clientId;
+                localStorage.setItem("localClient", clientId)
                 console.log("Client id succesfully set" + clientId);
             }
             if (response.method === "create") {
@@ -47,8 +48,8 @@
                 // Wenn ein neuer User joind (für alle)
                 //console.log(response.game.clients[response.game.clients.length - 1]) <= neueseter User
                 const game = response.game;
-                localStorage.setItem("game", response.game)
-                localStorage.setItem("player", response.clientId)
+                //localStorage.setItem("game", response.game)
+                //localStorage.setItem("player", response.clientId)
                 var i = 0;
                 const playerlist = document.getElementById('playerlist');
                 playerlist.innerHTML = "";
@@ -68,7 +69,7 @@
                 //console.log(response.newClient)
                 // Weiß noch nicht ob das noch gebraucht wird
                 var localClient = response.newClient;
-                localStorage.setItem("localClient", localClient)
+                
                 const qrLink = document.getElementById("qrLink");
                 qrLink.href += "/" + response.gameId + "/" + response.newClient
                 console.log(qrLink.href)
@@ -273,7 +274,7 @@
             const chat = document.getElementById('chat');
             var players = [];
             //chat
-            const socket = io('http://localhost:3000')
+            const socket = io('http://localhost:3001')
             const messageContainer = document.getElementById('message-container')
             const messageForm = document.getElementById("send-container")
             const messageInput = document.getElementById("message-input")
@@ -375,12 +376,14 @@
         }
 
         function voted(i) {
+            var player = localStorage.getItem("localClient");
             var gameId = localStorage.getItem("gameId");
             console.log(gameId)
             const payLoad = {
                 "method": "voted",
                 "votedPlayer": i,
-                "gameId": gameId
+                "gameId": gameId,
+                "player": player
             }
             ws.send(JSON.stringify(payLoad));
             console.log("breuh")

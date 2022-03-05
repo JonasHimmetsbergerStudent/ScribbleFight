@@ -20,6 +20,7 @@ const clients = {};
 let games = {};
 let picGames = {};
 let voteGames = {};
+let playerVotes = {};
 const wsServer = new websocketServer({
     "httpServer": httpServer
 })
@@ -50,6 +51,10 @@ wsServer.on("request", request => {
                 "id": gameId,
                 "clients": [],
                 "votes": []
+            }
+            playerVotes[gameId] = {
+                "id": gameId,
+                "clients": [],
             }
             //console.log(games)
 
@@ -90,6 +95,9 @@ wsServer.on("request", request => {
                     })
                     voteGames[gameId].votes.push({
                         "amount": 0,
+                    })
+                    playerVotes[gameId].clients.push({
+                        "clientId": clientId,
                     })
                     const payLoadNew = {
                         "method": "newClient",
@@ -157,10 +165,15 @@ wsServer.on("request", request => {
             })
         }
         if(result.method === "voted"){
+
+            
             const gameId = result.gameId;
             const game = games[gameId];
             const votedPlayer = result.votedPlayer;
             const voteGame = voteGames[gameId];
+            const player = result.player;
+
+            console.log("Player who voted: " + player);
 
             voteGame.votes[votedPlayer].amount++;
             console.log("VotedPlayer:" + votedPlayer)
@@ -204,7 +217,7 @@ const guid = () => Math.floor(Math.random() * 10000);
 
 
 // Chat
-const io = require("socket.io")(3000, {
+const io = require("socket.io")(3001, {
     cors: {
       origin: "*",
     },
