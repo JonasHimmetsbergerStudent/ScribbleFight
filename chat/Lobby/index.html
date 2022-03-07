@@ -59,7 +59,7 @@
                     //i++;
 
                     playerlist.innerHTML +=
-                        "<div><img src='\amogusss.png' style='width:10vw;height=10vh'><p>User: " + game
+                        "<div><p>User: " + game
                         .clients[i].clientId + "</p></div>,"
                     i++
                 });
@@ -69,15 +69,17 @@
                 //console.log(response.newClient)
                 // Weiß noch nicht ob das noch gebraucht wird
                 var localClient = response.newClient;
-                
+
                 const qrLink = document.getElementById("qrLink");
-                qrLink.href += "/" + response.gameId + "/" + response.newClient
+                qrLink.href += response.gameId + "/" + response.newClient
+                initQr(response.gameId, response.newClient)
                 console.log(qrLink.href)
             }
             if (response.method === "picUploaded") {
                 // Wenn man jemand in der Lobby ein Bild Hochgeladen hat
                 var picGame = response.picGame
                 var game = response.game
+                var img = response.img;
                 //console.log(game)
                 //console.log("Ja Mannnn" + picGame.clients.clientId);
                 var missingPlayers = document.getElementById("missingPlayers");
@@ -120,6 +122,7 @@
                 var info = document.getElementById("info")
                 var game = response.game;
                 var gameId = response.game.id;
+                console.log(game);
                 // Warum keine gameId??
                 var infoArray = info.innerHTML.split(',')
                 console.log(infoArray)
@@ -130,11 +133,12 @@
                 body.innerHTML = ""
                 i = 0;
                 var clients = infoArray.splice(0, 1);
-                console.log(clients)
-                /*infoArray.forEach(c => {
-                    body.innerHTML += "<div class='votingPicture'>" + infoArray[i] + "</div>";
+                console.log(game)
+                console.log(game.clients[i].img)
+                infoArray.forEach(c => {
+                    body.innerHTML += "<div class='votingPicture'><img src='data:image/png;base64," + game.clients[i].img + "' alt='Red dot'/>" + infoArray[i] + "</div>";
                     i++;
-                })*/
+                })
 
                 //Voting Chart
                 const ctx = document.getElementById('myChart').getContext('2d');
@@ -226,6 +230,8 @@
             }
             console.log(response);
         }
+
+
     </script>
     <div id="body">
         <div id="lobby" style="visibility: visible;">
@@ -251,7 +257,7 @@
         </div>
 
         <div id="QR" style="visibility: hidden;">
-            <a href="http://localhost:9091/qrcode.html" id="qrLink" target="_blank">
+            <a href="https://192.168.78.1" id="qrLink" target="_blank">
                 <div id="qrcode"></div>
             </a>
         </div>
@@ -262,7 +268,9 @@
     <script src="jquery.min.js"></script>
     <script type="text/javascript" src="qrcode.js"></script>
     <script type="text/javascript">
-        new QRCode(document.getElementById("qrcode"), "http://localhost:9091/qrcode.html");
+        function initQr(gameId, clientId) {
+            new QRCode(document.getElementById("qrcode"), "https://192.168.78.1/" + gameId + "/" + clientId);
+        }
     </script>
     <script src="chart.js"></script>
     <script>

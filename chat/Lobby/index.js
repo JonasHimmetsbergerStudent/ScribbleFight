@@ -17,6 +17,7 @@ app.get("/qrcode.html", (req,res) => res.sendFile(__dirname + "/qrcode.html"));
 app.get("/index.html", (req,res) => res.sendFile(__dirname + "/index.html"));
 
 const clients = {};
+let base64;
 let games = {};
 let picGames = {};
 let voteGames = {};
@@ -128,9 +129,10 @@ wsServer.on("request", request => {
             // picGames = Dummy für games wo alle die hochgeladen haben entfernt werden
             const gameId = result.gameId;
             const game = games[gameId];
-            console.log(result.clientId)
-            console.log(picGames[result.gameId].clients[0].clientId)
-            console.log(picGames[result.gameId])
+            const img = result.img;
+            //console.log(result.img)
+            //console.log(picGames[result.gameId].clients[0].clientId)
+            //console.log(picGames[result.gameId])
             var i = 0;
             picGames[result.gameId].clients.forEach( c => {
                 if(picGames[result.gameId].clients[i].clientId == result.clientId){
@@ -139,13 +141,21 @@ wsServer.on("request", request => {
                 }
                 i++;
             })
-            console.log(picGames[result.gameId])
+            //console.log(picGames[result.gameId])
+            game.clients.forEach(c => {
+                if(c.clientId == result.clientId){
+                    c.img = img;
+                    console.log("passt so")
+                } else {
+                    console.log("noooo")
+                }
+            })
 
             // Wenn User upgeloaded hat dann sollen alle genotified werden?
             const payLoad = {
                 "method": "picUploaded",
                 "game": games[gameId],
-                "picGame": picGames[gameId]
+                "picGame": picGames[gameId],
             }
             games[gameId].clients.forEach(c => {
                 clients[c.clientId].connection.send(JSON.stringify(payLoad))

@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 from PIL import Image
 
@@ -32,9 +32,19 @@ def convertCv2imgToB64(cv2img):
 def index():
     return render_template('index.html')
 
+@app.route('/<gameId>/<clientId>')
+def newIndex(gameId, clientId):
+    assert gameId == request.view_args['gameId']
+    assert clientId == request.view_args['clientId']
+    print("Lets goooo: " + gameId)
+    return render_template('index.html/', myGameId = gameId, myClientId = clientId)
 
 @socketio.on('my image')
 def test_message(message):
+    # print("Game: " + message["gameId"])
+    gameId = message["gameId"]
+    clientId = message["clientId"]
+    print("Client: " + message["clientId"])
     base64_data = message['data']
     img = convertB64ToCv2img(base64_data)  # COVERT B64 MESSAGE TO CV2 IMAGE
     edges = scanner.check(img)
@@ -42,11 +52,15 @@ def test_message(message):
     lists = edges.tolist()
     json_str = json.dumps(lists)
 
-    emit('edge array', {'edges': json_str})
+    emit('edge array', {'edges': json_str, 'gameId': gameId, 'clientId': clientId})
 
 
 @socketio.on('getDataFromImage')
 def test_message(message):
+    # print("Game: " + message["gameId"])
+    gameId = message["gameId"]
+    clientId = message["clientId"]
+    print("Client: " + message["clientId"])
     base64_data = message['img']
     snipset = np.array(message['snipset'])
     img = convertB64ToCv2img(base64_data)  # COVERT B64 MESSAGE TO CV2 IMAGE
@@ -54,7 +68,7 @@ def test_message(message):
         wrapedImg = scanner.getWrappedImg(img, snipset)
         json_str = convertCv2imgToB64(wrapedImg)
 
-        emit('perspective transformed', {'buffer': json_str})
+        emit('perspective transformed', {'buffer': json_str, 'gameId': gameId, 'clientId': clientId})
     except:
         emit('perspective transformed', {
              'error': 'Perspective transform didn\'t work'})
@@ -62,6 +76,10 @@ def test_message(message):
 
 @socketio.on('convert img to map')
 def test_message(message):
+    # print("Game: " + message["gameId"])
+    gameId = message["gameId"]
+    clientId = message["clientId"]
+    # print("Client: " + message["clientId"])
     try:
         base64_data = message['data']
         # COVERT B64 MESSAGE TO CV2 IMAGE
@@ -90,10 +108,10 @@ def test_message(message):
         # iar = np.asarray(playerMap).tolist()
         cv2.imwrite('./source/prototypes/streamFusion_Ben/output/input.png', img)
 
-        emit('playable map', {'map': json_str})
+        emit('playable map', {'map': json_str, 'gameId': gameId, 'clientId': clientId, 'img': base64_data})
     except:
         emit('playable map', {
-             'error': 'convert img to map didn\'t work'})
+             'error': 'convert img to map didn\'t work', 'gameId': gameId, 'clientId': clientId,})
 
 
 @socketio.on('connect')

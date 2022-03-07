@@ -15,8 +15,8 @@ const video = document.getElementById('video'),
     flipBtn = document.getElementById('camera-facing-flip'),
     constraints = {
         video: {
-            width: { ideal: 720 },
-            height: { ideal: 360 },
+            width: { ideal: 360 },
+            height: { ideal: 240 },
             frameRate: { ideal: 25 }
         },
         audio: false
@@ -130,7 +130,7 @@ function capture() {
             return navigator.mediaDevices.enumerateDevices();
         })
         .catch(error => {
-            alert('Argh! ' + error.name || error)
+            //alert('Argh! ' + error.name || error)
         });
 }
 
