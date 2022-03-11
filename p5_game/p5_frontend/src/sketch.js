@@ -191,7 +191,7 @@ function updatePosition(data) {
   if (players[data.id] != undefined && obildbreite != undefined && obildhoehe != undefined) {
     players[data.id].sprite.position.x = data.x * newImageWidth / obildbreite + (windowWidth - newImageWidth) / 2;
     players[data.id].sprite.position.y = data.y * newImageHeight / obildhoehe + (windowHeight - newImageHeight) / 2;
-    //addSpriteToVisual(players[data.id].sprite, 3);
+    addSpriteToVisual(players[data.id].sprite, 3);
   }
 }
 
@@ -233,7 +233,7 @@ function draw() {
       visCopy: visCopy
     }
     socket.emit('visCopy', visCopyData);
-    //addSpriteToVisual(myPlayer.sprite, 2); 
+    addSpriteToVisual(myPlayer.sprite, 2); 
 
     bombPhysics();
     defaultAttackPhysics();
