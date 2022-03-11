@@ -79,9 +79,9 @@ function defaultAttackPhysics() {
     projectiles.forEach(projectile => {
       projectileIndex = projectiles.indexOf(projectile);
       if (projectile.me) {
-        //addSpriteToVisual(projectile, 4);
+        addSpriteToVisual(projectile, 4);
       } else {
-        //addSpriteToVisual(projectile, 5);
+        addSpriteToVisual(projectile, 5);
       }
 
       //and hits the map, destroy it
@@ -197,7 +197,7 @@ function bombPhysics() {
         bomb.velocity.y -= GRAVITY;
       }
       bomb.bounce(environment);
-     // addSpriteToVisual(bomb, 5);
+      addSpriteToVisual(bomb, 5);
       let data = {
         type: "bomb",
         id: bomb.id,
@@ -324,7 +324,7 @@ function blackHolePhysics() {
         }
         b.bounce(environment);
       }
-      //addSpriteToVisual(b, 5);
+      addSpriteToVisual(b, 5);
 
       if (b.position.x > windowWidth || b.position.y > windowHeight || b.life == 0) {
         b.remove();
@@ -409,7 +409,7 @@ function pianoPhysics() {
         sendHimFlying();
       }
       p.velocity.y -= GRAVITY;
-      //addSpriteToVisual(p, 5);
+      addSpriteToVisual(p, 5);
     });
   }
 }
@@ -472,7 +472,7 @@ function minePhysics() {
         }
       }
       m.velocity.y -= GRAVITY;
-     // addSpriteToVisual(m, 5);
+      addSpriteToVisual(m, 5);
     });
   }
 }

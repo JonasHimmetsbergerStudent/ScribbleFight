@@ -44,7 +44,7 @@ var JUMP;
 
 
 function sockets() {
-  //socket = io.connect('http://localhost:3000/');
+  socket = io.connect('http://localhost:3000/');
   socket.on("deletePlayer", deletePlayer);
   socket.on('newPlayer', createNewPlayer);
   socket.on('update', updatePosition);
@@ -227,13 +227,13 @@ function draw() {
 
     // deep copy of multidimensional array
     // https://morioh.com/p/d15a64da5d09
-    /*visCopy = JSON.parse(JSON.stringify(visual));
+    visCopy = JSON.parse(JSON.stringify(visual));
     let visCopyData = {
       id: myPlayer.id,
       visCopy: visCopy
     }
     socket.emit('visCopy', visCopyData);
-    //addSpriteToVisual(myPlayer.sprite, 2); */
+    //addSpriteToVisual(myPlayer.sprite, 2); 
 
     bombPhysics();
     defaultAttackPhysics();

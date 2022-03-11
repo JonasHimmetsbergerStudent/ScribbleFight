@@ -96,23 +96,23 @@ function itemPickUp() {
             switch (item.type) {
                 case "bomb":
                     itemString = "bomb";
-                   // addSpriteToVisual(item, 6);
+                    addSpriteToVisual(item, 6);
                     break;
                 case "black_hole":
                     itemString = "black_hole";
-                    //addSpriteToVisual(item, 7);
+                    addSpriteToVisual(item, 7);
                     break;
                 case "piano":
                     itemString = "piano";
-                    //addSpriteToVisual(item, 10);
+                    addSpriteToVisual(item, 10);
                     break;
                 case "mine":
                     itemString = "mine";
-                    //addSpriteToVisual(item, 9);
+                    addSpriteToVisual(item, 9);
                     break;
                 case "small":
                     itemString = "small";
-                    //addSpriteToVisual(item, 8);
+                    addSpriteToVisual(item, 8);
                     break;
             }
 

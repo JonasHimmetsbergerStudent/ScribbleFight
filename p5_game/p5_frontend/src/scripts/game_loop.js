@@ -5,7 +5,8 @@ let alivePlayerCount = 0;
 let respawnTime = false;
 function deathCheck() {
     if (myPlayer.sprite.position.y - player_height > windowHeight && !respawnTime) {
-        youDied();
+        //youDied();
+        resetPlayer();
     }
 }
 
