@@ -10,7 +10,7 @@ app.get("/jquery.min.js", (req, res) => res.sendFile(__dirname + "/jquery.min.js
 app.get("/qrcode.html/:gameId/:clientId", function (req, res) {
     res.sendFile(__dirname + "/qrcode.html")
 });
-app.get("")
+
 app.get("/amogusss.png", (req, res) => res.sendFile(__dirname + "/amogusss.png"));
 app.get("/qrcode.js", (req, res) => res.sendFile(__dirname + "/qrcode.js"));
 app.get("/chart.js", (req, res) => res.sendFile(__dirname + "/chart.js"));
@@ -36,6 +36,7 @@ wsServer.on("request", request => {
         const result = JSON.parse(message.utf8Data)
         // console.log(result)
 
+        
         if (result.method === "create") {
             const clientId = result.clientId;
             const gameId = guid();
@@ -184,6 +185,7 @@ wsServer.on("request", request => {
                 "method": "rafi_game",
                 "img": img
             }
+            connection.send(JSON.stringify(payLoad))
         }
         if(result.method === "rafi"){
             const game = games[result.game.id]
