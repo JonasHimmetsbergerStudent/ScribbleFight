@@ -20,7 +20,6 @@
         let clientId = null;
         let gameId = null;
 
-
         // ws.send(JSON.stringify(payLoad));
         ws.onmessage = message => {
             const response = JSON.parse(message.data);
@@ -28,9 +27,12 @@
                 // Seite wurde aufgemacht
                 clientId = response.clientId;
                 localStorage.setItem("localClient", clientId)
+                
                 console.log("Client id succesfully set" + clientId);
             }
             if (response.method === "create") {
+                var bruh = localStorage.getItem("localClient")
+                console.log(bruh)
                 // Game wurde erstellt
                 console.log("Game succesfully created with " + response.game.id);
                 let gamecode = document.getElementById("gamecode");
@@ -41,8 +43,11 @@
                     "clientId": clientId,
                     "gameId": gameId
                 }
+               // newUser(clientId, gameId);
 
                 ws.send(JSON.stringify(payLoad));
+                console.log("Room Test");
+                //socket.emit('new-room', gameId);
             }
             if (response.method === "join") {
                 // Wenn ein neuer User joind (für alle)
@@ -122,7 +127,8 @@
                 var info = document.getElementById("info")
                 var game = response.game;
                 var gameId = response.game.id;
-                console.log(game);
+                var myClient = response.myClient;
+                console.log(myClient);
                 // Warum keine gameId??
                 var infoArray = info.innerHTML.split(',')
                 console.log(infoArray)
@@ -198,7 +204,7 @@
                         dataset.data.push(0);
                     });
                     body.innerHTML += "<div class='votingBox'><button class='votingButton' onclick=voted(" +
-                        i + ")>Vote for " + infoArray[i] + "</div>";
+                        i + "," + myClient + ")>Vote for " + infoArray[i] + "</div>";
                     localStorage.setItem("gameId", gameId)
                     i++;
                     //console.log("I =================================== " + i)
@@ -223,6 +229,25 @@
                     i++;
                 })
                 myChart.update();*/
+            }
+            if(response.method === "startGame"){
+                console.log("Bruhifyify")
+                const game = response.game;
+                const winner = response.winner;
+
+                const winnerImg = game.clients[winner].img;
+
+                console.log("GewinnerImg: " + winnerImg);
+
+                const payLoad = {
+                    "method": "rafi",
+                    "game": game,
+                    "img": winnerImg
+                }
+                ws.send(JSON.stringify(payLoad));
+                window.location.href = 'localhost:3000/' + game.id;
+
+
             }
             if (response.method === "error") {
                 // Irgend a schlecht is passiert
@@ -290,6 +315,10 @@
             socket.on('chat-message', data => {
                 appendMessage(`${data.name}: ${data.message}`)
             })
+            socket.on('room-created', data => {
+                console.log("Room Created")
+                appendMessage(`New Room: ${data.gameId}`)
+            })
 
             socket.on('user-connected', name => {
                 appendMessage(`${name} connected`)
@@ -307,6 +336,8 @@
                 messageInput.value = ''
             })
 
+            
+
             const btnCreate = document.getElementById("btnCreate");
             const btnJoin = document.getElementById("btnJoin");
             const txtGameId = document.getElementById("txtGameId");
@@ -317,6 +348,7 @@
                     "clientId": clientId
                 }
                 newUser(clientId)
+                
                 ws.send(JSON.stringify(payLoad));
 
             });
@@ -329,7 +361,7 @@
                     "gameId": gameId
                 }
 
-                newUser(clientId)
+                newUser(clientId, gameId)
 
                 ws.send(JSON.stringify(payLoad));
             })
@@ -341,7 +373,11 @@
                 messageContainer.append(messageElement)
             }
 
-            function newUser(clientId) {
+            function newUser(clientId, gameId) {
+                if(gameId == null){
+                    console.log("Room test 2")
+                   // socket.emit('new-room')
+                }
                 const name = prompt('What is your name?')
                 players.push(name, clientId);
                 //console.log(players)
@@ -383,10 +419,10 @@
             ws.send(JSON.stringify(payLoad));
         }
 
-        function voted(i) {
-            var player = localStorage.getItem("localClient");
+        function voted(i,player) {
+            //var player = localStorage.getItem("localClient");
             var gameId = localStorage.getItem("gameId");
-            console.log(gameId)
+            console.log(player)
             const payLoad = {
                 "method": "voted",
                 "votedPlayer": i,
