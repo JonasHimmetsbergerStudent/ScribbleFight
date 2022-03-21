@@ -139,7 +139,6 @@ function defaultAttackPhysics() {
 
 function bombAttack() {
   let vel;
-  vel.date = 3;
   if (myPlayer.item["bomb"] !== undefined && myPlayer.item["bomb"].ammo > 0) {
     // man kann nur eine bombe gleichzeitig aussenden
     if (myPlayer.item["bomb"].sprite === undefined) {
