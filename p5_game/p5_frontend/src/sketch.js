@@ -217,6 +217,7 @@ function draw() {
     frameRate(60);
     touches_side = false;
     if (myPlayer != undefined && !youAreDead) {
+      myPlayer.knockback = 160;
       if (!flying && !noGravity) {
         myPlayer.sprite.velocity.y -= GRAVITY;
       } else if (flying) {

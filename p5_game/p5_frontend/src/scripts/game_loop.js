@@ -13,6 +13,7 @@ function deathCheck() {
 function resetPlayer() {
     myPlayer.sprite.position.x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
     myPlayer.sprite.position.y = 0;
+    deathUpdate();
 }
 
 function youDied() {
@@ -64,8 +65,8 @@ function win(data) {
 }
 
 function deathUpdate() {
-    // myPlayer.dmgDealt = 0;
-    //myPlayer.kills = 0;
+    myPlayer.dmgDealt = 0;
+    myPlayer.kills = 0;
     myPlayer.knockback = 1;
     myPlayer.death++;
 }
