@@ -235,7 +235,7 @@ class Game:
         # reset variables
         # they should always be 0 because a reset only accures after death or as initialisation
         self.previous_damage_dealt = self.scribble_fight.dmgDealt  # should always be 0
-        self.previous_knockback = self.scribble_fight.knockback  # should always be 0
+        self.previous_knockback = self.scribble_fight.knockback  # should always be 1
         self.previous_kills = self.scribble_fight.kills  # should always be 0
         self.previous_deaths = self.scribble_fight.deaths
         self.nothingChanged = 0
