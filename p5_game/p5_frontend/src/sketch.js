@@ -96,7 +96,6 @@ function setup() {
     CLIMBINGSPEED = -(pixelWidth / 4);
     GRAVITY = -pixelWidth / 25;
     environment = new Group();
-    console.log(pixelWidth);
 
     // creating pixel environment
     for (let i = 0; i < pixel_clumps.length; i++) {
@@ -109,8 +108,6 @@ function setup() {
             sprite_pixels[i][j].visible = true;
             //sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].depth = 10;
-            console.log(sprite_pixels[i][j].mass);
-            console.log(sprite_pixels[i][j].restitution);
             sprite_pixels[i][j].immovable = true;
             environment.add(sprite_pixels[i][j]);
             sprite_pixels[i][j - 1].remove();
@@ -120,16 +117,12 @@ function setup() {
             sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth - newImageWidth) / 2) + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth, pixelWidth);
             sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].immovable = true;
-            console.log(sprite_pixels[i][j].mass);
-            console.log(sprite_pixels[i][j].restitution);
             environment.add(sprite_pixels[i][j]);
             sprite_pixels[i][j].visible = true;
           }
         }
       }
     }
-    console.log(sprite_pixels);
-    console.log(pixel_clumps);
     // X Coordinates for the item drops
     getXCoordinates();
 
@@ -166,6 +159,7 @@ function setup() {
 
 function createNewPlayer(data) {
     loadImage('assets/amogus.png', img => {
+        console.log(data.id);
         img.resize(imageFaktor, 0);
         players[data.id] = new Player(createSprite(newImageWidth / 2, newImageHeight / 2, player_width, player_height));
         players[data.id].sprite.maxSpeed = pixelWidth;
