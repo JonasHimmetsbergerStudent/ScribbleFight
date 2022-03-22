@@ -107,12 +107,14 @@ function newConnection(socket) {
     }
 
     function createPlayer() {
-        players.set(socket.id, new Player(socket.id));
-        let data = {
-            id: socket.id,
+        if(!players.has(socket.id)) {
+            players.set(socket.id, new Player(socket.id));
+            let data = {
+                id: socket.id,
+            }
+            // damit es auch an mich sendet, benutze ich io.emit
+            io.emit('newPlayer', data);
         }
-        // damit es auch an mich sendet, benutze ich io.emit
-        io.emit('newPlayer', data);
     }
 
     function deleteItem(data) {
