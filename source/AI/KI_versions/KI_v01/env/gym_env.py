@@ -42,6 +42,7 @@ class CustomEnv(gym.Env):
         '''
         reward = self.pygame.evaluate()
         done = self.pygame.is_done()
+
         # info = self.pygame.info()  # not really needed
         return obs, reward, done, {}
 

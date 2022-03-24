@@ -219,7 +219,7 @@ class Game:
             self.nothingChanged += 1
         else:
             self.nothingChanged = 0
-        print(reward)
+
         return reward
 
     def is_done(self):
