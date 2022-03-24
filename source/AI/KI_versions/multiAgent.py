@@ -21,8 +21,15 @@ class KI():
     def run(self):
         log_path = os.path.join('Traning', 'Logs')
         model = PPO("MlpPolicy", self.env, verbose=1, tensorboard_log=log_path)
-        model.learn(total_timesteps=4500000)
-        self.env.close()
+        model.learn(total_timesteps=100)
+        obs = self.env.reset()
+
+        for i in range(1000):
+            action, _state = model.predict(obs, deterministic=True)
+            obs, reward, done, info = self.env.step(action)
+            self.env.render()
+            if done:
+                obs = self.env.reset()
 
 
 if __name__ == "__main__":
