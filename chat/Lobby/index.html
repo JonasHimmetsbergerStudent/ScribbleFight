@@ -7,13 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scribblefight Lobby</title>
     <script defer src="http://localhost:3001/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="index.css" type="text/css">
 </head>
-
 <body>
-
-    <div id="chartContainer" style="position: relative; height:50vh; width:50vw" style="visibility: hidden;">
+    <div id="chartContainer">
         <canvas id="myChart"></canvas>
     </div>
+    <div id="body">
+    
     <script>
         // Websocket Stuff
         let ws = new WebSocket("ws://localhost:9090")
@@ -57,7 +58,7 @@
                 //localStorage.setItem("player", response.clientId)
                 var i = 0;
                 const playerlist = document.getElementById('playerlist');
-                playerlist.innerHTML = "";
+                playerlist.innerHTML = "<p>Joined Users</p><br>";
                 // Schleife um gejointe User anzuzeigen
                 game.clients.forEach(c => {
                     //playerlist.innerHTML += "User: " + game.clients[i].clientId + ", ";
@@ -65,7 +66,7 @@
 
                     playerlist.innerHTML +=
                         "<div><p>User: " + game
-                        .clients[i].clientId + "</p></div>,"
+                        .clients[i].clientId + "</p></div>"
                     i++
                 });
             }
@@ -135,6 +136,7 @@
                 var playerlistArray = playerlist.innerHTML.split(',')
                 console.log(playerlistArray);
                 var body = document.getElementById("body")
+                
                 //body.innerHTML = playerlist.innerHTML
                 body.innerHTML = ""
                 i = 0;
@@ -205,9 +207,10 @@
                     });
                     body.innerHTML += "<div class='votingBox'><button class='votingButton' onclick=voted(" +
                         i + "," + myClient + ")>Vote for " + infoArray[i] + "</div>";
+
                     localStorage.setItem("gameId", gameId)
                     i++;
-                    //console.log("I =================================== " + i)
+                    console.log("I =================================== " + i)
                 })
                 myChart.update();
 
@@ -244,28 +247,35 @@
                     "game": game,
                     "img": winnerImg
                 }
+                console.log("Bis zu Startgame" + payLoad)
+                console.log(payLoad)
                 ws.send(JSON.stringify(payLoad));
-                window.location.href = 'https://student.cloud.htl-leonding.ac.at/t.rafetseder/scribble-fight/';
 
-
+            }
+            if(response.method === "linked"){
+                const gameId = response.gameId;
+                console.log("Linked")
+               //window.location.href = 'http://localhost:3000/' + game.id;
+                window.location.href = 'http://localhost:3000/' + gameId;
             }
             if (response.method === "error") {
                 // Irgend a schlecht is passiert
                 console.log("Error: " + response.message)
+                alert(response.message);
             }
             console.log(response);
         }
 
 
     </script>
-    <div id="body">
+    <div>
         <div id="lobby" style="visibility: visible;">
             <h1>Scribblefight Lobby</h1>
             <button id="btnCreate">Create</button>
             <button id="btnJoin">Join</button>
             <input type="text" id="txtGameId">
         </div>
-        <p id="gamecode"></p>
+        <h1 id="gamecode"></h1>
         <!-- Chat Connected => Visibility visible -->
         <div id="chat" style="visibility: hidden;">
             <div id="message-container"></div>
@@ -279,13 +289,15 @@
                 <div id="buttonBox">
                 </div>
             </div>
+            
         </div>
-
-        <div id="QR" style="visibility: hidden;">
-            <a href="https://192.168.78.1" id="qrLink" target="_blank">
+        <div id="QR">
+            <a href="https://10.0.0.8" id="qrLink" target="_blank">
                 <div id="qrcode"></div>
             </a>
         </div>
+
+        
         <div id="info"></div>
 
     </div>
@@ -294,7 +306,7 @@
     <script type="text/javascript" src="qrcode.js"></script>
     <script type="text/javascript">
         function initQr(gameId, clientId) {
-            new QRCode(document.getElementById("qrcode"), "https://192.168.78.1/" + gameId + "/" + clientId);
+            new QRCode(document.getElementById("qrcode"), "https://10.0.0.8/" + gameId + "/" + clientId);
         }
     </script>
     <script src="chart.js"></script>
@@ -437,6 +449,7 @@
     <script>
 
     </script>
+    </div>
 </body>
 
 </html>

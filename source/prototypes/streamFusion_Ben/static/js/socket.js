@@ -120,6 +120,7 @@ $(document).ready(function () {
         let localGameId = localStorage.getItem("myGame");
         let localClientId = localStorage.getItem("myId");
         let img = msg.img;
+        let map = msg.map;
         //console.log("Bruhhh")
         console.log("localclient: " + localClientId)
         console.log("Client: " + clientId)
@@ -135,7 +136,8 @@ $(document).ready(function () {
                 "method": "picUploaded",
                 "clientId": clientId,
                 "gameId": gameId,
-                "img": img
+                "img": img,
+         //       "map": map
             }
 
             ws.onopen = () => ws.send(JSON.stringify(payLoad));

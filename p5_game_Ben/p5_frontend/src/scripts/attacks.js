@@ -79,9 +79,9 @@ function defaultAttackPhysics() {
     projectiles.forEach(projectile => {
       projectileIndex = projectiles.indexOf(projectile);
       if (projectile.me) {
-        //addSpriteToVisual(projectile, 4);
+        addSpriteToVisual(projectile, 4);
       } else {
-        //addSpriteToVisual(projectile, 5);
+        addSpriteToVisual(projectile, 5);
       }
 
       //and hits the map, destroy it
@@ -144,11 +144,11 @@ function bombAttack() {
     if (myPlayer.item["bomb"].sprite === undefined) {
       if (myPlayer.direction == "right") {
         if (imSmall) {
-          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x + player_width / 2, myPlayer.sprite.position.y - pixelWidth, pixelWidth * 2, pixelWidth * 2);
+          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x + player_width / 2 + 15 , myPlayer.sprite.position.y - pixelWidth, pixelWidth * 2, pixelWidth * 2);
         } else {
           myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x + player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
-        myPlayer.item["bomb"].sprite.velocity.x = pixelWidth / 5 * GAMESPEED;
+        myPlayer.item["bomb"].sprite.velocity.x = pixelWidth / 5;
         vel = 1;
         while ((environment.overlap(myPlayer.item["bomb"].sprite))) {
           myPlayer.item["bomb"].sprite.position.x -= 1;
@@ -156,11 +156,11 @@ function bombAttack() {
 
       } if (myPlayer.direction == "left") {
         if (imSmall) {
-          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width / 2, myPlayer.sprite.position.y - pixelWidth, pixelWidth, pixelWidth);
+          myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width / 2 - 15, myPlayer.sprite.position.y - pixelWidth, pixelWidth, pixelWidth);
         } else {
           myPlayer.item["bomb"].sprite = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, pixelWidth, pixelWidth);
         }
-        myPlayer.item["bomb"].sprite.velocity.x = -pixelWidth / 5 * GAMESPEED;
+        myPlayer.item["bomb"].sprite.velocity.x = -pixelWidth / 5;
         vel = -1;
         while ((environment.overlap(myPlayer.item["bomb"].sprite))) {
           myPlayer.item["bomb"].sprite.position.x += 1;
@@ -194,10 +194,10 @@ function bombPhysics() {
   if (bombs.length >= 1) {
     bombs.forEach(bomb => {
       if (bomb.velocity.y <= pixelWidth - pixelWidth / 5) {
-        bomb.velocity.y -= GRAVITY * GAMESPEED;
+        bomb.velocity.y -= GRAVITY;
       }
       bomb.bounce(environment);
-     // addSpriteToVisual(bomb, 5);
+      addSpriteToVisual(bomb, 5);
       let data = {
         type: "bomb",
         id: bomb.id,
@@ -217,7 +217,7 @@ function bombPhysics() {
           myPlayer.sprite.velocity.y = -bomb.velocity.y * pixelWidth / 5 * myPlayer.knockback;
         }
         flying = true;
-        flyingDuration = 50 / GAMESPEED;
+        flyingDuration = 50;
         timeFlying = flyingDuration;
         bomb.remove();
 
@@ -260,7 +260,7 @@ function blackHoleAttack() {
         } else {
           myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x + player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
-        myPlayer.item["black_hole"].sprite.velocity.x = pixelWidth / 5 * GAMESPEED;
+        myPlayer.item["black_hole"].sprite.velocity.x = pixelWidth / 5;
         while ((environment.overlap(myPlayer.item["black_hole"].sprite))) {
           myPlayer.item["black_hole"].sprite.position.x -= 1;
         }
@@ -271,7 +271,7 @@ function blackHoleAttack() {
         } else {
           myPlayer.item["black_hole"].sprite = createSprite(myPlayer.sprite.position.x - player_width, myPlayer.sprite.position.y, pixelWidth * 2, pixelWidth * 2);
         }
-        myPlayer.item["black_hole"].sprite.velocity.x = -pixelWidth / 5 * GAMESPEED;
+        myPlayer.item["black_hole"].sprite.velocity.x = -pixelWidth / 5;
         while ((environment.overlap(myPlayer.item["black_hole"].sprite))) {
           myPlayer.item["black_hole"].sprite.position.x += 1;
 
@@ -279,7 +279,7 @@ function blackHoleAttack() {
       }
       let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
       myPlayer.item["black_hole"].sprite.addImage(boogieBombImg);
-      myPlayer.item["black_hole"].sprite.life = 500;
+      myPlayer.item["black_hole"].sprite.life = 300;
       myPlayer.item["black_hole"].sprite.debug = true;
       myPlayer.item["black_hole"].sprite.me = true;
       blackHoles.push(myPlayer.item["black_hole"].sprite);
@@ -311,18 +311,20 @@ function blackHolePhysics() {
   noGravity = false;
   if (blackHoles.length >= 1) {
     blackHoles.forEach(b => {
-      if (b.life <= 400) {
-        b.setCollider("circle", 0, 0, pixelWidth * 8);
-        attraction(b);
+      if (b.life <= 250) {
         b.velocity.y = 0;
         b.velocity.x = 0;
+        b.setCollider("circle", 0, 0, pixelWidth * 8);
+        attraction(b);
       }
 
-      if (b.life > 400) {
-        b.velocity.y -= GRAVITY;
+      if (b.life > 250) {
+        if (b.velocity.y <= pixelWidth - pixelWidth / 5) {
+          b.velocity.y -= GRAVITY;
+        }
         b.bounce(environment);
       }
-      //addSpriteToVisual(b, 5);
+      addSpriteToVisual(b, 5);
 
       if (b.position.x > windowWidth || b.position.y > windowHeight || b.life == 0) {
         b.remove();
@@ -347,7 +349,7 @@ function pianoTime() {
         myPlayer.item["piano"].sprite = createSprite(xPos, 0, pixelWidth * 5, pixelWidth * 5);
         myPlayer.item["piano"].sprite.addImage(pianoImg);
         myPlayer.item["piano"].sprite.setCollider("rectangle", 0, 0, pixelWidth * 5, pixelWidth * 5);
-        myPlayer.item["piano"].sprite.debug = true;
+       // myPlayer.item["piano"].sprite.debug = true;
         myPlayer.item["piano"].sprite.maxSpeed = pixelWidth - pixelWidth / 5;
         myPlayer.item["piano"].sprite.rotation = getRandomInt(360);
         myPlayer.item["piano"].sprite.me = true;
@@ -407,7 +409,7 @@ function pianoPhysics() {
         sendHimFlying();
       }
       p.velocity.y -= GRAVITY;
-      //addSpriteToVisual(p, 5);
+      addSpriteToVisual(p, 5);
     });
   }
 }
@@ -424,7 +426,7 @@ function placeMine() {
     let id = (Date.now() - getRandomInt(1000) + getRandomInt(1000)).toString();
     mine.addImage(mineImg);
     mine.maxSpeed = pixelWidth / 5;
-    mine.debug = true;
+    //mine.debug = true;
     mine.me = true;
     mine.playerId = socket.id;
     myPlayer.item["mine"].sprite.push(mine);
@@ -470,7 +472,7 @@ function minePhysics() {
         }
       }
       m.velocity.y -= GRAVITY;
-     // addSpriteToVisual(m, 5);
+      addSpriteToVisual(m, 5);
     });
   }
 }

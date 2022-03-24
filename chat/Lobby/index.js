@@ -10,12 +10,16 @@ app.get("/jquery.min.js", (req, res) => res.sendFile(__dirname + "/jquery.min.js
 app.get("/qrcode.html/:gameId/:clientId", function (req, res) {
     res.sendFile(__dirname + "/qrcode.html")
 });
+var path = require('path');
+//app.get("/rafi", (req, res) => res.sendFile(path.resolve(__dirname + 
+//  "/../../../Trash/ScribbleFight/p5_game_Ben/p5_frontend/src/index.html")));
 
 app.get("/amogusss.png", (req, res) => res.sendFile(__dirname + "/amogusss.png"));
 app.get("/qrcode.js", (req, res) => res.sendFile(__dirname + "/qrcode.js"));
 app.get("/chart.js", (req, res) => res.sendFile(__dirname + "/chart.js"));
 app.get("/qrcode.html", (req, res) => res.sendFile(__dirname + "/qrcode.html"));
 app.get("/index.html", (req, res) => res.sendFile(__dirname + "/index.html"));
+app.get("/index.css", (req, res) => res.sendFile(__dirname + "/index.css"));
 
 const clients = {};
 let base64;
@@ -36,7 +40,7 @@ wsServer.on("request", request => {
         const result = JSON.parse(message.utf8Data)
         // console.log(result)
 
-        
+
         if (result.method === "create") {
             const clientId = result.clientId;
             const gameId = guid();
@@ -178,42 +182,54 @@ wsServer.on("request", request => {
                 clients[c.clientId].connection.send(JSON.stringify(payLoad))
             })
         }
-        if(result.method === "rafi_game"){
-            const game = games[result.game.id];
-            const img = result.img;
-            payLoad = {
+        if (result.method === "rafi_game") {
+            const gameId = result.gameId;
+            const game = games[gameId];
+            const img = game.winner;
+            console.log("Image: " + img)
+            console.log("Request ist angekommen")
+            const payLoad = {
                 "method": "rafi_game",
                 "img": img
             }
             connection.send(JSON.stringify(payLoad))
         }
-        if(result.method === "rafi"){
+        if (result.method === "rafi") {
             const game = games[result.game.id]
             console.log(game.id);
             var i;
             console.log("Bis zu rafi")
-            for(i=0;i<game.clients.length;i++){
-                if(game.clients[i].winner != null){
-                    console.log("Gewinner ist: " + game.clients[i].clientId + ", " + game.clients[i].winner)
+            for (i = 0; i < game.clients.length; i++) {
+                if (game.clients[i].winner != null) {
+                    //console.log("Gewinner ist: " + game.clients[i].clientId + ", " + game.clients[i].winner)
                     games[game.id].winner = result.img;
-                    console.log(games[game.id].winner);
+                    // console.log(games[game.id].winner);
                 } else {
                     console.log("Testt")
                 }
                 console.log("I: " + i);
             }
+            console.log("Winner" + games[game.id].winner)
 
-          /*  game.clients.forEach(c => {
-                if(game.clients[i].winner != null){
-                    console.log("Gewinner ist: " + c.clientId + ", " + c.winner)
-                } else {
-                    console.log("Nicht Gewinner: " + c.clientId)
-                }
-                i++;
-                console.log("I: " + i);
-            })*/
+            const payLoad = {
+                "method": "linked",
+                "gameId": game.id
+            }
+            games[game.id].clients.forEach(c => {
+                clients[c.clientId].connection.send(JSON.stringify(payLoad))
+            })
+            /*  game.clients.forEach(c => {
+                  if(game.clients[i].winner != null){
+                      console.log("Gewinner ist: " + c.clientId + ", " + c.winner)
+                  } else {
+                      console.log("Nicht Gewinner: " + c.clientId)
+                  }
+                  i++;
+                  console.log("I: " + i);
+              })*/
 
         }
+
         if (result.method === "voted") {
             const gameId = result.gameId;
             const game = games[gameId];
@@ -225,51 +241,70 @@ wsServer.on("request", request => {
             var i = 0;
             //console.log("Votedplayer: " + votedPlayer)
             //console.log("Player: " + player)
-            
+            var bool = false;
             playerVotes[gameId].clients.forEach(c => {
                 //console.log("Aktueller Playervotes[i]: " + playerVotes[gameId].clients[i].clientId)
                 if (playerVotes[gameId].clients[i].clientId == player) {
                     //console.log("Player wurde gespliced: " + playerVotes[gameId].clients[i].clientId)
-                    playerVotes[gameId].clients.splice(i, 1)
+                    bool = true
                 }
                 i++;
             })
-            voteGame.votes[votedPlayer].amount++;
-            console.log("VotedPlayer:" + votedPlayer)
-            console.log("VotedPlayer Amount: " + voteGame.votes[votedPlayer].amount);
-            const payLoad = {
-                "method": "voted",
-                "voteGame": voteGames[gameId],
-                "game": game,
-                "votedPlayer": votedPlayer
-            }
-            games[gameId].clients.forEach(c => {
-                clients[c.clientId].connection.send(JSON.stringify(payLoad))
-                console.log("thsjhaldsladjs")
-            })
-            if (!playerVotes[gameId].clients[0]) {
-                var arr = [];
-                for(var i=0;i<voteGame.votes.length;i++){
-                    arr[i] = voteGame.votes[i].amount;
-                }
-                console.log("Array: " + arr)
-                var winner = arr.reduce((iMax, x, i, a) => x > a[iMax] ? i : iMax, 0);
-                console.log("Gewinner: " + winner)
-                games[gameId].clients[winner].winner = true;
-                var payLoad2 = {
-                    "method": "startGame",
+            if (bool) {
+                i = 0;
+                playerVotes[gameId].clients.forEach(c => {
+                    //console.log("Aktueller Playervotes[i]: " + playerVotes[gameId].clients[i].clientId)
+                    if (playerVotes[gameId].clients[i].clientId == player) {
+                        //console.log("Player wurde gespliced: " + playerVotes[gameId].clients[i].clientId)
+                        playerVotes[gameId].clients.splice(i, 1)
+                    }
+                    i++;
+                })
+                voteGame.votes[votedPlayer].amount++;
+                //console.log("VotedPlayer:" + votedPlayer)
+                //console.log("VotedPlayer Amount: " + voteGame.votes[votedPlayer].amount);
+                const payLoad = {
+                    "method": "voted",
+                    "voteGame": voteGames[gameId],
                     "game": game,
-                    "winner": winner
+                    "votedPlayer": votedPlayer
+                }
+                games[gameId].clients.forEach(c => {
+                    clients[c.clientId].connection.send(JSON.stringify(payLoad))
+                    //console.log("thsjhaldsladjs")
+                })
+                if (!playerVotes[gameId].clients[0]) {
+                    var arr = [];
+                    for (var i = 0; i < voteGame.votes.length; i++) {
+                        arr[i] = voteGame.votes[i].amount;
+                    }
+                    //console.log("Array: " + arr)
+                    var winner = arr.reduce((iMax, x, i, a) => x > a[iMax] ? i : iMax, 0);
+                    //console.log("Gewinner: " + winner)
+                    games[gameId].clients[winner].winner = true;
+                    var payLoad2 = {
+                        "method": "startGame",
+                        "game": game,
+                        "winner": winner
+                    }
+                    games[gameId].clients.forEach(c => {
+                        clients[c.clientId].connection.send(JSON.stringify(payLoad2))
+                        //console.log("geschickt!")
+                    })
+                } else {
+                    console.log("Still Players remaining")
+                }
+            } else {
+                var payLoad2 = {
+                    "method": "error",
+                    "message": "user has already voted"
                 }
                 games[gameId].clients.forEach(c => {
                     clients[c.clientId].connection.send(JSON.stringify(payLoad2))
-                    console.log("geschickt!")
+                    //console.log("geschickt!")
                 })
-            } else {
-                console.log("Still Players remaining")
             }
         }
-
 
     })
 
@@ -314,9 +349,9 @@ io.on('connection', socket => {
     })*/
 
     socket.on('new-user', name => {
-        
+
         users[socket.id] = name
-        
+
         socket.broadcast.emit('user-connected', name)
         //io.to(gameChats[data.gameId]).emit('user-connecetd', data.name)
     })

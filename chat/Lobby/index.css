@@ -1,0 +1,87 @@
+body{
+    width: 50%;
+    margin-left: 25%;
+    text-align: center;
+    font-family: Roboto;
+}
+#chartContainer{
+    height:10vh; 
+    width:100%;
+    visibility: visible;
+}
+#myChart{
+  visibility: visible;
+}
+#QR{
+    margin-left:95%;
+    margin-top:10vh;
+}
+#playerlist{
+    background-color: blue;
+    font-size: large;
+}
+
+#gamecode{
+    font: bolder;
+}
+
+/* CSS */
+button {
+  background-color: #FFFFFF;
+  border: 2px solid rgb(209,213,219);
+  border-radius: .5rem;
+  box-sizing: border-box;
+  color: #111827;
+  font-family: "Inter var",ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-size: .875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  padding: .75rem 1rem;
+  text-align: center;
+  text-decoration: none #D1D5DB solid;
+  text-decoration-thickness: auto;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+button:hover {
+  background-color: rgb(249,250,251);
+}
+
+button:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+button:focus-visible {
+  box-shadow: none;
+}
+
+#txtGameId{
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    font-size: 1.2rem;
+    padding: 1.5rem 1.5rem;
+    border-radius: 0.2rem;
+    background-color: rgb(255, 255, 255);
+
+    width: 50%;
+    height: 0.01vh;
+}
+
+#message-input {
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    font-size: 1.2rem;
+    padding: 1.5rem 1.5rem;
+    border-radius: 0.2rem;
+    background-color: rgb(255, 255, 255);
+
+    width: 75%;
+    height: 0.5vh;
+  }
+  
+  

@@ -1,17 +1,31 @@
 var express = require("express");
-
 var app = express();
-//var server = app.listen(3000, "10.0.0.2");
-var server = app.listen(3000);
-var kiServer = app.listen(3001);
+var http = require("http").createServer(app);
+var io = require("socket.io")(http, {
+    cors: {
+        origin: '*',
+    }
+});
 
-app.use(express.static('../p5_frontend/src'));
+const path = require('path');
+
+/*app.get('/123', (req, res) => {
+    res.send('Hello World');
+  }); */
+app.use(express.static(path.join(__dirname, '/../p5_frontend/src/')));
+
+app.get("/:gameId/", (req,res) => res.sendFile(path.join(__dirname, '/../p5_frontend/src/index.html')));
+//app.get("/123", (req,res) => res.sendFile(path.join(__dirname, '/../p5_frontend/src/index.html')));
+
+
+
+//var server = app.listen(PORT);
+http.listen(3000);
+
+
+//var kiServer = app.listen(3001);
 
 console.log("my server is running");
-
-var socket = require('socket.io');
-
-var io = socket(server);
 
 
 var players = new Map();
@@ -24,6 +38,8 @@ io.sockets.on('connection', newConnection);
 
 function newConnection(socket) {
     console.log("New connection: " + socket.id);
+
+    function sendPlayers() {
         if (players.size > 0) {
             players.forEach((values, keys) => {
                 let data = {
@@ -31,10 +47,14 @@ function newConnection(socket) {
                 }
                 socket.emit('newPlayer', data);
             })
-        } 
+        }
+    }
+  
+
     socket.on('disconnect', function () {
         console.log('user disconnected: ' + socket.id);
         players.delete(socket.id);
+        console.log(players);
         socket.broadcast.emit("deletePlayer", socket.id);
         if (players.size < 1) {
             xCoordinates = [];
@@ -43,6 +63,7 @@ function newConnection(socket) {
         }
     });
     socket.on('newPlayer', createPlayer);
+    socket.on('getPlayers',sendPlayers);
     socket.on('update', updatePosition);
     socket.on('updateDirection', updateDirection);
     socket.on('deleteItem', deleteItem);
@@ -54,7 +75,9 @@ function newConnection(socket) {
         xCoordinates = data;
     })
     //for KI
+    /*
     socket.on('visCopy', sendVisCopy);
+*/
 
     function updatePosition(data) {
         let dataWithId = {
@@ -70,7 +93,7 @@ function newConnection(socket) {
             id: socket.id,
             direction: ""
         }
-        if(players.get(socket.id) != undefined) {
+        if (players.get(socket.id) != undefined) {
             if (data == "left") {
                 dataWithId.direction = "left";
                 players.get(socket.id).direction = "left";
@@ -118,14 +141,15 @@ function newConnection(socket) {
     }
 
     function death(data) {
-        if(players.get(data.deadPlayer) != undefined) {
-        players.get(data.deadPlayer).death++;
+        if (players.get(data.deadPlayer) != undefined) {
+            players.get(data.deadPlayer).death++;
             if (players.get(data.deadPlayer).death >= 3) {
                 players.delete(data.deadPlayer);
                 let transferData = {
                     id: data.deadPlayer
                 }
-               // io.emit('death', transferData);
+                io.emit('death', transferData);
+                socket.disconnect();
             }
             if (players.size <= 1) {
                 socket.broadcast.emit("win", data.deadPlayer);
@@ -136,10 +160,10 @@ function newConnection(socket) {
     function kill(data) {
         io.to(data.damagedBy).emit('kill', 1);
         // player could leave before getting the kill
-        if(players.get(data.damagedBy)!=undefined) {
+        if (players.get(data.damagedBy) != undefined) {
             players.get(data.damagedBy).kill += 1;
         }
-        
+
     }
 
 }
@@ -191,6 +215,7 @@ class Player {
 }
 
 //// FOR KI
+/*
 var idTable = new Map();
 const io2 = require('socket.io')(kiServer, {
     cors: {
@@ -217,4 +242,4 @@ function sendVisCopy(data) {
             io2.to(key).emit('visCopyToPython', data.visCopy);
         }
     })
-}
+} */

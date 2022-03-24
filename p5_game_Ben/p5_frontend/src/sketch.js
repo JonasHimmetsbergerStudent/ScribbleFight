@@ -15,7 +15,7 @@ var JUMP_COUNT = 0;
 var same_x_counter = 1;
 const MAX_JUMP = 3;
 var touches_side;
-var background_path = "assets/komischer_smiley.png";
+var background_path = "assets/smiley_bg.png";
 var visual;
 var pixelWidth;
 var visCopy;
@@ -36,36 +36,146 @@ var boogieBombImg;
 var pianoImg;
 var mineImg;
 var amogus_supreme;
-
+var dummy;
 //Forces
-const GAMESPEED = 1;
 var GRAVITY;
 var JUMP;
-if (GAMESPEED > 1) {
-  JUMP = 15 * GAMESPEED / 1.435;
-}
+
 var ws = new WebSocket("ws://localhost:9090");
   ws.onmessage = message => {
     const response = JSON.parse(message.data);
     if(response.method === "rafi_game"){
-      backgroundImage = response.img;
-      console.log("Jaaa" + backgroundImage)
-    } else {
-      console.log("Nicht")
-    }
+      dummy = response.img;
+      var path_image_dummy = 'data:image/png;base64,' + dummy;
+      console.log("Jaaa: 'data:image/png;base64," + dummy + "'")
+      var backgroundImage = new Image();
+      console.log(backgroundImage);
+      backgroundImage.src = 'data:image/png;base64,' + dummy ;
+
+      backgroundImage.onload = function () {
+        obildbreite = this.width;
+        obildhoehe = this.height;
+    
+    
+        if ((windowWidth / windowHeight) > (obildbreite / obildhoehe)) {
+          let screenHeight = windowHeight;
+          var faktor = screenHeight / obildhoehe;
+          newImageHeight = faktor * obildhoehe;
+          newImageWidth = faktor * obildbreite;
+        } else {
+          let screenWidth = windowWidth;
+          var faktor = screenWidth / obildbreite;
+          newImageHeight = faktor * obildhoehe;
+          newImageWidth = faktor * obildbreite;
+        }
+    
+    
+        pixelWidth = Math.max(obildbreite, obildhoehe) / pixel_clumps[0].length * faktor;
+        relFaktor = {
+          x: obildbreite / newImageWidth,
+          y: obildhoehe / newImageHeight
+        }
+        JUMP = pixelWidth - (pixelWidth / 3);
+        SPEED = pixelWidth / 4;
+        CLIMBINGSPEED = -(pixelWidth / 4);
+        GRAVITY = -pixelWidth / 25;
+        environment = new Group();
+        //console.log(pixelWidth);
+    
+        // creating pixel environment
+        for (let i = 0; i < pixel_clumps.length; i++) {
+          sprite_pixels[i] = [];
+          for (let j = 0; j < pixel_clumps[0].length; j++) {
+            if (pixel_clumps[i][j][3] > 0) {
+              if (sprite_pixels[i][j - 1] !== undefined) {
+                same_x_counter++;
+                sprite_pixels[i][j] = createSprite((j - ((same_x_counter) / 2) + 0.5) * pixelWidth + ((windowWidth - newImageWidth) / 2) + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth * (same_x_counter), pixelWidth);
+                sprite_pixels[i][j].visible = true;
+                //sprite_pixels[i][j].debug = true;
+                sprite_pixels[i][j].depth = 10;
+                //console.log(sprite_pixels[i][j].mass);
+                //console.log(sprite_pixels[i][j].restitution);
+                sprite_pixels[i][j].immovable = true;
+                environment.add(sprite_pixels[i][j]);
+                sprite_pixels[i][j - 1].remove();
+                sprite_pixels[i][j - 1] = undefined;
+              } else {
+                same_x_counter = 1;
+                sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth - newImageWidth) / 2) + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth, pixelWidth);
+                sprite_pixels[i][j].debug = true;
+                sprite_pixels[i][j].immovable = true;
+               // console.log(sprite_pixels[i][j].mass);
+                //fbaconsole.log(sprite_pixels[i][j].restitution);
+                environment.add(sprite_pixels[i][j]);
+                sprite_pixels[i][j].visible = true;
+              }
+            }
+          }
+        }
+        console.log(sprite_pixels);
+        console.log(pixel_clumps);
+        // X Coordinates for the item drops
+        getXCoordinates();
+    
+    
+        /*  for (let i = 0; i < pixel_clumps.length; i++) {
+             sprite_pixels[i] = [];
+             for (let j = 0; j < pixel_clumps[0].length; j++) {
+               if (pixel_clumps[i][j][3] > 0) {
+                 sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth-newImageWidth)/2), i * pixelWidth, pixelWidth, pixelWidth);
+                 sprite_pixels[i][j].immovable = true;
+                 environment.add(sprite_pixels[i][j]);
+                 //sprite_pixels[i][j].visible = false;
+               }
+             }
+           } */
+    
+    
+        let background = createSprite(windowWidth / 2, windowHeight / 2, newImageWidth, newImageHeight);
+        loadImage(path_image_dummy, img => {
+          img.resize(newImageWidth, newImageHeight);
+          background.addImage(img);
+          background.depth = -1;
+          player_width = pixelWidth * 9 / 4;
+          player_height = pixelWidth * 3;
+          imageFaktor = pixelWidth * 4;
+          init();
+        })
+    
+      }
+    } 
   }
 
+
+function sockets() {
+  socket = io.connect('http://localhost:3000/');
+  socket.on("deletePlayer", deletePlayer);
+  socket.on('newPlayer', createNewPlayer);
+  socket.on('update', updatePosition);
+  socket.on('updateDirection', updateDirection);
+  socket.on('spawnItem', createItem);
+  socket.on('deleteItem', syncItems);
+  socket.on('attack', addAttack);
+  socket.on('kill', addKill);
+  socket.on('death', someoneDied);
+  socket.on("win", win);
+  socket.on('deleteAttack', deleteAttack);
+}
+
 function setup() {
+  frameRate(60);
   var canvas = createCanvas(windowWidth, windowHeight);
+  sockets();
   background('FFFFFF');
-  var backgroundImage = new Image();
-  getGame();
   
-  backgroundImage.src = background_path;
+  console.log("Test")
+  getGame();
+  //backgroundImage.src = background_path;
+  
 
 
 
-  backgroundImage.onload = function () {
+  /*backgroundImage.onload = function () {
     obildbreite = this.width;
     obildhoehe = this.height;
 
@@ -94,6 +204,8 @@ function setup() {
     GRAVITY = -pixelWidth / 25;
     environment = new Group();
     console.log(pixelWidth);
+
+    // creating pixel environment
     for (let i = 0; i < pixel_clumps.length; i++) {
       sprite_pixels[i] = [];
       for (let j = 0; j < pixel_clumps[0].length; j++) {
@@ -101,9 +213,11 @@ function setup() {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
             sprite_pixels[i][j] = createSprite((j - ((same_x_counter) / 2) + 0.5) * pixelWidth + ((windowWidth - newImageWidth) / 2) + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth * (same_x_counter), pixelWidth);
-            //sprite_pixels[i][j].visible = false;
-            sprite_pixels[i][j].debug = true;
+            sprite_pixels[i][j].visible = true;
+            //sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].depth = 10;
+            console.log(sprite_pixels[i][j].mass);
+            console.log(sprite_pixels[i][j].restitution);
             sprite_pixels[i][j].immovable = true;
             environment.add(sprite_pixels[i][j]);
             sprite_pixels[i][j - 1].remove();
@@ -113,12 +227,16 @@ function setup() {
             sprite_pixels[i][j] = createSprite(j * pixelWidth + ((windowWidth - newImageWidth) / 2) + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth, pixelWidth);
             sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].immovable = true;
+            console.log(sprite_pixels[i][j].mass);
+            console.log(sprite_pixels[i][j].restitution);
             environment.add(sprite_pixels[i][j]);
             sprite_pixels[i][j].visible = true;
           }
         }
       }
     }
+    console.log(sprite_pixels);
+    console.log(pixel_clumps);
     // X Coordinates for the item drops
     getXCoordinates();
 
@@ -135,14 +253,7 @@ function setup() {
          }
        } */
 
-    //for background
-    /*let div = createDiv('').size(newImageWidth, newImageHeight);
-    div.style('background-color', 'orange');
-    div.style('background', 'url("assets/komischer_smiley.png")');
-    div.style('background-repeat', 'no-repeat');
-    div.style('background-size','contain');
-    div.center(); */
-
+/*
     let background = createSprite(windowWidth / 2, windowHeight / 2, newImageWidth, newImageHeight);
     loadImage(background_path, img => {
       img.resize(newImageWidth, newImageHeight);
@@ -155,50 +266,26 @@ function setup() {
     })
 
   }
-
-  //socket = io.connect('http://10.0.0.2:3000/');
-  socket = io.connect('http://localhost:3000/');
+*/
   //socket2 = io.connect("http://localhost:3001");
-  socket.on("deletePlayer", deletePlayer);
-  socket.on('newPlayer', createNewPlayer);
-  socket.on('update', updatePosition);
-  socket.on('updateDirection', updateDirection);
-  socket.on('spawnItem', createItem);
-  socket.on('deleteItem', syncItems);
-  socket.on('attack', addAttack);
-  socket.on('kill', addKill);
-  socket.on('death', someoneDied);
-  socket.on("win", win);
-  socket.on('deleteAttack', deleteAttack);
+
 }
 
 function createNewPlayer(data) {
-  //time to init
     loadImage('assets/amogus.png', img => {
-      setTimeout(() => {
+      console.log(data.id);
         img.resize(imageFaktor, 0);
         players[data.id] = new Player(createSprite(newImageWidth / 2, newImageHeight / 2, player_width, player_height));
         players[data.id].sprite.maxSpeed = pixelWidth;
         players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
-        players[data.id].sprite.debug = true;
+       // players[data.id].sprite.debug = true;
         players[data.id].sprite.addImage(img);
         players[data.id].id = data.id;
         amogus = img;
         if (data.id == socket.id) {
           myPlayer = players[data.id];
         }
-      }, 500);
-    
     });
-}
-
-function getGame(){
-  let gameId = localStorage.getItem("gameId");
-  const payLoad = {
-    "method": "rafi_game",
-    "gameId": gameId,
-  }
-  ws.send(JSON.stringify(payLoad));
 }
 
 function deletePlayer(id) {
@@ -206,6 +293,18 @@ function deletePlayer(id) {
     players[id].sprite.remove();
     players[id] = undefined;
   }
+}
+function getGame(){
+  var pathArray = window.location.pathname.split('/');
+  console.log(pathArray[1])
+  var gameId = pathArray[1];
+  console.log("GameID: " + gameId);
+  const payLoad = {
+    "method": "rafi_game",
+    "gameId": gameId,
+  }
+  ws.onopen = () => ws.send(JSON.stringify(payLoad));
+  //ws.send(JSON.stringify(payLoad));
 }
 
 function updatePosition(data) {
@@ -237,6 +336,7 @@ let damagedByTimer = 3;
 
 //// DRAW FUNCTION
 function draw() {
+  frameRate(60);
   touches_side = false;
   if (myPlayer != undefined && !youAreDead) {
     if (!flying && !noGravity) {
@@ -253,7 +353,7 @@ function draw() {
       visCopy: visCopy
     }
     socket.emit('visCopy', visCopyData);
-    addSpriteToVisual(myPlayer.sprite, 2);
+    addSpriteToVisual(myPlayer.sprite, 2); 
 
     bombPhysics();
     defaultAttackPhysics();
@@ -273,7 +373,7 @@ function draw() {
       controls();
     }
 
-    if (frameCount == 60 && damagedByTimer > 0) {
+    if (frameCount % 120 == 0 && damagedByTimer > 0 && myPlayer.damagedBy != null) {
       damagedByTimer--;
     }
 
@@ -437,6 +537,8 @@ function init() {
                       img.resize(imageFaktor, 0);
                       amogus_supreme = img;
                       visual = getVisualMap(pixel_clumps);
+
+                      socket.emit('getPlayers');
                       socket.emit('newPlayer');
                     })
                   })
