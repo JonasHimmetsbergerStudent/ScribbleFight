@@ -39,6 +39,7 @@ function defaultAttack(x, y) {
   projectile.id = id;
   projectile.limitSpeed(pixelWidth - pixelWidth / 2);
   projectile.playerId = socket.id;
+  console.log(myPlayer.sprite.mass);
   
 
   projectiles.push(projectile);
@@ -172,7 +173,7 @@ function bombAttack() {
       myPlayer.item["bomb"].sprite.addImage(bombImg);
       myPlayer.item["bomb"].sprite.life = 1000;
       myPlayer.item["bomb"].sprite.me = true;
-      myPlayer.item["bomb"].sprite.setDefaultCollider();
+      myPlayer.item["bomb"].sprite.setDefaultCollider()
       myPlayer.item["bomb"].sprite.id = id;
       myPlayer.item["bomb"].sprite.playerId = socket.id;
       bombs.push(myPlayer.item["bomb"].sprite);

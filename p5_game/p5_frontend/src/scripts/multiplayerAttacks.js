@@ -129,6 +129,7 @@ function addPiano(data) {
     piano.setCollider("rectangle", 0, 0, pixelWidth*5, pixelWidth*5);
     piano.id = data.id;
     piano.playerId = data.playerId;
+    piano.maxSpeed = pixelWidth - pixelWidth / 5;
     pianos.push(piano);
 }
 
