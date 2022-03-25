@@ -5,8 +5,8 @@ let alivePlayerCount = 0;
 let respawnTime = false;
 function deathCheck() {
     if (myPlayer.sprite.position.y - player_height > windowHeight && !respawnTime) {
-        //youDied();
-        resetPlayer();
+        youDied();
+       // resetPlayer();
     }
 }
 
@@ -16,6 +16,7 @@ function resetPlayer() {
 }
 
 function youDied() {
+    progressBar.width = 0;
     if (myPlayer.item != undefined && myPlayer.item.sprite != undefined) {
         myPlayer.item.sprite = undefined;
         myPlayer.item = undefined;
@@ -37,6 +38,7 @@ function youDied() {
             myPlayer.sprite.position.x = xCoordinates[Math.floor(Math.random() * xCoordinates.length)];
             myPlayer.sprite.position.y = 0;
             respawnTime = false;
+            myPlayer.visible = false;
         }
     }, 3000);
 }
@@ -52,8 +54,10 @@ function someoneDied(data) {
 }
 
 function fatalHit() {
-    if (myPlayer.knockback >= 100) {
-        //youDied();
+    updateUI();
+    if (myPlayer.knockback > MAX_KNOCKBACK) {
+        myPlayer.sprite.position.y = -10000;
+        youDied();
     }
 }
 

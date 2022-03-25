@@ -5,6 +5,7 @@ var environment;
 var players = [];
 var socket;
 var myPlayer;
+var progressBar;
 
 //Variables
 var bg;
@@ -14,6 +15,7 @@ var imageFaktor;
 var JUMP_COUNT = 0;
 var same_x_counter = 1;
 const MAX_JUMP = 3;
+const MAX_KNOCKBACK = 10;
 var touches_side;
 var background_path = "assets/smiley_bg.png";
 var visual;
@@ -58,6 +60,19 @@ function sockets() {
   socket.on('deleteAttack', deleteAttack);
 }
 
+function createUI() {
+ progressBar = createSprite(windowWidth/2 ,(windowHeight-newImageHeight) / 2,0, pixelWidth * 2);
+ progressBar.position.x += progressBar.width / 2;
+ progressBar.position.y += progressBar.height / 2;
+ progressBar.shapeColor = color(255,0,0);
+}
+
+function updateUI() {
+  let progress;
+  progress = map(myPlayer.knockback,1,MAX_KNOCKBACK,0,newImageWidth);
+  progressBar.width = progress;
+}
+
 function setup() {
   try {
     frameRate(60);
@@ -96,6 +111,7 @@ function setup() {
       CLIMBINGSPEED = -(pixelWidth / 4);
       GRAVITY = -pixelWidth / 25;
       environment = new Group();
+      createUI();
 
       // creating pixel environment
       for (let i = 0; i < pixel_clumps.length; i++) {
@@ -105,7 +121,7 @@ function setup() {
             if (sprite_pixels[i][j - 1] !== undefined) {
               same_x_counter++;
               sprite_pixels[i][j] = createSprite((j - ((same_x_counter) / 2) + 0.5) * pixelWidth + ((windowWidth - newImageWidth) / 2) + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth * (same_x_counter), pixelWidth);
-              sprite_pixels[i][j].visible = false;
+              sprite_pixels[i][j].visible = true;
               //sprite_pixels[i][j].debug = true;
               sprite_pixels[i][j].depth = 10;
               sprite_pixels[i][j].immovable = true;
@@ -118,7 +134,7 @@ function setup() {
               //sprite_pixels[i][j].debug = true;
               sprite_pixels[i][j].immovable = true;
               environment.add(sprite_pixels[i][j]);
-              sprite_pixels[i][j].visible = false;
+              sprite_pixels[i][j].visible = true;
             }
           }
         }
@@ -214,6 +230,7 @@ let damagedByTimer = 3;
 //// DRAW FUNCTION
 function draw() {
   try {
+    background('FFFFFF');
     frameRate(60);
     touches_side = false;
     if (myPlayer != undefined && !youAreDead) {
@@ -225,13 +242,13 @@ function draw() {
 
       // deep copy of multidimensional array
       // https://morioh.com/p/d15a64da5d09
-      visCopy = JSON.parse(JSON.stringify(visual));
+     /* visCopy = JSON.parse(JSON.stringify(visual));
       let visCopyData = {
         id: myPlayer.id,
         visCopy: visCopy
       }
       socket.emit('visCopy', visCopyData);
-      addSpriteToVisual(myPlayer.sprite, 2);
+      addSpriteToVisual(myPlayer.sprite, 2); */
 
       bombPhysics();
       defaultAttackPhysics();
@@ -242,7 +259,6 @@ function draw() {
       spawn();
 
 
-      background('FFFFFF');
 
       checkForCollisions();
 
