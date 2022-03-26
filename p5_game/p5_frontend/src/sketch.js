@@ -268,12 +268,10 @@ function draw() {
       }
 
       if (frameCount % 60 == 0 && damagedByTimer > 0 && myPlayer.damagedBy != null) {
-        console.log("test");
         damagedByTimer--;
       }
 
       if (damagedByTimer == 0) {
-        console.log("sdf");
         damagedByTimer = 4;
         myPlayer.damagedBy = null;
       }

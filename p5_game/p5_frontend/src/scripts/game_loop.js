@@ -56,6 +56,7 @@ function someoneDied(data) {
 }
 
 function fatalHit() {
+    damagedByTimer = 4;
     updateUI();
     if (myPlayer.knockback > MAX_KNOCKBACK) {
         myPlayer.sprite.position.y = -10000;
