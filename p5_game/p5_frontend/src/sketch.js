@@ -204,7 +204,7 @@ function updatePosition(data) {
   if (players[data.id] != undefined && obildbreite != undefined && obildhoehe != undefined) {
     players[data.id].sprite.position.x = data.x * newImageWidth / obildbreite + (windowWidth - newImageWidth) / 2;
     players[data.id].sprite.position.y = data.y * newImageHeight / obildhoehe + (windowHeight - newImageHeight) / 2;
-    addSpriteToVisual(players[data.id].sprite, 3);
+    //addSpriteToVisual(players[data.id].sprite, 3);
   }
 }
 
@@ -225,7 +225,7 @@ function addKill(data) {
   myPlayer.kills += 1;
 }
 
-let damagedByTimer = 3;
+var damagedByTimer = 4;
 
 //// DRAW FUNCTION
 function draw() {
@@ -267,12 +267,14 @@ function draw() {
         controls();
       }
 
-      if (frameCount % 120 == 0 && damagedByTimer > 0 && myPlayer.damagedBy != null) {
+      if (frameCount % 60 == 0 && damagedByTimer > 0 && myPlayer.damagedBy != null) {
+        console.log("test");
         damagedByTimer--;
       }
 
       if (damagedByTimer == 0) {
-        damagedByTimer = 3;
+        console.log("sdf");
+        damagedByTimer = 4;
         myPlayer.damagedBy = null;
       }
 

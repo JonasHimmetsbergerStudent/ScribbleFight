@@ -16,6 +16,7 @@ function resetPlayer() {
 }
 
 function youDied() {
+    damagedByTimer = 4;
     progressBar.width = 0;
     if (myPlayer.item != undefined && myPlayer.item.sprite != undefined) {
         myPlayer.item.sprite = undefined;
@@ -30,6 +31,7 @@ function youDied() {
     }
     if (myPlayer.damagedBy != null && myPlayer.damagedBy != socket.id) {
         socket.emit("kill", data);
+        myPlayer.damagedBy = null;
     }
     socket.emit("death", data);
 
