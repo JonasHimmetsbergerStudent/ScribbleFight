@@ -180,7 +180,7 @@ function createNewPlayer(data) {
   loadImage('assets/amogus.png', img => {
     console.log(data.id);
     img.resize(imageFaktor, 0);
-    players[data.id] = new Player(createSprite(newImageWidth / 2, newImageHeight / 2, player_width, player_height));
+    players[data.id] = new Player(createSprite(xCoordinates[Math.floor(Math.random() * xCoordinates.length)], 0, player_width, player_height));
     players[data.id].sprite.maxSpeed = pixelWidth;
     players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
     // players[data.id].sprite.debug = true;
