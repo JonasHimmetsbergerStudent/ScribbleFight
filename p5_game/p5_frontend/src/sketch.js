@@ -194,7 +194,7 @@ function createNewPlayer(data) {
         players[data.id] = new Player(createSprite(xCoordinates[Math.floor(Math.random() * xCoordinates.length)], 0, player_width, player_height));
         players[data.id].sprite.maxSpeed = pixelWidth;
         players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
-        players[data.id].sprite.debug = true;
+       // players[data.id].sprite.debug = true;
         players[data.id].sprite.addImage(img1);
         players[data.id].id = data.id;
         imposter = img1;
@@ -451,7 +451,9 @@ function init() {
                       visual = getVisualMap(pixel_clumps);
 
                       socket.emit('getPlayers');
-                      socket.emit('newPlayer');
+                      setTimeout(() => {
+                        socket.emit('newPlayer');
+                      }, 500);
                     })
                   })
                 })
