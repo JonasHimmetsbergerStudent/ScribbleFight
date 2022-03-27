@@ -375,6 +375,8 @@ function addSpriteToVisual(sprite, num) {
 
     for (let i = visualUnitX; i < maxXIterations; i++) {
       for (let j = visualUnitY; j < maxYIterations; j++) {
+        // make sure to never overlay attacks with myPlayer or enemy
+        // top priority has myPlayer
         if ((visCopy[j][i] != 2
           && visCopy[j][i] != 3)
           || num == 2)
