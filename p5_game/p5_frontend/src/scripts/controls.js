@@ -69,6 +69,7 @@ function jump() {
 
 function moveLeft() {
     myPlayer.sprite.velocity.x = -SPEED;
+   // myPlayer.sprite.changeAnimation('walk');
 }
 
 

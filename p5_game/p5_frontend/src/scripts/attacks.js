@@ -497,7 +497,6 @@ function makeMeSmall() {
 function smallChecker() {
   if (imSmall) {
     if (smallTimer == 10) {
-      myPlayer.sprite.addImage(amogus_supreme);
       myPlayer.sprite.scale = 0.6;
     }
 
@@ -505,7 +504,6 @@ function smallChecker() {
       smallTimer--;
     }
     if (smallTimer == 0) {
-      myPlayer.sprite.addImage(amogus);
       myPlayer.sprite.scale = 1;
       smallTimer = 10;
       myPlayer.item["small"] = undefined;
@@ -541,9 +539,7 @@ function sendHimFlying() {
 
 function ammoCheck(weapon) {
   myPlayer.item[weapon].ammo--;
-  console.log("-1");
   if (myPlayer.item[weapon].ammo == 0) {
-    console.log("dff");
     myPlayer.item[weapon] = undefined;
   }
 }

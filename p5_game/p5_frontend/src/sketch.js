@@ -28,6 +28,7 @@ var relFaktor;
 
 // Images
 var amogus;
+var imposter;
 var bombImg;
 var itemImg;
 var itemImgBlue;
@@ -38,6 +39,9 @@ var boogieBombImg;
 var pianoImg;
 var mineImg;
 var amogus_supreme;
+
+//Animations
+var walk;
 
 //Forces
 var GRAVITY;
@@ -61,16 +65,20 @@ function sockets() {
 }
 
 function createUI() {
- progressBar = createSprite(windowWidth/2 ,(windowHeight-newImageHeight) / 2,0, pixelWidth * 2);
- progressBar.position.x += progressBar.width / 2;
- progressBar.position.y += progressBar.height / 2;
- progressBar.shapeColor = color(255,0,0);
+  progressBar = createSprite(windowWidth / 2, (windowHeight - newImageHeight) / 2, 0, pixelWidth * 2);
+  progressBar.position.x += progressBar.width / 2;
+  progressBar.position.y += progressBar.height / 2;
+  progressBar.shapeColor = color(255, 0, 0);
 }
 
 function updateUI() {
   let progress;
-  progress = map(myPlayer.knockback,1,MAX_KNOCKBACK,0,newImageWidth);
+  progress = map(myPlayer.knockback, 1, MAX_KNOCKBACK, 0, newImageWidth);
   progressBar.width = progress;
+}
+
+function preload() {
+
 }
 
 function setup() {
@@ -177,19 +185,24 @@ function setup() {
 }
 
 function createNewPlayer(data) {
-  loadImage('assets/amogus.png', img => {
-    console.log(data.id);
-    img.resize(imageFaktor, 0);
-    players[data.id] = new Player(createSprite(xCoordinates[Math.floor(Math.random() * xCoordinates.length)], 0, player_width, player_height));
-    players[data.id].sprite.maxSpeed = pixelWidth;
-    players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
-    // players[data.id].sprite.debug = true;
-    players[data.id].sprite.addImage(img);
-    players[data.id].id = data.id;
-    amogus = img;
-    if (data.id == socket.id) {
-      myPlayer = players[data.id];
-    }
+  loadImage('assets/amogus.png', img1 => {
+    loadImage('assets/amogus_blue.png', img => {
+      console.log(data.id);
+      img.resize(imageFaktor, 0);
+      img1.resize(imageFaktor, 0);
+      players[data.id] = new Player(createSprite(xCoordinates[Math.floor(Math.random() * xCoordinates.length)], 0, player_width, player_height));
+      players[data.id].sprite.maxSpeed = pixelWidth;
+      players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
+      players[data.id].sprite.debug = true;
+      players[data.id].sprite.addImage(img1);
+      players[data.id].id = data.id;
+      imposter = img1;
+      amogus = img;
+      if (data.id == socket.id) {
+        myPlayer = players[data.id];
+        myPlayer.sprite.addImage(img);
+      }
+    });
   });
 }
 
@@ -242,13 +255,13 @@ function draw() {
 
       // deep copy of multidimensional array
       // https://morioh.com/p/d15a64da5d09
-     /* visCopy = JSON.parse(JSON.stringify(visual));
-      let visCopyData = {
-        id: myPlayer.id,
-        visCopy: visCopy
-      }
-      socket.emit('visCopy', visCopyData);
-      addSpriteToVisual(myPlayer.sprite, 2); */
+      /* visCopy = JSON.parse(JSON.stringify(visual));
+       let visCopyData = {
+         id: myPlayer.id,
+         visCopy: visCopy
+       }
+       socket.emit('visCopy', visCopyData);
+       addSpriteToVisual(myPlayer.sprite, 2); */
 
       bombPhysics();
       defaultAttackPhysics();

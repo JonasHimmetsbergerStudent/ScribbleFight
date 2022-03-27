@@ -67,7 +67,7 @@ function deleteAttack(data) {
             });
             break;
         case "small":
-            players[data.playerId].sprite.addImage(amogus);
+            players[data.playerId].sprite.addImage(imposter);
             players[data.playerId].sprite.scale = 1;
             break;
     }
@@ -145,6 +145,5 @@ function addMine(data) {
 }
 
 function addSmall(data) {
-    players[data.playerId].sprite.addImage(amogus_supreme);
     players[data.playerId].sprite.scale = 0.6;
 }
