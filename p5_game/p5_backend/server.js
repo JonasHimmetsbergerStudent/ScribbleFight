@@ -42,7 +42,9 @@ function newConnection(socket) {
                 let data = {
                     id: values.id,
                 }
-                socket.emit('newPlayer', data);
+                if(values.id!=socket.id) {
+                    socket.emit('newPlayer', data);
+                }
             })
         }
     }
