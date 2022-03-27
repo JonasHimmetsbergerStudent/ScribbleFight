@@ -30,6 +30,10 @@ let playerVotes = {};
 const wsServer = new websocketServer({
     "httpServer": httpServer
 })
+
+
+
+
 wsServer.on("request", request => {
 
     const connection = request.accept(null, request.origin);
@@ -349,9 +353,8 @@ io.on('connection', socket => {
     })*/
 
     socket.on('new-user', name => {
-
         users[socket.id] = name
-
+        console.log("test")
         socket.broadcast.emit('user-connected', name)
         //io.to(gameChats[data.gameId]).emit('user-connecetd', data.name)
     })
@@ -363,7 +366,6 @@ io.on('connection', socket => {
         })
     })
     socket.on('disconnect', () => {
-
         socket.broadcast.emit('user-disconnected', users[socket.id])
         delete users[socket.id]
     })

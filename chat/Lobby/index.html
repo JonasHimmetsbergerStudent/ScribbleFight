@@ -51,9 +51,11 @@
                 //socket.emit('new-room', gameId);
             }
             if (response.method === "join") {
+                
                 // Wenn ein neuer User joind (für alle)
                 //console.log(response.game.clients[response.game.clients.length - 1]) <= neueseter User
                 const game = response.game;
+                
                 //localStorage.setItem("game", response.game)
                 //localStorage.setItem("player", response.clientId)
                 var i = 0;
@@ -276,7 +278,7 @@
     <div>
         <div id="lobby" style="visibility: visible;">
             <h1>Scribblefight</h1><br>
-
+            
             <button id="btnJoin">Join</button>
             <input type="text" id="txtGameId" placeholder="Put your gamecode here!"><br>
             <button id="btnCreate">Create</button><br>

@@ -15,8 +15,8 @@ const video = document.getElementById('video'),
     flipBtn = document.getElementById('camera-facing-flip'),
     constraints = {
         video: {
-            width: { ideal: 90 },
-            height: { ideal: 60 },
+            width: { ideal: 640 },
+            height: { ideal: 360 },
             frameRate: { ideal: 25 }
         },
         audio: false

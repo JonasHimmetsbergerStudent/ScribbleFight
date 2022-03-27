@@ -131,16 +131,16 @@ $(document).ready(function () {
 
             console.log(img);
 
-            let ws = new WebSocket("ws://localhost:9090")
+            const socketBen = io('http://localhost:3001')
             const payLoad = {
                 "method": "picUploaded",
                 "clientId": clientId,
                 "gameId": gameId,
                 "img": img,
-         //       "map": map
+                "map": map
             }
 
-            ws.onopen = () => ws.send(JSON.stringify(payLoad));
+            socketBen.emit('picUploaded', payLoad)
 
             $('#loading').css('display', 'none');
             if (msg.error) {

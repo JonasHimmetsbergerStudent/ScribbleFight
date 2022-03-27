@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scribblefight Lobby</title>
+    <script defer src="http://localhost:3001/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="index.css" type="text/css">
+</head>
+
+<body>
+    <div id="chartContainer">
+        <canvas id="myChart"></canvas>
+    </div>
+    <div id="body">
+
+        <script>
+        </script>
+        <div>
+            <div id="lobby" style="visibility: visible;">
+                <h1>Scribblefight</h1><br>
+
+                <button id="btnJoin">Join</button>
+                <input type="text" id="txtGameId" placeholder="Put your gamecode here!"><br>
+                <button id="btnCreate">Create</button><br>
+            </div>
+            <h1 id="gamecode"></h1>
+            <!-- Chat Connected => Visibility visible -->
+            <div id="chat" style="visibility: hidden;">
+                <div id="message-container"></div>
+                <form id="send-container">
+                    <input type="text" id="message-input" placeholder="Chat...">
+                    <button type="submit" id="send-button">Send</button>
+                </form>
+                <div id="playerlist"></div>
+                <div>
+                    <p id="missingPlayers"></p>
+                    <div id="buttonBox">
+                    </div>
+                </div>
+
+            </div>
+            <div id="QR">
+                <h2 id="QR-label">Scan the QR Code to upload your map</h2>
+                <a href="https://10.0.0.8" id="qrLink" target="_blank">
+                    <div id="qrcode"></div>
+                </a>
+            </div>
+
+
+            <div id="info"></div>
+
+        </div>
+
+        <script src="jquery.min.js"></script>
+        <script type="text/javascript" src="qrcode.js"></script>
+        <script type="text/javascript">
+            function initQr(gameId, clientId) {
+                new QRCode(document.getElementById("qrcode"), "https://10.0.0.8/" + gameId + "/" + clientId);
+            }
+        </script>
+        <script src="chart.js"></script>
+        <script>
+            //Anderer Stuff
+            window.onload = function () {
+
+                const playerlist = document.getElementById('playerlist');
+                const lobby = document.getElementById('lobby');
+                const QR = document.getElementById('QR');
+                const chat = document.getElementById('chat');
+                var players = [];
+                //chat
+                const socket = io('http://localhost:3001')
+                const messageContainer = document.getElementById('message-container')
+                const messageForm = document.getElementById("send-container")
+                const messageInput = document.getElementById("message-input")
+
+                socket.on('connecting', response => {
+                    clientId = response.clientId;
+                    localStorage.setItem("localClient", clientId)
+                    console.log("Client id succesfully set" + clientId);
+                });
+
+                socket.on('create', response => {
+
+                    var bruh = localStorage.getItem("localClient")
+                    console.log("Bruh: " + bruh)
+                    // Game wurde erstellt
+                    console.log("Game succesfully created with " + response.game.id);
+                    let gamecode = document.getElementById("gamecode");
+                    gameId = response.game.id;
+                    gamecode.innerHTML = "Gamecode: " + gameId;
+                    const message = {
+                        "method": "join",
+                        "clientId": clientId,
+                        "gameId": gameId
+                    }
+                    // newUser(clientId, gameId);
+
+                    socket.emit('join', message)
+                })
+
+                socket.on('join', response => {
+                    const game = response.game;
+                    console.log("")
+                    let gamecode = document.getElementById("gamecode");
+                    var gameId = response.game.id;
+                    gamecode.innerHTML = "Gamecode: " + gameId;
+                    console.log("JOIN")
+                    //localStorage.setItem("game", response.game)
+                    //localStorage.setItem("player", response.clientId)
+                    var i = 0;
+                    const playerlist = document.getElementById('playerlist');
+                    playerlist.innerHTML = "<p>Joined Players</p><br>";
+                    // Schleife um gejointe User anzuzeigen
+                    game.clients.forEach(c => {
+                        //playerlist.innerHTML += "User: " + game.clients[i].clientId + ", ";
+                        //i++;
+
+                        /* playerlist.innerHTML +=
+                             "<div><p>User: " + game
+                             .clients[i].clientId + "</p></div>"*/
+                        playerlist.innerHTML +=
+                            "<div><p>Player " + (i + 1) + "</p></div>"
+                        i++
+                    });
+                })
+
+                socket.on('newClient', response => {
+                    console.log("NEWCLIENT")
+                    var localClient = response.newClient;
+
+                    const qrLink = document.getElementById("qrLink");
+                    qrLink.href += response.gameId + "/" + response.newClient
+                    initQr(response.gameId, response.newClient)
+                    //console.log(qrLink.href)
+                })
+
+                socket.on('picUploaded', response => {
+                    var picGame = response.picGame
+                    var game = response.game
+                    var img = response.img;
+                    //console.log(game)
+                    //console.log("Ja Mannnn" + picGame.clients.clientId);
+                    var missingPlayers = document.getElementById("missingPlayers");
+                    var info = document.getElementById("info");
+                    info.innerHTML = game.id
+                    console.log(info.innerHTML);
+                    // Schleife um noch fehlende User anzuzeigen
+                    var i = 0;
+
+                    game.clients.forEach(c => {
+                        //console.log(game.clients[i].clientId)
+                        info.innerHTML += "," + game.clients[i].clientId;
+                        i++;
+                    })
+                    console.log(info.innerHTML)
+                    i = 0;
+                    missingPlayers.innerHTML = "Missing Players: "
+                    picGame.clients.forEach(c => {
+                        missingPlayers.innerHTML += "Player " + picGame.clients[i].clientId +
+                            ", ";
+                        //missingPlayers.innerHTML += "Missing: " + (i+1) + ", ";
+                        i++;
+                    })
+                    if (i == 0) {
+                        missingPlayers.innerHTML = "Ready to start the voting!"
+                    }
+                    // Wenn hochgeladen soll QR Code verschwinden
+                    // So gehts ned weil sonst QR Code bei Alle weg wäre
+                    // TODO
+                    /*
+                    var QR = document.getElementById("QR");
+                    QR.innerHTML = ""; */
+                    //console.log(i);
+                    var buttonBox = document.getElementById("buttonBox");
+                    // Wenn alle User was hochgeladen haben soll Button erscheinen (i=0)
+                    if (i == 0) {
+                        buttonBox.innerHTML =
+                            '<button id="startVoting" onClick="startVoting()">Start Voting</button>'
+                    } else {
+                        buttonBox.innerHTML = ''
+                    }
+                })
+
+                socket.on('startVoting2', response => {
+                    console.log("My Client" + response.myClient)
+                    // Wenn ein alle mit Upload fertig sind und jemand auf start Voting gedrückt hat :thumbsup:
+                    var info = document.getElementById("info")
+                    var game = response.game;
+                    var gameId = game.id;
+                    var myClient = response.myClient;
+                    console.log(myClient);
+                    // Warum keine gameId??
+                    var infoArray = info.innerHTML.split(',')
+                    console.log(infoArray)
+                    var playerlistArray = playerlist.innerHTML.split(',')
+                    console.log(playerlistArray);
+                    var body = document.getElementById("body")
+
+                    //body.innerHTML = playerlist.innerHTML
+                    body.innerHTML = ""
+                    i = 0;
+                    var clients = infoArray.splice(0, 1);
+                    console.log(game)
+                    console.log(game.clients[i].img)
+                    infoArray.forEach(c => {
+                        body.innerHTML +=
+                            "<div class='votingPicture'><img src='data:image/png;base64," + game
+                            .clients[i].img + "' alt='Red dot'/>" + infoArray[i] + "</div>";
+                        i++;
+                    })
+
+                    //Voting Chart
+                    const ctx = document.getElementById('myChart').getContext('2d');
+                    const myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: [],
+                            datasets: [{
+                                label: '# of Votes',
+                                data: [],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1
+                                    },
+                                    max: 8
+                                }
+                            }
+                        }
+                    });
+
+
+                    var chartContainer = document.getElementById("myChart");
+                    chartContainer.style.visibility = "visible";
+                    var i = 0;
+
+                    body.style.marginTop = "50vh";
+                    infoArray.forEach(c => {
+                        myChart.data.labels.push(infoArray[i])
+                        myChart.data.datasets.forEach((dataset) => {
+                            dataset.data.push(0);
+                        });
+                        body.innerHTML +=
+                            "<div class='votingBox'><button class='votingButton' onclick=voted(" +
+                            i + "," + myClient + ")>Vote for " + infoArray[i] + "</div>";
+
+                        localStorage.setItem("gameId", gameId)
+                        i++;
+                        console.log("I =================================== " + i)
+                    })
+                    myChart.update();
+
+
+                })
+                socket.on('startVoting1', response => {
+                    var game = response.game;
+                    const payLoad = {
+                        "method": "startVoting2",
+                        "game": game
+                    }
+                    socket.emit('startVoting2', payLoad);
+                })
+
+                socket.on('voted', response => {
+                    console.log(response.votedPlayer)
+                    const myChart = Chart.getChart('myChart')
+                    var voteGame = response.voteGame;
+                    var i = response.votedPlayer;
+                    myChart.data.datasets[0].data[i] = voteGame.votes[i].amount;
+                    myChart.update();
+                })
+
+                socket.on('startGame', response => {
+
+                    const game = response.game;
+                    console.log("Game: " + game)
+                    const winner = response.winner;
+                    console.log("Response: " + response.winner)
+                    // const winnerImg = game.clients[winner].img;
+
+                    console.log("GewinnerImg: " + winner);
+
+                    const payLoad = {
+                        "method": "rafi",
+                        "game": game,
+                        "img": winner
+                    }
+                    console.log("Bis zu Startgame" + payLoad)
+                    socket.emit('rafi', payLoad)
+                    const gameId = game.id;
+                    console.log("Linked")
+                    //window.location.href = 'http://localhost:3000/' + game.id;
+                    window.location.href = 'http://localhost:3000/' + gameId;
+                    // console.log(payLoad)
+                    //  ws.send(JSON.stringify(payLoad));
+                })
+
+                socket.on('chat-message', data => {
+                    appendMessage(`${data.name}: ${data.message}`)
+                })
+                socket.on('room-created', data => {
+                    console.log("Room Created")
+                    appendMessage(`New Room: ${data.gameId}`)
+                })
+
+                socket.on('user-connected', name => {
+                    appendMessage(`${name} joined`)
+                })
+
+                socket.on('user-disconnected', name => {
+                    appendMessage(`${name} disconnected`)
+                })
+
+                messageForm.addEventListener('submit', e => {
+                    e.preventDefault()
+                    const message = messageInput.value
+                    appendMessage(`You: ${message}`)
+                    socket.emit('send-chat-message', message)
+                    messageInput.value = ''
+                })
+
+
+                let clientId = null;
+                let gameId = null;
+
+                const btnCreate = document.getElementById("btnCreate");
+                const btnJoin = document.getElementById("btnJoin");
+                const txtGameId = document.getElementById("txtGameId");
+                btnCreate.addEventListener("click", e => {
+
+                    console.log("GameID: " + gameId + " Client: " + clientId);
+                    const message = {
+                        "method": "create",
+                        "clientId": clientId
+                    }
+                    newUser(clientId)
+                    socket.emit('create', message)
+                    //        ws.send(JSON.stringify(payLoad));
+
+                });
+                btnJoin.addEventListener("click", e => {
+                    if (gameId === null)
+                        gameId = txtGameId.value;
+                    console.log("GameID: " + gameId + " Client: " + clientId);
+
+                    newUser(clientId, gameId)
+
+                    const message = {
+                        "method": "join",
+                        "clientId": clientId,
+                        "gameId": gameId
+                    }
+                    // newUser(clientId, gameId);
+
+                    socket.emit('join', message)
+                    // ws.send(JSON.stringify(payLoad));
+                })
+
+                function appendMessage(message) {
+                    const messageElement = document.createElement('div')
+                    messageElement.innerText = message
+
+                    messageContainer.append(messageElement)
+                }
+
+                function newUser(clientId, gameId) {
+                    if (gameId == null) {
+                        // socket.emit('new-room')
+                    }
+                    const name = prompt('What is your name?')
+                    players.push(name, clientId);
+                    //console.log(players)
+                    appendMessage('You joined')
+                    socket.emit('new-user', name)
+                    lobby.style.visibility = "hidden";
+                    chat.style.visibility = "visible";
+                    QR.style.visibility = "visible";
+
+                }
+
+            }
+
+            function startVoting() {
+                //console.log("suss")
+                /* var playerlist = document.getElementById("playerlist")
+                 var info = document.getElementById("info")
+                 var infoArray = info.innerHTML.split(',')
+                 console.log(infoArray)
+                 var playerlistArray = playerlist.innerHTML.split(',')
+                 console.log(playerlistArray);
+                 var body = document.getElementById("body")
+                 //body.innerHTML = playerlist.innerHTML
+                 body.innerHTML = ""
+                 i = 0;
+                 infoArray.forEach(c => {
+                     if (i != 0) {
+                         body.innerHTML += "User: " + infoArray[i] + ", ";
+                     }
+                 i++;
+                 }) */
+                var info = document.getElementById("info");
+                var infoArray = info.innerHTML.split(',')
+                var gameId = infoArray[0];
+                console.log(gameId)
+                const payLoad = {
+                    "method": "startVoting",
+                    "gameId": gameId
+                }
+                //    ws.send(JSON.stringify(payLoad));
+                const socket = io('http://localhost:3001')
+                socket.emit('startVoting1', payLoad);
+            }
+
+            function voted(i, player) {
+                //var player = localStorage.getItem("localClient");
+                var gameId = localStorage.getItem("gameId");
+                console.log(player)
+                // console.log("GameId: " + gameId);
+                const payLoad = {
+                    "method": "voted",
+                    "votedPlayer": i,
+                    "gameId": gameId,
+                    "player": player
+                }
+                //    ws.send(JSON.stringify(payLoad));
+                const socket = io('http://localhost:3001')
+                socket.emit('voted', payLoad)
+                console.log("breuh")
+            }
+        </script>
+
+        <script>
+            console.log("Test")
+        </script>
+    </div>
+</body>
+
+</html>
