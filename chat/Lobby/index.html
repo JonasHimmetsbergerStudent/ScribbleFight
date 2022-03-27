@@ -58,15 +58,17 @@
                 //localStorage.setItem("player", response.clientId)
                 var i = 0;
                 const playerlist = document.getElementById('playerlist');
-                playerlist.innerHTML = "<p>Joined Users</p><br>";
+                playerlist.innerHTML = "<p>Joined Players</p><br>";
                 // Schleife um gejointe User anzuzeigen
                 game.clients.forEach(c => {
                     //playerlist.innerHTML += "User: " + game.clients[i].clientId + ", ";
                     //i++;
 
-                    playerlist.innerHTML +=
+                   /* playerlist.innerHTML +=
                         "<div><p>User: " + game
-                        .clients[i].clientId + "</p></div>"
+                        .clients[i].clientId + "</p></div>"*/
+                    playerlist.innerHTML +=
+                        "<div><p>Player " + (i+1) + "</p></div>"
                     i++
                 });
             }
@@ -105,9 +107,12 @@
                 missingPlayers.innerHTML = "Missing Players: "
                 picGame.clients.forEach(c => {
                     missingPlayers.innerHTML += "Missing: " + picGame.clients[i].clientId + ", ";
+                    //missingPlayers.innerHTML += "Missing: " + (i+1) + ", ";
                     i++;
                 })
-
+                if(i==0){
+                    missingPlayers.innerHTML = "Ready to start the voting!"
+                }
                 // Wenn hochgeladen soll QR Code verschwinden
                 // So gehts ned weil sonst QR Code bei Alle weg wäre
                 // TODO
@@ -270,10 +275,11 @@
     </script>
     <div>
         <div id="lobby" style="visibility: visible;">
-            <h1>Scribblefight Lobby</h1>
-            <button id="btnCreate">Create</button>
+            <h1>Scribblefight</h1><br>
+
             <button id="btnJoin">Join</button>
-            <input type="text" id="txtGameId">
+            <input type="text" id="txtGameId" placeholder="Put your gamecode here!"><br>
+            <button id="btnCreate">Create</button><br>
         </div>
         <h1 id="gamecode"></h1>
         <!-- Chat Connected => Visibility visible -->
@@ -292,6 +298,7 @@
             
         </div>
         <div id="QR">
+            <h2 id="QR-label">Scan the QR Code to upload your map</h2>
             <a href="https://10.0.0.8" id="qrLink" target="_blank">
                 <div id="qrcode"></div>
             </a>
@@ -333,7 +340,7 @@
             })
 
             socket.on('user-connected', name => {
-                appendMessage(`${name} connected`)
+                appendMessage(`${name} joined`)
             })
 
             socket.on('user-disconnected', name => {
@@ -398,6 +405,7 @@
                 lobby.style.visibility = "hidden";
                 chat.style.visibility = "visible";
                 QR.style.visibility = "visible";
+                
             }
 
         }

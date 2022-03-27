@@ -1,6 +1,6 @@
 body{
-    width: 50%;
-    margin-left: 25%;
+    width: 33%;
+    margin-left: 33%;
     text-align: center;
     font-family: Roboto;
 }
@@ -17,8 +17,14 @@ body{
     margin-top:10vh;
 }
 #playerlist{
-    background-color: blue;
     font-size: large;
+}
+
+#QR{
+  width: 256px;
+  height: auto;
+  font-size: large;
+ visibility: hidden ;
 }
 
 #gamecode{
@@ -45,6 +51,7 @@ button {
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+  width: 100%;
 }
 
 button:hover {
@@ -60,28 +67,32 @@ button:focus-visible {
   box-shadow: none;
 }
 
-#txtGameId{
-    font-family: 'Roboto', sans-serif;
-    color: #333;
-    font-size: 1.2rem;
-    padding: 1.5rem 1.5rem;
-    border-radius: 0.2rem;
-    background-color: rgb(255, 255, 255);
-
-    width: 50%;
-    height: 0.01vh;
+#lobby *, #chat * {
+  margin-top: 2vh;
 }
 
-#message-input {
-    font-family: 'Roboto', sans-serif;
-    color: #333;
-    font-size: 1.2rem;
-    padding: 1.5rem 1.5rem;
-    border-radius: 0.2rem;
-    background-color: rgb(255, 255, 255);
+input{
+  background-color: #FFFFFF;
+  border: 2px solid rgb(209,213,219);
+  border-radius: .5rem;
+  box-sizing: border-box;
+  color: #111827;
+  font-family: "Inter var",ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-size: .875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  padding: .75rem 1rem;
+  text-align: center;
+  text-decoration: none #D1D5DB solid;
+  text-decoration-thickness: auto;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 100%;
+}
 
-    width: 75%;
-    height: 0.5vh;
-  }
+
   
   
