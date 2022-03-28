@@ -44,7 +44,7 @@
             </div>
             <div id="QR">
                 <h2 id="QR-label">Scan the QR Code to upload your map</h2>
-                <a href="https://10.0.0.8" id="qrLink" target="_blank">
+                <a href="https://172.17.215.124" id="qrLink" target="_blank">
                     <div id="qrcode"></div>
                 </a>
             </div>
@@ -58,7 +58,7 @@
         <script type="text/javascript" src="qrcode.js"></script>
         <script type="text/javascript">
             function initQr(gameId, clientId) {
-                new QRCode(document.getElementById("qrcode"), "https://10.0.0.8/" + gameId + "/" + clientId);
+                new QRCode(document.getElementById("qrcode"), "https://172.17.215.124/" + gameId + "/" + clientId);
             }
         </script>
         <script src="chart.js"></script>

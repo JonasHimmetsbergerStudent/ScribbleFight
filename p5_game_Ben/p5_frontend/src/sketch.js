@@ -43,11 +43,14 @@ var JUMP;
 const socketBen = io('http://localhost:3001')
 socketBen.on("rafi_game", message => {
   dummy = message.img;
-  console.log("Dummy: " + dummy)
+  dummyMap = message.map;
+  pixel_clumps = JSON.parse(dummyMap);
+  //pixel_clumps = dummyMap;
+  //console.log("Dummy: " + dummy);
   var path_image_dummy = 'data:image/png;base64,' + dummy;
-  console.log("Jaaa: 'data:image/png;base64," + dummy + "'")
+  //console.log("Jaaa: 'data:image/png;base64," + dummy + "'")
   var backgroundImage = new Image();
-  console.log(backgroundImage);
+  //console.log(backgroundImage);
   backgroundImage.src = 'data:image/png;base64,' + dummy;
 
   backgroundImage.onload = function () {
@@ -81,6 +84,7 @@ socketBen.on("rafi_game", message => {
     //console.log(pixelWidth);
 
     // creating pixel environment
+   // console.log("Length: " + pixel_clumps.length)
     for (let i = 0; i < pixel_clumps.length; i++) {
       sprite_pixels[i] = [];
       for (let j = 0; j < pixel_clumps[0].length; j++) {
@@ -88,7 +92,7 @@ socketBen.on("rafi_game", message => {
           if (sprite_pixels[i][j - 1] !== undefined) {
             same_x_counter++;
             sprite_pixels[i][j] = createSprite((j - ((same_x_counter) / 2) + 0.5) * pixelWidth + ((windowWidth - newImageWidth) / 2) + (newImageWidth - pixel_clumps[0].length * pixelWidth) / 2, i * pixelWidth + ((windowHeight - newImageHeight) / 2) + (newImageHeight - pixel_clumps.length * pixelWidth) / 2 + pixelWidth * 3 / 4, pixelWidth * (same_x_counter), pixelWidth);
-            sprite_pixels[i][j].visible = true;
+            sprite_pixels[i][j].visible = false;
             //sprite_pixels[i][j].debug = true;
             sprite_pixels[i][j].depth = 10;
             //console.log(sprite_pixels[i][j].mass);
@@ -105,7 +109,7 @@ socketBen.on("rafi_game", message => {
             // console.log(sprite_pixels[i][j].mass);
             //fbaconsole.log(sprite_pixels[i][j].restitution);
             environment.add(sprite_pixels[i][j]);
-            sprite_pixels[i][j].visible = true;
+            sprite_pixels[i][j].visible = false;
           }
         }
       }
@@ -418,15 +422,18 @@ function saveToCookies() {
 function getVisualMap(paramarr) {
   let visual = []
   let factor = 3
+  console.log(paramarr)
   for (let i = 0; i < paramarr.length * factor; i++) {
     visual.push([])
     for (let j = 0; j < paramarr.length * factor; j++) {
-      if (paramarr[int(i / factor)][int(j / factor)][3] > 0) {
+    /*  if (paramarr[int(i / factor)][int(j / factor)][3] > 0) {
         visual[i].push(1)
       } else {
         visual[i].push(0)
-      }
+      }*/
+      visual[i].push(0)
     }
+    
   }
   return visual
 }
@@ -537,7 +544,6 @@ function init() {
                       img.resize(imageFaktor, 0);
                       amogus_supreme = img;
                       visual = getVisualMap(pixel_clumps);
-
                       socket.emit('getPlayers');
                       socket.emit('newPlayer');
                     })

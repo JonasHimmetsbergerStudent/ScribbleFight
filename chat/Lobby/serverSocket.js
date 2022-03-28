@@ -171,6 +171,7 @@ io.on('connection', socket => {
         const gameId = message.gameId;
         const game = games[gameId];
         const img = message.img;
+        const map = message.map;
         const clientId = message.clientId;
         //console.log("Image:" + message.img)
         //console.log(picGames[message.gameId].clients[0].clientId)
@@ -189,7 +190,8 @@ io.on('connection', socket => {
             if (c.clientId == message.clientId) {
                 //c.img = img;
                 games[gameId].clients[i].img = img;
-                console.log("DAS IMAGE" + games[gameId].clients[i].img)
+                games[gameId].clients[i].map = map;
+              //  console.log("DAS IMAGE" + games[gameId].clients[i].img)
                 console.log("passt so")
             } else {
                 console.log("noooo")
@@ -217,7 +219,7 @@ io.on('connection', socket => {
         // console.log("testt")
         const gameId = message.gameId;
         const game = games[gameId];
-        console.log("Game:   " + game)
+       // console.log("Game:   " + game)
         /* games[gameId].clients.forEach(c => {
              var payLoad = {
                  "method": "startVoting",
@@ -239,7 +241,7 @@ io.on('connection', socket => {
     socket.on('startVoting2', message => {
         // const gameId = message.gameId;
         const game = message.game;
-        console.log("Game2: " + game)
+     //   console.log("Game2: " + game)
         const myClient = socket.clientId;
         /*games[gameId].clients.forEach(c => {
             var payLoad = {
@@ -261,7 +263,7 @@ io.on('connection', socket => {
     socket.on('voted', message => {
         const gameId = message.gameId;
         const game = games[gameId];
-        console.log("game: " + game)
+    //    console.log("game: " + game)
         //Player der gevoted wurde
         const votedPlayer = message.votedPlayer;
         const voteGame = voteGames[gameId];
@@ -310,15 +312,18 @@ io.on('connection', socket => {
                 var winner = arr.reduce((iMax, x, i, a) => x > a[iMax] ? i : iMax, 0);
                 //console.log("Gewinner: " + winner)
                 games[gameId].clients[winner].winner = true;
-                console.log("Winner: " + winner);
-                console.log("Gewinner: " + games[gameId].clients[winner].img)
-                gewinner = games[gameId].clients[winner].img;
+               // console.log("Winner: " + winner);
+               // console.log("Gewinner: " + games[gameId].clients[winner].img)
+                let gewinner = games[gameId].clients[winner].img;
+                let gewinnerMap = games[gameId].clients[winner].map
                 games[gameId].winner = gewinner;
-                console.log("BRUHDER DU HAST GEWONNEN" + gewinner)
+                games[gameId].winnerMap = gewinnerMap;
+                //console.log("BRUHDER DU HAST GEWONNEN" + gewinnerMap)
                 var payLoad2 = {
                     "method": "startGame",
                     "game": game,
-                    "winner": gewinner
+                  //  "winner": gewinner,
+                   // "gewinnerMap": gewinnerMap
                 }
                 let gameString = "" + gameId
                 console.log(gameString);
@@ -348,14 +353,16 @@ io.on('connection', socket => {
     socket.on('rafi_game', message => {
         const gameId = message.gameId;
         const game = games[gameId];
-        console.log("Gewinner: " + games[gameId].winner)
+        //console.log("Gewinner: " + games[gameId].winner)
         const img = games[gameId].winner;
+        const map = games[gameId].winnerMap;
         console.log("GameID: " + gameId)
-        console.log("Image: " + img)
+     //  console.log("Image: " + img)
         console.log("Request ist angekommen")
         const payLoad = {
             "method": "rafi_game",
-            "img": img
+            "img": img,
+            "map": map
         }
         socket.emit('rafi_game', payLoad)
         //connection.send(JSON.stringify(payLoad))
