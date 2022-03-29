@@ -25,6 +25,8 @@ var obildbreite = undefined;
 var obildhoehe = undefined;
 var relPosData;
 var relFaktor;
+var lifePoints = [];
+
 
 // Images
 var amogus;
@@ -38,7 +40,7 @@ var itemImgGreen;
 var boogieBombImg;
 var pianoImg;
 var mineImg;
-var amogus_supreme;
+var amogus_green;
 
 //Animations
 var walk;
@@ -75,6 +77,15 @@ function updateUI() {
   let progress;
   progress = map(myPlayer.knockback, 1, MAX_KNOCKBACK, 0, newImageWidth);
   progressBar.width = progress;
+}
+
+function createLifePoints() {
+  for (let i = 1; i < 4; i++) {
+
+    lifePoints[i] = createSprite(pixelWidth * 3 + i * pixelWidth * 3, pixelWidth * 3, player_width, player_height);
+    lifePoints[i].addImage(amogus_green);
+    lifePoints[i].scale = 0.5;
+  }
 }
 
 function preload() {
@@ -120,6 +131,7 @@ function setup() {
       GRAVITY = -pixelWidth / 25;
       environment = new Group();
       createUI();
+
 
       // creating pixel environment
       for (let i = 0; i < pixel_clumps.length; i++) {
@@ -185,7 +197,7 @@ function setup() {
 }
 
 function createNewPlayer(data) {
-  if(!players.includes(data.id)) {
+  if (!players.includes(data.id)) {
     loadImage('assets/amogus.png', img1 => {
       loadImage('assets/amogus_blue.png', img => {
         console.log(data.id);
@@ -194,7 +206,7 @@ function createNewPlayer(data) {
         players[data.id] = new Player(createSprite(xCoordinates[Math.floor(Math.random() * xCoordinates.length)], 0, player_width, player_height));
         players[data.id].sprite.maxSpeed = pixelWidth;
         players[data.id].sprite.setCollider("rectangle", 0, 0, player_width - player_width / 4, player_height);
-       // players[data.id].sprite.debug = true;
+        // players[data.id].sprite.debug = true;
         players[data.id].sprite.addImage(img1);
         players[data.id].id = data.id;
         imposter = img1;
@@ -445,9 +457,10 @@ function init() {
                   mineImg = img;
                   loadImage('assets/item_green.png', img => {
                     itemImgGreen = img;
-                    loadImage('assets/amogus_supreme.png', img => {
+                    loadImage('assets/amogus_green.png', img => {
                       img.resize(imageFaktor, 0);
-                      amogus_supreme = img;
+                      amogus_green = img;
+                      createLifePoints();
                       visual = getVisualMap(pixel_clumps);
 
                       socket.emit('getPlayers');

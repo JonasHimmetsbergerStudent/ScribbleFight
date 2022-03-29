@@ -77,6 +77,7 @@ function deathUpdate() {
     //myPlayer.kills = 0;
     myPlayer.knockback = 1;
     myPlayer.death++;
+    lifePoints[4-myPlayer.death].remove();
 }
 
 function createReturnButton() {
