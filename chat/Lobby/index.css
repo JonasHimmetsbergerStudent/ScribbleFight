@@ -12,16 +12,37 @@ body{
 #myChart{
   visibility: visible;
 }
-#QR{
-    margin-left:95%;
-    margin-top:10vh;
-}
+
 #playerlist{
     font-size: large;
 }
+#info{
+  height: 0px;
+  visibility: hidden;
+}
+
+#votes{
+  text-align: center;
+}
+
+#img{
+  width: 100%;
+  height: 100%;
+}
+.votingBox, .votingPicture {
+  width: 100%;
+  height: auto;
+  float: left;
+}
+.votingBox {
+  height: 3vh;
+}
+
 
 #QR{
   width: 256px;
+  margin-left:110%;
+  margin-top: -20vh;
   height: auto;
   font-size: large;
  visibility: hidden ;

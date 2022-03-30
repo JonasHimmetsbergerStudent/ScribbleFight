@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scribblefight Lobby</title>
+    <title>ScribbleFight</title>
     <script defer src="http://localhost:3001/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="index.css" type="text/css">
 </head>
@@ -20,11 +20,13 @@
         </script>
         <div>
             <div id="lobby" style="visibility: visible;">
-                <h1>Scribblefight</h1><br>
+                <h1>ScribbleFight</h1><br>
 
-                <button id="btnJoin">Join</button>
-                <input type="text" id="txtGameId" placeholder="Put your gamecode here!"><br>
+                
                 <button id="btnCreate">Create</button><br>
+                <input type="text" id="txtGameId" placeholder="Put your gamecode here!"><br>
+                <button id="btnJoin">Join</button><br>
+                
             </div>
             <h1 id="gamecode"></h1>
             <!-- Chat Connected => Visibility visible -->
@@ -44,7 +46,7 @@
             </div>
             <div id="QR">
                 <h2 id="QR-label">Scan the QR Code to upload your map</h2>
-                <a href="https://172.17.215.124" id="qrLink" target="_blank">
+                <a href="https://10.0.0.8" id="qrLink" target="_blank">
                     <div id="qrcode"></div>
                 </a>
             </div>
@@ -58,7 +60,7 @@
         <script type="text/javascript" src="qrcode.js"></script>
         <script type="text/javascript">
             function initQr(gameId, clientId) {
-                new QRCode(document.getElementById("qrcode"), "https://172.17.215.124/" + gameId + "/" + clientId);
+                new QRCode(document.getElementById("qrcode"), "https://10.0.0.8/" + gameId + "/" + clientId);
             }
         </script>
         <script src="chart.js"></script>
@@ -113,7 +115,7 @@
                     //localStorage.setItem("player", response.clientId)
                     var i = 0;
                     const playerlist = document.getElementById('playerlist');
-                    playerlist.innerHTML = "<p>Joined Players</p><br>";
+                    playerlist.innerHTML = "<br>";
                     // Schleife um gejointe User anzuzeigen
                     game.clients.forEach(c => {
                         //playerlist.innerHTML += "User: " + game.clients[i].clientId + ", ";
@@ -123,7 +125,7 @@
                              "<div><p>User: " + game
                              .clients[i].clientId + "</p></div>"*/
                         playerlist.innerHTML +=
-                            "<div><p>Player " + (i + 1) + "</p></div>"
+                            "<div><p>Player " + (i + 1) + "<img src='./stickman.png' style='margin-top:20px;margin-left:20px;'width=64 height=64></p></div>"
                         i++
                     });
                 })
@@ -201,17 +203,15 @@
                     var body = document.getElementById("body")
 
                     //body.innerHTML = playerlist.innerHTML
-                    body.innerHTML = ""
+                    body.innerHTML = "<div id='votes'>"
                     i = 0;
                     var clients = infoArray.splice(0, 1);
                     console.log(game)
                     console.log(game.clients[i].img)
                     infoArray.forEach(c => {
-                        body.innerHTML +=
-                            "<div class='votingPicture'><img src='data:image/png;base64," + game
-                            .clients[i].img + "' alt='Red dot'/>" + infoArray[i] + "</div>";
-                        i++;
+                        
                     })
+                    
 
                     //Voting Chart
                     const ctx = document.getElementById('myChart').getContext('2d');
@@ -263,26 +263,35 @@
                     var chartContainer = document.getElementById("myChart");
                     chartContainer.style.visibility = "visible";
                     var i = 0;
-
-                    body.style.marginTop = "50vh";
+                    
+             //       body.style.marginTop = "50vh";
                     infoArray.forEach(c => {
-                        myChart.data.labels.push(infoArray[i])
+                        myChart.data.labels.push('Player' + (i+1))
                         myChart.data.datasets.forEach((dataset) => {
                             dataset.data.push(0);
                         });
-                        body.innerHTML +=
+                        body.innerHTML += 
+                            "<div id='voting'><div class='votingPicture'><img src='data:image/png;base64," + game
+                            .clients[i].img + "' alt='Red dot'/ id='img'></div>" + 
                             "<div class='votingBox'><button class='votingButton' onclick=voted(" +
-                            i + "," + myClient + ")>Vote for " + infoArray[i] + "</div>";
+                            i + "," + myClient + ")>Vote for Player" + (i+1) + "</div></div><br>";
 
                         localStorage.setItem("gameId", gameId)
                         i++;
                         console.log("I =================================== " + i)
                     })
+                    body.innerHTML += '</div>'
                     myChart.update();
 
 
                 })
                 socket.on('startVoting1', response => {
+                    var chartContainer = document.getElementById("chartContainer");
+                    chartContainer.style.marginTop = '10vh';
+                    var body = document.getElementById("body")
+                    body.style.marginTop = "25vh";
+                    body.style.width = '50%';
+                    body.style.display = 'inline-block';
                     var game = response.game;
                     const payLoad = {
                         "method": "startVoting2",
@@ -403,6 +412,7 @@
                     appendMessage('You joined')
                     socket.emit('new-user', name)
                     lobby.style.visibility = "hidden";
+                    lobby.style.height = "0px";
                     chat.style.visibility = "visible";
                     QR.style.visibility = "visible";
 

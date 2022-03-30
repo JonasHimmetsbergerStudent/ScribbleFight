@@ -52,6 +52,7 @@ function someoneDied(data) {
         myPlayer.sprite.remove();
         alert("You died!\nYour kills: " + myPlayer.kills + "\n" + "Your damage: " + myPlayer.dmgDealt + "\n" + "Your knockback: " + myPlayer.knockback);
         noLoop();
+        createReturnButton();
     }
 }
 
@@ -67,6 +68,7 @@ function fatalHit() {
 function win(data) {
     if (myPlayer.id != data) {
         alert("You won!\nYour kills: " + myPlayer.kills + "\n" + "Your damage: " + myPlayer.dmgDealt + "\n" + "Your knockback: " + myPlayer.knockback + "\n" + "Your deaths: " + myPlayer.death);
+        createReturnButton();
     }
 }
 
@@ -75,4 +77,13 @@ function deathUpdate() {
     //myPlayer.kills = 0;
     myPlayer.knockback = 1;
     myPlayer.death++;
+}
+function createReturnButton() {
+    let btn = document.createElement("button");
+    btn.innerHTML = "Return to lobby";
+    document.body.appendChild(btn);
+    btn.classList.add("returnBtn");
+    btn.addEventListener("click", function() {
+        window.location='http://localhost:9091';
+    });
 }

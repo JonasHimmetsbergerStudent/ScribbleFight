@@ -15,6 +15,7 @@ var path = require('path');
 //  "/../../../Trash/ScribbleFight/p5_game_Ben/p5_frontend/src/index.html")));
 
 app.get("/amogusss.png", (req, res) => res.sendFile(__dirname + "/amogusss.png"));
+app.get("/stickman.png", (req, res) => res.sendFile(__dirname + "/stickman.png"));
 app.get("/qrcode.js", (req, res) => res.sendFile(__dirname + "/qrcode.js"));
 app.get("/chart.js", (req, res) => res.sendFile(__dirname + "/chart.js"));
 app.get("/qrcode.html", (req, res) => res.sendFile(__dirname + "/qrcode.html"));
