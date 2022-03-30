@@ -61,6 +61,7 @@ function someoneDied(data) {
 
 function fatalHit() {
     damagedByTimer = 4;
+    overAllKnockback+=(myPlayer.knockback -1);
     updateUI();
     if (myPlayer.knockback > MAX_KNOCKBACK) {
         myPlayer.sprite.position.y = -10000;
@@ -78,7 +79,6 @@ function win(data) {
 function deathUpdate() {
     // myPlayer.dmgDealt = 0;
     //myPlayer.kills = 0;
-    overAllKnockback+=(myPlayer.knockback -1);
     myPlayer.knockback = 1;
     myPlayer.death++;
     lifePoints[4-myPlayer.death].remove();
