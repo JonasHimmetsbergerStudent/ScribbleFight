@@ -6,6 +6,8 @@ var players = [];
 var socket;
 var myPlayer;
 var progressBar;
+var lifePoints = [];
+
 
 //Variables
 var bg;
@@ -38,7 +40,7 @@ var itemImgGreen;
 var boogieBombImg;
 var pianoImg;
 var mineImg;
-var amogus_supreme;
+var amogus_green;
 
 //Animations
 var walk;
@@ -175,6 +177,16 @@ function createUI() {
   progressBar.position.x += progressBar.width / 2;
   progressBar.position.y += progressBar.height / 2;
   progressBar.shapeColor = color(255, 0, 0);
+}
+
+createLifePoints();
+function createLifePoints() {
+  for (let i = 1; i < 4; i++) {
+
+    lifePoints[i] = createSprite(pixelWidth * 3 + i * pixelWidth * 3, pixelWidth * 3, player_width, player_height);
+    lifePoints[i].addImage(amogus_green);
+    lifePoints[i].scale = 0.5;
+  }
 }
 
 function updateUI() {
@@ -575,9 +587,10 @@ function init() {
                   mineImg = img;
                   loadImage('assets/item_green.png', img => {
                     itemImgGreen = img;
-                    loadImage('assets/amogus_supreme.png', img => {
+                    loadImage('assets/amogus_green.png', img => {
                       img.resize(imageFaktor, 0);
-                      amogus_supreme = img;
+                      amogus_green = img;
+                      createLifePoints();
                       visual = getVisualMap(pixel_clumps);
 
                       socket.emit('getPlayers');
