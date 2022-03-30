@@ -3,6 +3,7 @@ let youAreDead = false;
 let gameOver;
 let alivePlayerCount = 0;
 let respawnTime = false;
+var overAllKnockback = 0;
 function deathCheck() {
     if ((myPlayer.sprite.position.y - player_height / 2) > windowHeight + pixelWidth * 15 && !respawnTime) {
         youDied();
@@ -24,6 +25,7 @@ function youDied() {
     }
 
     deathUpdate();
+  
     respawnTime = true;
     let data = {
         deadPlayer: myPlayer.id,
@@ -50,7 +52,8 @@ function someoneDied(data) {
     if (data.id == myPlayer.id) {
         youAreDead = true;
         myPlayer.sprite.remove();
-        alert("You died!\nYour kills: " + myPlayer.kills + "\n" + "Your damage: " + myPlayer.dmgDealt + "\n" + "Your knockback: " + myPlayer.knockback);
+        console.log(myPlayer.knockback);
+        alert("You died!\nYour kills: " + myPlayer.kills + "\n" + "Your damage: " + myPlayer.dmgDealt + "\n" + "Your knockback: " + overAllKnockback.toFixed(2));
         noLoop();
         createReturnButton();
     }
@@ -67,7 +70,7 @@ function fatalHit() {
 
 function win(data) {
     if (myPlayer.id != data) {
-        alert("You won!\nYour kills: " + myPlayer.kills + "\n" + "Your damage: " + myPlayer.dmgDealt + "\n" + "Your knockback: " + myPlayer.knockback + "\n" + "Your deaths: " + myPlayer.death);
+        alert("You won!\nYour kills: " + myPlayer.kills + "\n" + "Your damage: " + myPlayer.dmgDealt + "\n" + "Your knockback: " + overAllKnockback.toFixed(2) + "\n" + "Your deaths: " + myPlayer.death);
         createReturnButton();
     }
 }
@@ -75,6 +78,7 @@ function win(data) {
 function deathUpdate() {
     // myPlayer.dmgDealt = 0;
     //myPlayer.kills = 0;
+    overAllKnockback+=(myPlayer.knockback -1);
     myPlayer.knockback = 1;
     myPlayer.death++;
     lifePoints[4-myPlayer.death].remove();
